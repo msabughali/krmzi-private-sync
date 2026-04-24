@@ -255,6 +255,22 @@ function buildPageUrl(baseUrl, listPath, pageNumber) {
   return base.toString();
 }
 
+function buildMirrorBaseCandidates(baseUrl) {
+  const known = ["https://krmzy.com", "https://krmzi.onl", "https://krmzi.org", "https://krmzi.com"];
+  const normalized = [];
+  const push = (u) => {
+    try {
+      const n = new URL(u).origin;
+      if (!normalized.includes(n)) normalized.push(n);
+    } catch {
+      // ignore invalid candidate
+    }
+  };
+  push(baseUrl);
+  for (const item of known) push(item);
+  return normalized;
+}
+
 async function hasPaginationForNext(page, nextPageNumber) {
   return page.evaluate((nextN) => {
     const anchors = Array.from(document.querySelectorAll('.pagination a[href*="/page/"]'));
@@ -276,13 +292,10 @@ async function crawlListingPage(page, appConfig, logger) {
   const maxPages = appConfig.source.maxListPages;
   const aggregated = new Map();
   const debug = crawlDebugEnabled();
+  let activeBaseUrl = appConfig.source.baseUrl;
 
   for (let pageN = 1; pageN <= maxPages && aggregated.size < maxEpisodes; pageN += 1) {
-    const pageUrl = buildPageUrl(
-      appConfig.source.baseUrl,
-      appConfig.source.listPath,
-      pageN
-    );
+    let pageUrl = buildPageUrl(activeBaseUrl, appConfig.source.listPath, pageN);
 
     const response = await page.goto(pageUrl, {
       waitUntil: "domcontentloaded",
@@ -328,7 +341,40 @@ async function crawlListingPage(page, appConfig, logger) {
     }
 
     const remaining = maxEpisodes - aggregated.size;
-    const items = await parseEpisodeLinks(page, appConfig.source.baseUrl, remaining);
+    let items = await parseEpisodeLinks(page, activeBaseUrl, remaining);
+
+    // If the first listing page is empty, probe known mirrors automatically.
+    if (items.length === 0 && pageN === 1) {
+      const candidates = buildMirrorBaseCandidates(activeBaseUrl).filter(
+        (candidate) => candidate !== new URL(activeBaseUrl).origin
+      );
+      for (const candidateBase of candidates) {
+        const candidateUrl = buildPageUrl(candidateBase, appConfig.source.listPath, pageN);
+        const candidateResponse = await page.goto(candidateUrl, {
+          waitUntil: "domcontentloaded",
+          timeout: appConfig.source.navigationTimeoutMs
+        });
+        await humanPause(appConfig.crawler);
+        const candidateItems = await parseEpisodeLinks(page, candidateBase, remaining);
+
+        if (logger) {
+          logger.info("listing_mirror_probe", {
+            fromBase: activeBaseUrl,
+            candidateBase,
+            candidateUrl,
+            status: candidateResponse ? candidateResponse.status() : null,
+            found: candidateItems.length
+          });
+        }
+
+        if (candidateItems.length > 0) {
+          activeBaseUrl = candidateBase;
+          pageUrl = candidateUrl;
+          items = candidateItems;
+          break;
+        }
+      }
+    }
     const before = aggregated.size;
     for (const it of items) {
       if (!aggregated.has(it.episodeUrl)) aggregated.set(it.episodeUrl, it);
