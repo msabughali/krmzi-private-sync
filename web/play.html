@@ -52,6 +52,22 @@
       const posterWrap = document.getElementById("posterWrap");
       const posterImg = document.getElementById("poster");
 
+      function isMobileSafari() {
+        const ua = navigator.userAgent || "";
+        const isIOS = /iPhone|iPad|iPod/i.test(ua);
+        const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|YaBrowser/i.test(ua);
+        return isIOS && isSafari;
+      }
+
+      function openPlayer(url) {
+        if (!url) return;
+        if (isMobileSafari()) {
+          window.location.href = url;
+          return;
+        }
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+
       function showPoster(url) {
         if (!url) return;
         posterImg.onerror = () => {
@@ -86,6 +102,9 @@
 
       async function renderProviders() {
         if (!playerUrl && !episodeUrl) return;
+        if (playerHint && isMobileSafari()) {
+          playerHint.textContent = "على Safari بالجوال: يفتح السيرفر في نفس الصفحة لتقليل النوافذ المنبثقة.";
+        }
         try {
           const res = await fetch(buildResolveUrl(""));
           const payload = await res.json();
@@ -117,7 +136,7 @@
                 const j = await r.json();
                 const best = (j.candidates || [])[0];
                 if (best) {
-                  window.open(best, "_blank", "noopener,noreferrer");
+                  openPlayer(best);
                 }
               } finally {
                 btn.disabled = false;

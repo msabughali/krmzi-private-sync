@@ -69,7 +69,15 @@ async function runOnce(options = {}) {
     // Full replace: drop previous entries and keep only playable episodes
     // produced by this crawl. Scheduler runs still use upsert (below).
     const freshStoreEpisodes = transformForStore(crawled);
-    storeData.episodes = upsertEpisodes([], freshStoreEpisodes);
+    if (freshStoreEpisodes.length > 0) {
+      storeData.episodes = upsertEpisodes([], freshStoreEpisodes);
+    } else {
+      // In production, source mirrors can intermittently return empty listings.
+      // Do not erase previously stored episodes on an empty reset crawl.
+      activeLogger.warn("reset_skipped_empty_crawl_preserving_store", {
+        previousStored: Array.isArray(storeData.episodes) ? storeData.episodes.length : 0
+      });
+    }
   } else {
     const storeEpisodes = transformForStore(unsynced);
     storeData.episodes = upsertEpisodes(storeData.episodes, storeEpisodes);
