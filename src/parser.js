@@ -157,6 +157,32 @@ async function parseEpisodeLinks(page, baseUrl, maxCount) {
     });
     if (dedup.size >= maxCount) break;
   }
+
+  // Fallback for mirrors/CDN variants where client-side rendering or anti-bot
+  // behavior prevents anchor nodes from being visible to DOM queries. If we
+  // found nothing via DOM selectors, parse raw HTML and recover episode links.
+  if (dedup.size === 0) {
+    const html = await page.content();
+    const rx = /href\s*=\s*["']([^"']*\/episode\/[^"']*)["']/gi;
+    let match;
+    while ((match = rx.exec(html)) && dedup.size < maxCount) {
+      const href = match[1];
+      if (!href) continue;
+      let full = null;
+      try {
+        full = new URL(href, baseUrl).toString();
+      } catch {
+        full = null;
+      }
+      if (!full || dedup.has(full)) continue;
+      dedup.set(full, {
+        episodeUrl: full,
+        title: null,
+        episodeNumber: parseEpisodeNumber(full),
+        listingImageUrl: null
+      });
+    }
+  }
   return Array.from(dedup.values());
 }
 

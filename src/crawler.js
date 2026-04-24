@@ -17,6 +17,12 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function crawlDebugEnabled() {
+  return ["1", "true", "yes", "on"].includes(
+    String(process.env.CRAWL_DEBUG || "").toLowerCase()
+  );
+}
+
 async function humanPause(config) {
   await sleep(randomInt(config.minDelayMs, config.maxDelayMs));
 }
@@ -269,6 +275,7 @@ async function crawlListingPage(page, appConfig, logger) {
   const maxEpisodes = appConfig.source.maxEpisodesPerRun;
   const maxPages = appConfig.source.maxListPages;
   const aggregated = new Map();
+  const debug = crawlDebugEnabled();
 
   for (let pageN = 1; pageN <= maxPages && aggregated.size < maxEpisodes; pageN += 1) {
     const pageUrl = buildPageUrl(
@@ -277,11 +284,48 @@ async function crawlListingPage(page, appConfig, logger) {
       pageN
     );
 
-    await page.goto(pageUrl, {
+    const response = await page.goto(pageUrl, {
       waitUntil: "domcontentloaded",
       timeout: appConfig.source.navigationTimeoutMs
     });
     await humanPause(appConfig.crawler);
+
+    if (logger && debug) {
+      const html = await page.content().catch(() => "");
+      const evalInfo = await page
+        .evaluate(() => ({
+          title: document.title || "",
+          hrefCount: document.querySelectorAll("a[href]").length,
+          episodeHrefCount: document.querySelectorAll("a[href*='/episode/']").length,
+          bodyTextSample: (document.body?.innerText || "").replace(/\s+/g, " ").slice(0, 180)
+        }))
+        .catch(() => ({
+          title: "",
+          hrefCount: -1,
+          episodeHrefCount: -1,
+          bodyTextSample: ""
+        }));
+
+      logger.info("listing_page_debug", {
+        pageUrl,
+        requestedHost: new URL(pageUrl).host,
+        finalUrl: page.url(),
+        finalHost: (() => {
+          try {
+            return new URL(page.url()).host;
+          } catch {
+            return null;
+          }
+        })(),
+        responseStatus: response ? response.status() : null,
+        responseOk: response ? response.ok() : null,
+        contentLength: html.length,
+        title: evalInfo.title,
+        hrefCount: evalInfo.hrefCount,
+        episodeHrefCount: evalInfo.episodeHrefCount,
+        bodyTextSample: evalInfo.bodyTextSample
+      });
+    }
 
     const remaining = maxEpisodes - aggregated.size;
     const items = await parseEpisodeLinks(page, appConfig.source.baseUrl, remaining);

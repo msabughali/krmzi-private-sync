@@ -22,24 +22,32 @@ function hasUsableServer(ep) {
   });
 }
 
+function mapEpisodeForStorage(ep) {
+  return {
+    // Use decoded Arabic slug as fallback display title.
+    title: ep.title || extractSlugFromEpisodeUrl(ep.episodeUrl)?.replace(/-/g, " ") || null,
+    episodeUrl: ep.episodeUrl,
+    slug: extractSlugFromEpisodeUrl(ep.episodeUrl),
+    episodeNumber: ep.episodeNumber ?? null,
+    // playerUrl may be null when only a decoded server list is available;
+    // the web UI resolves playback via playerServers in that case.
+    playerUrl: ep.videoUrl ? canonicalizePlayerUrl(ep.videoUrl) : null,
+    playerId: ep.videoId || null,
+    playerProvider: ep.playerProvider || null,
+    playerServers: Array.isArray(ep.playerServers) ? ep.playerServers : [],
+    imageUrl: sanitizeStoredEpisodeImageUrl(ep.imageUrl),
+    discoveredAt: new Date().toISOString()
+  };
+}
+
+function transformForStore(episodes) {
+  return episodes.map((ep) => mapEpisodeForStorage(ep));
+}
+
 function transformForSync(episodes) {
   return episodes
     .filter((ep) => ep.videoUrl || hasUsableServer(ep))
-    .map((ep) => ({
-      // Use decoded Arabic slug as fallback display title.
-      title: ep.title || extractSlugFromEpisodeUrl(ep.episodeUrl)?.replace(/-/g, " ") || null,
-      episodeUrl: ep.episodeUrl,
-      slug: extractSlugFromEpisodeUrl(ep.episodeUrl),
-      episodeNumber: ep.episodeNumber ?? null,
-      // playerUrl may be null when only a decoded server list is available;
-      // the web UI resolves playback via playerServers in that case.
-      playerUrl: ep.videoUrl ? canonicalizePlayerUrl(ep.videoUrl) : null,
-      playerId: ep.videoId || null,
-      playerProvider: ep.playerProvider || null,
-      playerServers: Array.isArray(ep.playerServers) ? ep.playerServers : [],
-      imageUrl: sanitizeStoredEpisodeImageUrl(ep.imageUrl),
-      discoveredAt: new Date().toISOString()
-    }));
+    .map((ep) => mapEpisodeForStorage(ep));
 }
 
 function getFlagValue(flagName) {
@@ -60,10 +68,11 @@ async function runOnce(options = {}) {
   if (reset) {
     // Full replace: drop previous entries and keep only playable episodes
     // produced by this crawl. Scheduler runs still use upsert (below).
-    const freshOutbound = transformForSync(crawled);
-    storeData.episodes = upsertEpisodes([], freshOutbound);
+    const freshStoreEpisodes = transformForStore(crawled);
+    storeData.episodes = upsertEpisodes([], freshStoreEpisodes);
   } else {
-    storeData.episodes = upsertEpisodes(storeData.episodes, outbound);
+    const storeEpisodes = transformForStore(unsynced);
+    storeData.episodes = upsertEpisodes(storeData.episodes, storeEpisodes);
   }
 
   await saveEpisodes(config.episodes.filePath, storeData);
