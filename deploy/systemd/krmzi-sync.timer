@@ -1,0 +1,11 @@
+[Unit]
+Description=Run KRMZI private sync every 30 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+Unit=krmzi-sync.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

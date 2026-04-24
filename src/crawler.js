@@ -1,0 +1,533 @@
+const { chromium } = require("playwright");
+const {
+  parseEpisodeLinks,
+  extractDailymotionVideoId,
+  detectPlayerProvider,
+  extractPlayerMetadata,
+  canonicalizePlayerUrl,
+  sanitizeStoredEpisodeImageUrl,
+  isSourceAggregatorUrl
+} = require("./parser");
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+async function humanPause(config) {
+  await sleep(randomInt(config.minDelayMs, config.maxDelayMs));
+}
+
+async function extractEpisodeImageFromPage(page, baseUrl) {
+  try {
+    return await page.evaluate((base) => {
+      function absUrl(val) {
+        if (!val || typeof val !== "string") return null;
+        const trimmed = val.trim().split(/\s+/)[0];
+        if (!trimmed || trimmed.startsWith("data:")) return null;
+        try {
+          return new URL(trimmed, base).href;
+        } catch {
+          return null;
+        }
+      }
+
+      // Accept posters from any of the known site mirrors. The listing at
+      // krmzy.com frequently links images to krmzi.onl (legacy CDN), so we
+      // cannot restrict to the current page's host alone.
+      const MIRROR_HOSTS = ["krmzi.onl", "krmzy.com", "krmzi.org", "krmzi.com"];
+      function hostMatchesSite(href) {
+        try {
+          const pageHost = new URL(base).hostname.replace(/^www\./i, "");
+          const uHost = new URL(href).hostname.replace(/^www\./i, "");
+          if (uHost === pageHost) return true;
+          return MIRROR_HOSTS.some((h) => uHost === h || uHost.endsWith(`.${h}`));
+        } catch {
+          return false;
+        }
+      }
+
+      function isKrmziWpMediaUploads(href) {
+        try {
+          const u = new URL(href);
+          if (!hostMatchesSite(href)) return false;
+          const p = u.pathname.toLowerCase();
+          if (!p.includes("/wp-content/uploads/")) return false;
+          if (p.includes("/wp-content/themes/")) return false;
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      // Player embeds, off-site CDNs, theme "go to play" gifs, etc. — never use as episode poster
+      function isJunkOrPlayerAsset(href) {
+        if (!href) return true;
+        const h = href.toLowerCase();
+        if (h.includes("qesen.net")) return true;
+        if (h.includes("gotoplay")) return true;
+        if ((h.includes("dmxleo.com") || h.includes("dailymotion.com")) && /\.(gif|jpe?g|png|webp)/i.test(h)) {
+          return true;
+        }
+        if (/\/wp-content\/themes\//i.test(href)) return true;
+        if (/\/pages\/assets\/.*\.gif/i.test(h)) return true;
+        if (h.endsWith(".gif") || h.includes(".gif?")) {
+          if (!isKrmziWpMediaUploads(href)) return true;
+        }
+        if (/logo|favicon|gravatar|emoji|spinner|loading|placeholder|pixel\.gif/i.test(h)) return true;
+        return false;
+      }
+
+      function scoreImageUrl(href) {
+        if (!href) return -9999;
+        let s = 0;
+        if (isKrmziWpMediaUploads(href)) s += 200;
+        if (/-uzun\.(jpe?g|png|webp)(\?|$)/i.test(href)) s += 40;
+        if (/\/wp-content\/uploads\/\d{4}\/\d{2}\//i.test(href)) s += 30;
+        if (/-\d{2,4}x\d{2,4}\.(jpe?g|png|webp)(\?|$)/i.test(href)) {
+          const m = href.match(/-(\d+)x(\d+)\.(jpe?g|png|webp)/i);
+          if (m) {
+            const w = Number(m[1]);
+            const h = Number(m[2]);
+            if (w <= 300 && h <= 300) s -= 50;
+            else if (w < 500) s -= 15;
+          }
+        }
+        if (/\.svg(\?|$)/i.test(href)) s -= 500;
+        return s;
+      }
+
+      // KRMZI episode page: <div class="posterThumb"><div class="imgBg" style="background-image:url(...);">
+      function urlFromCssBackgroundImage(style) {
+        if (!style || typeof style !== "string") return null;
+        const m = /url\s*\(\s*["']?([^'")]+?)["']?\s*\)/i.exec(style);
+        if (!m) return null;
+        return absUrl(m[1].trim());
+      }
+
+      function maybePosterThumbImgBg() {
+        const nodes = document.querySelectorAll(".posterThumb .imgBg, .posterThumb .imgbg");
+        for (const node of nodes) {
+          const st = node.getAttribute("style");
+          if (!st) continue;
+          const u = urlFromCssBackgroundImage(st);
+          if (u && isKrmziWpMediaUploads(u) && !isJunkOrPlayerAsset(u)) return u;
+        }
+        return null;
+      }
+
+      function maybeMetaOgImage() {
+        const sels = [
+          'meta[property="og:image"]',
+          'meta[property="og:image:url"]',
+          'meta[property="og:image:secure_url"]',
+          'meta[name="twitter:image"]',
+          'meta[name="twitter:image:src"]'
+        ];
+        for (const sel of sels) {
+          const r = absUrl(document.querySelector(sel)?.getAttribute("content"));
+          if (r && isKrmziWpMediaUploads(r) && !isJunkOrPlayerAsset(r)) return r;
+        }
+        return null;
+      }
+
+      const fromPoster = maybePosterThumbImgBg();
+      if (fromPoster) return fromPoster;
+
+      const fromMeta = maybeMetaOgImage();
+      if (fromMeta) return fromMeta;
+
+      const candidates = new Set();
+
+      const addCandidate = (u) => {
+        if (!u || isJunkOrPlayerAsset(u)) return;
+        candidates.add(u);
+      };
+
+      const pushFromSrcset = (ss) => {
+        if (!ss) return;
+        for (const part of String(ss).split(",")) {
+          const url = part.trim().split(/\s+/)[0];
+          const r = absUrl(url);
+          if (r) addCandidate(r);
+        }
+      };
+
+      const linkImage = document.querySelector('link[rel="image_src"]');
+      const fromLink = absUrl(linkImage?.getAttribute("href"));
+      if (fromLink) addCandidate(fromLink);
+
+      const imgQuery = [
+        "article img",
+        ".entry-content img",
+        ".post-content img",
+        "img.wp-post-image",
+        ".attachment-post-thumbnail img",
+        ".thumbnail img",
+        ".featured-image img",
+        ".entry-thumbnail img",
+        "figure img"
+      ]
+        .join(", ");
+
+      for (const img of document.querySelectorAll(imgQuery)) {
+        for (const attr of ["src", "data-src", "data-lazy-src", "data-original"]) {
+          const r = absUrl(img.getAttribute(attr));
+          if (r) addCandidate(r);
+        }
+        pushFromSrcset(img.getAttribute("srcset"));
+        pushFromSrcset(img.getAttribute("data-srcset"));
+      }
+
+      for (const s of document.querySelectorAll("picture source")) {
+        pushFromSrcset(s.getAttribute("srcset"));
+      }
+
+      const fromUploads = [...candidates].filter((h) => isKrmziWpMediaUploads(h) && !isJunkOrPlayerAsset(h));
+      if (fromUploads.length === 0) return null;
+      return fromUploads.sort((a, b) => scoreImageUrl(b) - scoreImageUrl(a))[0];
+    }, baseUrl);
+  } catch {
+    return null;
+  }
+}
+
+async function runHumanInteractions(page, config, options = {}) {
+  const { maxBudgetMs = 2000, alreadyHavePlayer = () => false } = options;
+  const deadline = Date.now() + maxBudgetMs;
+  const budgetLeft = () => Math.max(0, deadline - Date.now());
+
+  // Highest-signal targets first: clicking the poster is what actually triggers
+  // the qesen iframe to load on krmzy/krmzi episode pages.
+  const clickCandidates = [
+    ".posterThumb",
+    ".posterThumb .imgBg",
+    ".play-button",
+    "button:has-text('تشغيل')"
+  ];
+
+  for (const selector of clickCandidates) {
+    if (alreadyHavePlayer() || budgetLeft() < 200) break;
+    const loc = page.locator(selector).first();
+    if (await loc.count().catch(() => 0)) {
+      try {
+        await loc.click({ timeout: Math.min(500, budgetLeft()), force: true });
+        break; // one real click is enough; the network listener takes over
+      } catch {
+        // Try the next candidate
+      }
+    }
+  }
+}
+
+function isPlayableCandidate(url) {
+  const value = String(url || "").toLowerCase();
+  if (!value.startsWith("http")) return false;
+  if (/\.(css|js|png|jpg|jpeg|svg|gif|webp|ico|woff2?|ttf)(\?|$)/.test(value)) {
+    return false;
+  }
+  if (value.includes("/episode/") || value.includes("/series/") || value.includes("/tag/")) {
+    return false;
+  }
+  // We admit the source's aggregator URL here (qesen\.net\/krmzi) only so the
+  // crawler can capture its payload and extract the direct server list from it.
+  // The aggregator URL itself is never stored or used for playback downstream.
+  return (
+    Boolean(detectPlayerProvider(value)) ||
+    /(embed|player|watch|video|qesen\.net\/krmzi)/.test(value)
+  );
+}
+
+function buildPageUrl(baseUrl, listPath, pageNumber) {
+  const base = new URL(listPath || "/", baseUrl);
+  if (pageNumber <= 1) return base.toString();
+  const trimmed = base.pathname.replace(/\/+$/, "");
+  base.pathname = `${trimmed}/page/${pageNumber}/`;
+  return base.toString();
+}
+
+async function hasPaginationForNext(page, nextPageNumber) {
+  return page.evaluate((nextN) => {
+    const anchors = Array.from(document.querySelectorAll('.pagination a[href*="/page/"]'));
+    if (!anchors.length) return false;
+    const pageNumbers = anchors
+      .map((a) => {
+        const m = a.getAttribute("href") && a.getAttribute("href").match(/\/page\/(\d+)\/?/);
+        return m ? Number(m[1]) : null;
+      })
+      .filter((n) => Number.isFinite(n));
+    if (!pageNumbers.length) return false;
+    const maxN = Math.max(...pageNumbers);
+    return nextN <= maxN;
+  }, nextPageNumber);
+}
+
+async function crawlListingPage(page, appConfig, logger) {
+  const maxEpisodes = appConfig.source.maxEpisodesPerRun;
+  const maxPages = appConfig.source.maxListPages;
+  const aggregated = new Map();
+
+  for (let pageN = 1; pageN <= maxPages && aggregated.size < maxEpisodes; pageN += 1) {
+    const pageUrl = buildPageUrl(
+      appConfig.source.baseUrl,
+      appConfig.source.listPath,
+      pageN
+    );
+
+    await page.goto(pageUrl, {
+      waitUntil: "domcontentloaded",
+      timeout: appConfig.source.navigationTimeoutMs
+    });
+    await humanPause(appConfig.crawler);
+
+    const remaining = maxEpisodes - aggregated.size;
+    const items = await parseEpisodeLinks(page, appConfig.source.baseUrl, remaining);
+    const before = aggregated.size;
+    for (const it of items) {
+      if (!aggregated.has(it.episodeUrl)) aggregated.set(it.episodeUrl, it);
+      if (aggregated.size >= maxEpisodes) break;
+    }
+
+    if (logger) {
+      logger.info("list_page_scanned", {
+        pageUrl,
+        pageFound: items.length,
+        newlyAdded: aggregated.size - before,
+        totalAggregated: aggregated.size
+      });
+    }
+
+    if (aggregated.size >= maxEpisodes) break;
+    if (aggregated.size === before) break; // page returned zero new items => stop
+    const hasNext = await hasPaginationForNext(page, pageN + 1);
+    if (!hasNext) break;
+  }
+
+  return Array.from(aggregated.values());
+}
+
+async function resolveEpisodeVideo(page, episodeUrl, appConfig, listingImageUrl = null) {
+  const candidates = [];
+  const seen = new Set();
+  let playerCandidateResolver = null;
+  const playerCandidateSignal = new Promise((resolve) => {
+    playerCandidateResolver = resolve;
+  });
+  const addCandidate = (url, source) => {
+    if (!isPlayableCandidate(url)) return;
+    if (seen.has(url)) return;
+    seen.add(url);
+    const provider = detectPlayerProvider(url);
+    const aggregator = isSourceAggregatorUrl(url);
+    candidates.push({ url, source, provider, aggregator });
+    // Wake early if we see either a direct provider URL or the source aggregator
+    // (we still read the aggregator's payload internally to get the server list).
+    if ((provider || aggregator) && playerCandidateResolver) {
+      const r = playerCandidateResolver;
+      playerCandidateResolver = null;
+      r();
+    }
+  };
+
+  const trackRequest = (req) => addCandidate(req.url(), "request");
+  const trackResponse = (res) => addCandidate(res.url(), "response");
+  const onPopup = (popup) => {
+    addCandidate(popup.url(), "popup");
+    popup.on("request", (req) => addCandidate(req.url(), "popup_request"));
+    popup.on("response", (res) => addCandidate(res.url(), "popup_response"));
+  };
+
+  page.on("request", trackRequest);
+  page.on("response", trackResponse);
+  page.on("popup", onPopup);
+
+  const hasPlayerCandidate = () =>
+    candidates.some((c) => c.provider || c.aggregator);
+
+  try {
+    const tStart = Date.now();
+    await page.goto(episodeUrl, {
+      waitUntil: "domcontentloaded",
+      timeout: appConfig.source.navigationTimeoutMs
+    });
+    const tAfterGoto = Date.now();
+
+    // Prefer the poster URL extracted from the listing card; fall back to episode-page extraction.
+    const listingImage = sanitizeStoredEpisodeImageUrl(listingImageUrl) || null;
+    let imageUrl = listingImage;
+    if (!imageUrl) {
+      try {
+        await page.waitForSelector(".posterThumb .imgBg", { state: "attached", timeout: 4000 });
+      } catch {
+        // Best-effort; fallbacks handle missing markup
+      }
+      const rawImage = await extractEpisodeImageFromPage(page, episodeUrl);
+      imageUrl = sanitizeStoredEpisodeImageUrl(rawImage) || null;
+    }
+    const tAfterImage = Date.now();
+
+    // Some pages auto-load the iframe on DOMContentLoaded; give it a tiny head start.
+    if (!hasPlayerCandidate()) {
+      await Promise.race([playerCandidateSignal, sleep(400)]);
+    }
+    const tAfterWaitReq = Date.now();
+
+    // Most krmzy/krmzi pages are lazy: clicking the poster is what triggers the
+    // qesen iframe load. Do that, then wait for the player request to arrive.
+    if (!hasPlayerCandidate()) {
+      await runHumanInteractions(page, appConfig.crawler, {
+        maxBudgetMs: 1500,
+        alreadyHavePlayer: hasPlayerCandidate
+      });
+      if (!hasPlayerCandidate()) {
+        await Promise.race([playerCandidateSignal, sleep(2500)]);
+      }
+    }
+    const tAfterInteract = Date.now();
+
+    addCandidate(page.url(), "page_url");
+
+    for (const frame of page.frames()) {
+      addCandidate(frame.url(), "frame_url");
+    }
+
+    // Skip the heavy DOM sweeps if we already have a valid player candidate.
+    if (!hasPlayerCandidate()) {
+      const hrefs = await page.$$eval("a[href]", (anchors) =>
+        anchors.map((a) => a.href).filter(Boolean)
+      );
+      for (const href of hrefs) addCandidate(href, "anchor_href");
+
+      const srcs = await page.$$eval("[src]", (nodes) =>
+        nodes.map((n) => n.getAttribute("src")).filter(Boolean)
+      );
+      for (const src of srcs) addCandidate(src, "element_src");
+    }
+    const tEnd = Date.now();
+
+    if (process.env.CRAWL_TIMINGS === "1") {
+      // eslint-disable-next-line no-console
+      console.log(
+        JSON.stringify({
+          episodeUrl,
+          ms: {
+            total: tEnd - tStart,
+            goto: tAfterGoto - tStart,
+            image: tAfterImage - tAfterGoto,
+            waitPlayerReq: tAfterWaitReq - tAfterImage,
+            interact: tAfterInteract - tAfterWaitReq,
+            domSweep: tEnd - tAfterInteract
+          },
+          haveImage: Boolean(imageUrl),
+          havePlayer: hasPlayerCandidate()
+        })
+      );
+    }
+
+    // Prefer a direct playable candidate; the source aggregator is only used
+    // internally to extract the server list, never stored or played back.
+    const directCandidate =
+      candidates.find((c) => c.provider) ||
+      candidates.find((c) => !c.aggregator && /(embed|player|watch|video)/i.test(c.url)) ||
+      null;
+    const aggregatorCandidate = candidates.find((c) => c.aggregator) || null;
+
+    const aggregatorMeta = aggregatorCandidate
+      ? extractPlayerMetadata(aggregatorCandidate.url)
+      : null;
+    const servers = aggregatorMeta?.servers || [];
+
+    const directUrl = directCandidate ? canonicalizePlayerUrl(directCandidate.url) : null;
+    const dailymotionFromAggregator = aggregatorMeta?.videoId
+      ? `https://www.dailymotion.com/video/${aggregatorMeta.videoId}`
+      : null;
+
+    const videoUrl = directUrl || dailymotionFromAggregator || null;
+    const videoId =
+      (directCandidate && extractDailymotionVideoId(directCandidate.url)) ||
+      aggregatorMeta?.videoId ||
+      null;
+    const playerProvider =
+      directCandidate?.provider ||
+      (dailymotionFromAggregator ? "dailymotion" : null);
+
+    return {
+      episodeUrl,
+      videoUrl,
+      videoId,
+      playerProvider,
+      playerServers: servers,
+      imageUrl
+    };
+  } finally {
+    page.off("request", trackRequest);
+    page.off("response", trackResponse);
+    page.off("popup", onPopup);
+  }
+}
+
+async function withRetry(fn, retries) {
+  let lastError = null;
+  for (let i = 0; i < retries; i += 1) {
+    try {
+      return await fn(i + 1);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
+async function runCrawl(appConfig, logger, options = {}) {
+  const browser = await chromium.launch({ headless: appConfig.crawler.headless });
+  const context = await browser.newContext({
+    locale: "ar",
+    viewport: { width: 1366, height: 768 },
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+  });
+  const page = await context.newPage();
+
+  try {
+    const episodes = options.singleEpisodeUrl
+      ? [
+          {
+            episodeUrl: options.singleEpisodeUrl,
+            title: null,
+            episodeNumber: null
+          }
+        ]
+      : await crawlListingPage(page, appConfig, logger);
+    logger.info("discovered_episodes", { count: episodes.length });
+    const results = [];
+
+    for (const episode of episodes) {
+      const resolved = await withRetry(
+        async (attempt) => {
+          logger.info("resolving_episode", {
+            episodeUrl: episode.episodeUrl,
+            attempt
+          });
+          return resolveEpisodeVideo(
+            page,
+            episode.episodeUrl,
+            appConfig,
+            episode.listingImageUrl || null
+          );
+        },
+        appConfig.crawler.retries
+      );
+      results.push({ ...episode, ...resolved });
+      await humanPause(appConfig.crawler);
+    }
+    return results;
+  } finally {
+    await context.close();
+    await browser.close();
+  }
+}
+
+module.exports = { runCrawl };

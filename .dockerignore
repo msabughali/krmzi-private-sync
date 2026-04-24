@@ -1,0 +1,31 @@
+# Keep image lean — exclude everything not needed at runtime
+.git
+.gitignore
+.github
+.vscode
+.idea
+.DS_Store
+
+# Dependencies are installed inside the image
+node_modules
+
+# Env files stay outside the image (Coolify injects env vars at runtime)
+.env
+.env.*
+!.env.example
+
+# Runtime data lives on a mounted volume
+data
+
+# Repo-only tooling / docs
+README.md
+deploy
+scripts
+
+# Editor / OS cruft
+*.swp
+*.swo
+*.log
+
+# Stray artifact
+, r.candidates[0]); }

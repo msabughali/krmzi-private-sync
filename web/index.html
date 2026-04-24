@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>قرمزي — آخر الحلقات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="brand">
+      <div class="container">
+        <div class="brand-inner">
+          <h1 class="brand-title">
+            <span class="brand-mark">قرمزي</span>
+            <span class="brand-sub">مسلسلات تركية</span>
+          </h1>
+        </div>
+      </div>
+    </header>
+    <main class="container">
+      <section class="list-header">
+        <h1>آخر الحلقات</h1>
+        <button type="button" id="refreshBtn" class="refresh-btn">تحديث</button>
+      </section>
+      <p class="hint">اضغط على أي حلقة لفتح صفحة المشغّل.</p>
+      <div id="status" class="status">جاري التحميل...</div>
+      <ul id="episodes" class="episodes"></ul>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

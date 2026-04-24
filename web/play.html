@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>قرمزي — مشغّل الحلقة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="brand">
+      <div class="container">
+        <div class="brand-inner">
+          <h1 class="brand-title">
+            <span class="brand-mark">قرمزي</span>
+            <span class="brand-sub">مسلسلات تركية</span>
+          </h1>
+          <a class="brand-back" href="/">عودة للقائمة</a>
+        </div>
+      </div>
+    </header>
+    <main class="container">
+      <h2 id="title" class="player-title">مشغّل الحلقة</h2>
+      <p id="meta" class="player-meta"></p>
+      <p id="playerHint" class="hint">اختر سيرفر لفتح الحلقة في نافذة جديدة.</p>
+      <div id="providers" class="providers"></div>
+      <figure id="posterWrap" class="poster-wrap" hidden>
+        <img
+          id="poster"
+          class="poster-img"
+          alt=""
+          referrerpolicy="no-referrer-when-downgrade"
+        />
+      </figure>
+    </main>
+    <script>
+      const qp = new URLSearchParams(window.location.search);
+      const playerUrl = qp.get("url");
+      const episodeUrl = qp.get("episodeUrl");
+      const title = qp.get("title") || "مشغّل الحلقة";
+      const provider = qp.get("provider") || "unknown";
+      const imageUrlFromQuery = qp.get("imageUrl") || "";
+      document.getElementById("title").textContent = title;
+      document.getElementById("meta").textContent = `المزود: ${provider}`;
+      const providersWrap = document.getElementById("providers");
+      const playerHint = document.getElementById("playerHint");
+      const posterWrap = document.getElementById("posterWrap");
+      const posterImg = document.getElementById("poster");
+
+      function showPoster(url) {
+        if (!url) return;
+        posterImg.onerror = () => {
+          posterWrap.hidden = true;
+        };
+        posterImg.src = url;
+        posterImg.alt = title;
+        posterWrap.hidden = false;
+      }
+
+      if (imageUrlFromQuery) {
+        showPoster(imageUrlFromQuery);
+      } else if (episodeUrl) {
+        fetch("/api/episodes")
+          .then((r) => r.json())
+          .then((payload) => {
+            const list = Array.isArray(payload.episodes) ? payload.episodes : [];
+            const match = list.find((e) => e && e.episodeUrl === episodeUrl);
+            if (match && match.imageUrl) showPoster(match.imageUrl);
+          })
+          .catch(() => {});
+      }
+
+      function buildResolveUrl(serverName) {
+        const base = "/api/resolve-server";
+        const key = episodeUrl
+          ? `episodeUrl=${encodeURIComponent(episodeUrl)}`
+          : `playerUrl=${encodeURIComponent(playerUrl || "")}`;
+        const server = serverName ? `&server=${encodeURIComponent(serverName)}` : "";
+        return `${base}?${key}${server}&preferDirect=1`;
+      }
+
+      async function renderProviders() {
+        if (!playerUrl && !episodeUrl) return;
+        try {
+          const res = await fetch(buildResolveUrl(""));
+          const payload = await res.json();
+          const servers = Array.isArray(payload.servers) ? payload.servers : [];
+
+          if (!servers.length) {
+            if (playerHint) {
+              playerHint.textContent = "لا توجد سيرفرات متاحة لهذه الحلقة.";
+            }
+            return;
+          }
+
+          providersWrap.innerHTML = "";
+          const row = document.createElement("div");
+          row.className = "providers-row";
+          providersWrap.appendChild(row);
+
+          for (const srv of servers) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "provider-btn";
+            btn.textContent = String(srv.name || "unknown");
+            btn.onclick = async () => {
+              btn.disabled = true;
+              const prevLabel = btn.textContent;
+              btn.textContent = "جاري الفتح…";
+              try {
+                const r = await fetch(buildResolveUrl(srv.name || srv.id || ""));
+                const j = await r.json();
+                const best = (j.candidates || [])[0];
+                if (best) {
+                  window.open(best, "_blank", "noopener,noreferrer");
+                }
+              } finally {
+                btn.disabled = false;
+                btn.textContent = prevLabel;
+              }
+            };
+            row.appendChild(btn);
+          }
+        } catch {
+          if (playerHint) {
+            playerHint.textContent = "تعذّر تحميل قائمة السيرفرات.";
+          }
+        }
+      }
+
+      renderProviders();
+    </script>
+  </body>
+</html>
