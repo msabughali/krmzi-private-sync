@@ -51,6 +51,11 @@ function setStatusLoading(message) {
   el.appendChild(loader);
 }
 
+function isAllowedServerName(name) {
+  const n = String(name || "").toLowerCase();
+  return n === "dailymotion" || n === "ok";
+}
+
 async function loadEpisodes() {
   const list = document.getElementById("episodes");
   list.innerHTML = "";
@@ -70,8 +75,10 @@ async function loadEpisodes() {
       li.className = "episode";
       const title = safeDecode(ep.title || ep.slug || ep.episodeUrl);
 
-      const hasServers = Array.isArray(ep.playerServers) && ep.playerServers.length > 0;
-      const canPlay = Boolean(ep.playerUrl) || (hasServers && ep.episodeUrl);
+      const allowedServers = Array.isArray(ep.playerServers)
+        ? ep.playerServers.filter((s) => isAllowedServerName(s?.name))
+        : [];
+      const canPlay = Boolean(ep.playerUrl) || (allowedServers.length > 0 && ep.episodeUrl);
       const playUrl = canPlay
         ? `/play?url=${encodeURIComponent(ep.playerUrl || "")}&title=${encodeURIComponent(
             title
@@ -129,7 +136,7 @@ async function loadEpisodes() {
         a.href = playUrl;
         a.textContent = title;
         heading.appendChild(a);
-        const serverCount = Array.isArray(ep.playerServers) ? ep.playerServers.length : 0;
+        const serverCount = allowedServers.length;
         if (serverCount > 0) {
           const count = document.createElement("span");
           count.className = "episode-server-count";
@@ -163,8 +170,7 @@ async function loadEpisodes() {
       appendLink(links, { href: ep.episodeUrl, text: "الصفحة الأصلية" });
       if (links.childNodes.length > 0) body.appendChild(links);
 
-      const servers = Array.isArray(ep.playerServers) ? ep.playerServers : [];
-      if (servers.length > 0) {
+      if (allowedServers.length > 0) {
         const serversWrap = document.createElement("div");
         serversWrap.className = "episode-servers";
         const label = document.createElement("div");
@@ -174,7 +180,7 @@ async function loadEpisodes() {
 
         const serversRow = document.createElement("div");
         serversRow.className = "episode-servers-row";
-        for (const srv of servers) {
+        for (const srv of allowedServers) {
           const tag = document.createElement("span");
           tag.className = "server-tag";
           const name = String(srv?.name || "unknown");

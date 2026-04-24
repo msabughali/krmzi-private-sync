@@ -52,20 +52,15 @@
       const posterWrap = document.getElementById("posterWrap");
       const posterImg = document.getElementById("poster");
 
-      function isMobileSafari() {
-        const ua = navigator.userAgent || "";
-        const isIOS = /iPhone|iPad|iPod/i.test(ua);
-        const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|YaBrowser/i.test(ua);
-        return isIOS && isSafari;
-      }
-
       function openPlayer(url) {
         if (!url) return;
-        if (isMobileSafari()) {
-          window.location.href = url;
-          return;
-        }
-        window.open(url, "_blank", "noopener,noreferrer");
+        // Keep behavior consistent across desktop and mobile during testing.
+        window.location.href = url;
+      }
+
+      function isAllowedServerName(name) {
+        const n = String(name || "").toLowerCase();
+        return n === "dailymotion" || n === "ok";
       }
 
       function showPoster(url) {
@@ -102,17 +97,19 @@
 
       async function renderProviders() {
         if (!playerUrl && !episodeUrl) return;
-        if (playerHint && isMobileSafari()) {
-          playerHint.textContent = "على Safari بالجوال: يفتح السيرفر في نفس الصفحة لتقليل النوافذ المنبثقة.";
+        if (playerHint) {
+          playerHint.textContent = "يفتح السيرفر في نفس الصفحة على جميع الأجهزة (وضع اختبار).";
         }
         try {
           const res = await fetch(buildResolveUrl(""));
           const payload = await res.json();
-          const servers = Array.isArray(payload.servers) ? payload.servers : [];
+          const servers = Array.isArray(payload.servers)
+            ? payload.servers.filter((s) => isAllowedServerName(s?.name))
+            : [];
 
           if (!servers.length) {
             if (playerHint) {
-              playerHint.textContent = "لا توجد سيرفرات متاحة لهذه الحلقة.";
+              playerHint.textContent = "المتاح فقط: Dailymotion و OK. لا توجد سيرفرات مدعومة لهذه الحلقة.";
             }
             return;
           }
