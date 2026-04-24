@@ -22,10 +22,13 @@ RUN npx playwright install --with-deps chromium \
 # Copy application source (web UI + backend)
 COPY src ./src
 COPY web ./web
+COPY data ./data-seed
+COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY .env.example ./.env.example
 
 # Runtime data lives on a mounted volume (episodes.json, state.json)
 RUN mkdir -p /app/data
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 8787
 
@@ -34,4 +37,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 
 # Default: run the web UI. The companion worker service overrides this
 # with `node src/index.js --loop` in docker-compose.yml.
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "src/webServer.js"]

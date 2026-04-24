@@ -16,11 +16,14 @@ node_modules
 
 # Runtime data lives on a mounted volume
 data
+!data/episodes.json
+!data/state.json
 
 # Repo-only tooling / docs
 README.md
 deploy
 scripts
+!scripts/docker-entrypoint.sh
 
 # Editor / OS cruft
 *.swp
