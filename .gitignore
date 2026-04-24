@@ -9,8 +9,10 @@ yarn-error.log*
 .env.*
 !.env.example
 
-# Data (crawler output + state is runtime-only)
+# Data backups / temp outputs
 data/*.json
+!data/episodes.json
+!data/state.json
 data/*.json.bak
 data/*.backup-*
 data/*.before-*
