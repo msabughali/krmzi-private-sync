@@ -18,16 +18,23 @@ function parseSeriesName(text) {
   } catch {
     // Keep original text when it is not URI-encoded.
   }
-  return value
+  const normalized = value
     .replace(/\s*-\s*قرمزي\s*$/i, "")
     .replace(/^نهاية\s+الموسم\s+/i, "")
     .replace(/^حلقة\s*\d+\s+/i, "")
     .replace(/^episode\s*\d+\s+/i, "")
     .replace(/\s+(?:مسلسل\s*)?الحلقة\s*\d+\s*$/i, "")
     .replace(/\s+episode\s*\d+\s*$/i, "")
-    .replace(/[-_]+/g, " ")
+    .replace(/[\s\-_–—:|،,]+$/g, "")
+    .replace(/[-_–—]+/g, " ")
     .replace(/\s+/g, " ")
-    .trim() || null;
+    .trim();
+
+  const aliases = new Map([
+    ["هذا سوف يفيض", "هذا البحر سوف يفيض"]
+  ]);
+
+  return aliases.get(normalized) || normalized || null;
 }
 
 async function parseEpisodeLinks(page, baseUrl, maxCount) {

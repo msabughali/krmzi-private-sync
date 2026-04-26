@@ -121,11 +121,11 @@
         for (const ep of list) {
           if (!ep) continue;
           const chain = Array.isArray(ep.seriesEpisodes) ? ep.seriesEpisodes : [];
+          const nested = chain.find((item) => episodeUrlKey(item?.episodeUrl) === targetKey);
+          if (nested) return { episode: nested, chain };
           if (episodeUrlKey(ep.episodeUrl) === targetKey) {
             return { episode: ep, chain: chain.length ? chain : [ep] };
           }
-          const nested = chain.find((item) => episodeUrlKey(item?.episodeUrl) === targetKey);
-          if (nested) return { episode: nested, chain };
         }
         return { episode: null, chain: [] };
       }
@@ -163,12 +163,69 @@
         return `${base}?${key}${server}&preferDirect=1`;
       }
 
+      function buildServerCandidates(server) {
+        const id = server?.id || "";
+        const name = String(server?.name || "").toLowerCase();
+        if (!id) return [];
+        if (/^https?:\/\//i.test(id)) return [id];
+        if (name === "dailymotion") {
+          return [
+            `https://www.dailymotion.com/video/${id}`,
+            `https://www.dailymotion.com/embed/video/${id}`
+          ];
+        }
+        if (name === "ok") {
+          return [
+            `https://m.ok.ru/video/${id}`,
+            `https://ok.ru/videoembed/${id}`,
+            `https://ok.ru/video/${id}`
+          ];
+        }
+        return [];
+      }
+
+      function renderProviderButtons(servers, resolver) {
+        providersWrap.innerHTML = "";
+        const row = document.createElement("div");
+        row.className = "providers-row";
+        providersWrap.appendChild(row);
+
+        for (const srv of servers) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "provider-btn";
+          btn.textContent = String(srv.name || "unknown");
+          btn.onclick = async () => {
+            btn.disabled = true;
+            const prevLabel = btn.textContent;
+            btn.textContent = "جاري الفتح…";
+            try {
+              const best = await resolver(srv);
+              if (best) openPlayer(best);
+            } finally {
+              btn.disabled = false;
+              btn.textContent = prevLabel;
+            }
+          };
+          row.appendChild(btn);
+        }
+      }
+
       async function renderProviders() {
         if (!currentEpisode.playerUrl && !currentEpisode.episodeUrl) return;
         if (playerHint) {
           playerHint.textContent = "يفتح السيرفر في نفس الصفحة على جميع الأجهزة (وضع اختبار).";
         }
         providersWrap.innerHTML = "";
+
+        const storedServers = Array.isArray(currentEpisode.playerServers)
+          ? currentEpisode.playerServers.filter((s) => isAllowedServerName(s?.name))
+          : [];
+        if (storedServers.length > 0) {
+          renderProviderButtons(storedServers, async (srv) => buildServerCandidates(srv)[0] || null);
+          return;
+        }
+
         try {
           const res = await fetch(buildResolveUrl(""));
           const payload = await res.json();
@@ -183,34 +240,11 @@
             return;
           }
 
-          providersWrap.innerHTML = "";
-          const row = document.createElement("div");
-          row.className = "providers-row";
-          providersWrap.appendChild(row);
-
-          for (const srv of servers) {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "provider-btn";
-            btn.textContent = String(srv.name || "unknown");
-            btn.onclick = async () => {
-              btn.disabled = true;
-              const prevLabel = btn.textContent;
-              btn.textContent = "جاري الفتح…";
-              try {
-                const r = await fetch(buildResolveUrl(srv.name || srv.id || ""));
-                const j = await r.json();
-                const best = (j.candidates || [])[0];
-                if (best) {
-                  openPlayer(best);
-                }
-              } finally {
-                btn.disabled = false;
-                btn.textContent = prevLabel;
-              }
-            };
-            row.appendChild(btn);
-          }
+          renderProviderButtons(servers, async (srv) => {
+            const r = await fetch(buildResolveUrl(srv.name || srv.id || ""));
+            const j = await r.json();
+            return (j.candidates || [])[0] || null;
+          });
         } catch {
           if (playerHint) {
             playerHint.textContent = "تعذّر تحميل قائمة السيرفرات.";

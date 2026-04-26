@@ -62,8 +62,7 @@ function episodeUrlKey(value) {
 
 function seriesKey(ep) {
   return (
-    ep?.seriesName ||
-    parseSeriesName(ep?.title || extractSlugFromEpisodeUrl(ep?.episodeUrl)) ||
+    parseSeriesName(ep?.seriesName || ep?.title || extractSlugFromEpisodeUrl(ep?.episodeUrl)) ||
     ep?.episodeUrl ||
     ""
   );

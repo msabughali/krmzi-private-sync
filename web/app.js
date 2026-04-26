@@ -56,6 +56,29 @@ function isAllowedServerName(name) {
   return n === "dailymotion" || n === "ok";
 }
 
+function allowedServersForEpisode(ep) {
+  return Array.isArray(ep?.playerServers)
+    ? ep.playerServers.filter((s) => isAllowedServerName(s?.name))
+    : [];
+}
+
+function findPlayableEpisode(ep) {
+  const topServers = allowedServersForEpisode(ep);
+  if (ep?.playerUrl || (topServers.length > 0 && ep?.episodeUrl)) {
+    return { episode: ep, allowedServers: topServers };
+  }
+
+  const chain = Array.isArray(ep?.seriesEpisodes) ? ep.seriesEpisodes : [];
+  for (const item of chain) {
+    const itemServers = allowedServersForEpisode(item);
+    if (item?.playerUrl || (itemServers.length > 0 && item?.episodeUrl)) {
+      return { episode: item, allowedServers: itemServers };
+    }
+  }
+
+  return { episode: null, allowedServers: [] };
+}
+
 async function loadEpisodes() {
   const list = document.getElementById("episodes");
   list.innerHTML = "";
@@ -75,17 +98,17 @@ async function loadEpisodes() {
       li.className = "episode";
       const title = safeDecode(ep.title || ep.slug || ep.episodeUrl);
 
-      const allowedServers = Array.isArray(ep.playerServers)
-        ? ep.playerServers.filter((s) => isAllowedServerName(s?.name))
-        : [];
-      const canPlay = Boolean(ep.playerUrl) || (allowedServers.length > 0 && ep.episodeUrl);
+      const playable = findPlayableEpisode(ep);
+      const playEpisode = playable.episode;
+      const allowedServers = playable.allowedServers;
+      const canPlay = Boolean(playEpisode?.playerUrl) || (allowedServers.length > 0 && playEpisode?.episodeUrl);
       const playUrl = canPlay
-        ? `/play?url=${encodeURIComponent(ep.playerUrl || "")}&title=${encodeURIComponent(
-            title
+        ? `/play?url=${encodeURIComponent(playEpisode.playerUrl || "")}&title=${encodeURIComponent(
+            safeDecode(playEpisode.title || title)
           )}&provider=${encodeURIComponent(
-            ep.playerProvider || "unknown"
-          )}&playerId=${encodeURIComponent(ep.playerId || "")}&episodeUrl=${encodeURIComponent(
-            ep.episodeUrl || ""
+            playEpisode.playerProvider || "unknown"
+          )}&playerId=${encodeURIComponent(playEpisode.playerId || "")}&episodeUrl=${encodeURIComponent(
+            playEpisode.episodeUrl || ""
           )}&imageUrl=${encodeURIComponent(ep.imageUrl || "")}`
         : null;
 
@@ -110,7 +133,8 @@ async function loadEpisodes() {
         };
         thumbWrap.appendChild(img);
       }
-      if (ep.episodeNumber !== null && ep.episodeNumber !== undefined) {
+      const badgeEpisodeNumber = playEpisode?.episodeNumber ?? ep.episodeNumber;
+      if (badgeEpisodeNumber !== null && badgeEpisodeNumber !== undefined) {
         const badge = document.createElement("span");
         badge.className = "episode-badge";
         const label = document.createElement("span");
@@ -118,7 +142,7 @@ async function loadEpisodes() {
         label.textContent = "حلقة";
         const num = document.createElement("span");
         num.className = "badge-num";
-        num.textContent = String(ep.episodeNumber);
+        num.textContent = String(badgeEpisodeNumber);
         badge.appendChild(label);
         badge.appendChild(num);
         thumbWrap.appendChild(badge);
@@ -153,7 +177,7 @@ async function loadEpisodes() {
 
       const meta = document.createElement("div");
       meta.className = "episode-meta";
-      const provider = ep.playerProvider || "unknown";
+      const provider = playEpisode?.playerProvider || ep.playerProvider || "unknown";
       const discovered = formatIso(ep.discoveredAt);
       const updated = formatIso(ep.updatedAt);
       meta.textContent = [
