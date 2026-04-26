@@ -25,6 +25,113 @@ function crawlDebugEnabled() {
   );
 }
 
+const STEALTH_USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
+const STEALTH_HEADERS = {
+  "Accept":
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+  "Accept-Language": "ar,en-US;q=0.9,en;q=0.8",
+  "Sec-Ch-Ua": '"Chromium";v="124", "Google Chrome";v="124", "Not?A_Brand";v="99"',
+  "Sec-Ch-Ua-Mobile": "?0",
+  "Sec-Ch-Ua-Platform": '"Windows"',
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-User": "?1",
+  "Upgrade-Insecure-Requests": "1"
+};
+
+const CHROMIUM_LAUNCH_ARGS = [
+  "--disable-blink-features=AutomationControlled",
+  "--disable-features=IsolateOrigins,site-per-process",
+  "--disable-dev-shm-usage",
+  "--no-sandbox"
+];
+
+async function launchCrawlerBrowser(appConfig) {
+  return chromium.launch({
+    headless: appConfig.crawler.headless,
+    args: CHROMIUM_LAUNCH_ARGS
+  });
+}
+
+async function createCrawlerContext(browser) {
+  const context = await browser.newContext({
+    locale: "ar",
+    timezoneId: "Asia/Riyadh",
+    viewport: { width: 1366, height: 768 },
+    userAgent: STEALTH_USER_AGENT,
+    extraHTTPHeaders: STEALTH_HEADERS
+  });
+  // Some anti-bot scripts probe `navigator.webdriver`. Hide it before any
+  // page script runs so headless Chromium looks like a regular browser.
+  await context.addInitScript(() => {
+    try {
+      Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+    } catch {
+      // ignore — already locked down by Playwright
+    }
+  });
+  return context;
+}
+
+const ANTI_BOT_TITLE_PATTERNS = [
+  /just a moment/i,
+  /attention required/i,
+  /access denied/i,
+  /please wait/i,
+  /verify you are human/i,
+  /one more step/i,
+  /checking your browser/i
+];
+
+const ANTI_BOT_BODY_PATTERNS = [
+  /cf[-_]chl[-_]opt/i,
+  /cdn-cgi\/challenge-platform/i,
+  /__cf_chl_/i,
+  /cloudflare ray id/i,
+  /\bray id:?\b/i,
+  /please enable cookies/i,
+  /performance &amp; security by cloudflare/i
+];
+
+async function detectAntiBotChallenge(page) {
+  let title = "";
+  let bodySample = "";
+  try {
+    title = (await page.title()) || "";
+  } catch {
+    title = "";
+  }
+  try {
+    bodySample = await page.evaluate(() =>
+      ((document.body?.innerText || "") + " " + (document.body?.innerHTML || "")).slice(0, 4000)
+    );
+  } catch {
+    bodySample = "";
+  }
+  const titleHit = ANTI_BOT_TITLE_PATTERNS.find((re) => re.test(title));
+  const bodyHit = ANTI_BOT_BODY_PATTERNS.find((re) => re.test(bodySample));
+  if (!titleHit && !bodyHit) return null;
+  return {
+    title: title.slice(0, 200),
+    bodySample: bodySample.replace(/\s+/g, " ").slice(0, 240),
+    matchedTitlePattern: titleHit ? titleHit.source : null,
+    matchedBodyPattern: bodyHit ? bodyHit.source : null
+  };
+}
+
+async function waitForChallengeToClear(page, totalMs = 8000, stepMs = 1000) {
+  const deadline = Date.now() + totalMs;
+  while (Date.now() < deadline) {
+    await sleep(stepMs);
+    const detected = await detectAntiBotChallenge(page);
+    if (!detected) return true;
+  }
+  return false;
+}
+
 async function humanPause(config) {
   await sleep(randomInt(config.minDelayMs, config.maxDelayMs));
 }
@@ -299,6 +406,51 @@ async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBa
         waitUntil: "domcontentloaded",
         timeout: appConfig.source.navigationTimeoutMs
       });
+      const status = response ? response.status() : null;
+      const finalUrl = page.url();
+
+      let blocker = await detectAntiBotChallenge(page);
+      if (blocker || (status && status >= 400)) {
+        if (logger?.warn) {
+          logger.warn("listing_page_anti_bot_detected", {
+            pageUrl,
+            finalUrl,
+            candidateBase,
+            pageNumber,
+            attempt,
+            status,
+            ...(blocker || {})
+          });
+        }
+        // Cloudflare's interactive challenge usually clears itself after a
+        // few seconds of JS execution. Give it a window before falling
+        // through to the next mirror.
+        const cleared = await waitForChallengeToClear(page, 8000, 1000);
+        if (cleared) {
+          if (logger?.info) {
+            logger.info("listing_page_anti_bot_cleared", {
+              pageUrl,
+              finalUrl: page.url(),
+              candidateBase,
+              pageNumber,
+              attempt
+            });
+          }
+          return { response, pageUrl, activeBaseUrl: candidateBase };
+        }
+        if (logger?.warn) {
+          logger.warn("listing_page_anti_bot_persisted", {
+            pageUrl,
+            finalUrl: page.url(),
+            candidateBase,
+            pageNumber,
+            attempt,
+            status
+          });
+        }
+        // Fall through to next candidate.
+        continue;
+      }
       return { response, pageUrl, activeBaseUrl: candidateBase };
     } catch (err) {
       lastError = err;
@@ -473,11 +625,38 @@ async function crawlListingPage(page, appConfig, logger) {
       );
       for (const candidateBase of candidates) {
         const candidateUrl = buildPageUrl(candidateBase, appConfig.source.listPath, pageN);
-        const candidateResponse = await page.goto(candidateUrl, {
-          waitUntil: "domcontentloaded",
-          timeout: appConfig.source.navigationTimeoutMs
-        });
+        let candidateResponse = null;
+        try {
+          candidateResponse = await page.goto(candidateUrl, {
+            waitUntil: "domcontentloaded",
+            timeout: appConfig.source.navigationTimeoutMs
+          });
+        } catch (err) {
+          if (logger?.warn) {
+            logger.warn("listing_mirror_probe_failed", {
+              candidateBase,
+              candidateUrl,
+              ...crawlerErrorMeta(err)
+            });
+          }
+          continue;
+        }
         await humanPause(appConfig.crawler);
+        // Give Cloudflare's JS challenge a chance to clear before we read
+        // the DOM, otherwise we'd record this mirror as "0 items" and
+        // discard a host that would have eventually worked.
+        const blocker = await detectAntiBotChallenge(page).catch(() => null);
+        if (blocker) {
+          if (logger?.warn) {
+            logger.warn("listing_mirror_anti_bot_detected", {
+              candidateBase,
+              candidateUrl,
+              status: candidateResponse ? candidateResponse.status() : null,
+              ...blocker
+            });
+          }
+          await waitForChallengeToClear(page, 8000, 1000);
+        }
         const candidateItems = await parseEpisodeLinks(
           page,
           candidateBase,
@@ -490,13 +669,15 @@ async function crawlListingPage(page, appConfig, logger) {
             candidateBase,
             candidateUrl,
             status: candidateResponse ? candidateResponse.status() : null,
-            found: candidateItems.length
+            found: candidateItems.length,
+            antiBotDetected: Boolean(blocker)
           });
         }
 
         if (candidateItems.length > 0) {
           activeBaseUrl = candidateBase;
           pageUrl = candidateUrl;
+          response = candidateResponse;
           items = candidateItems;
           break;
         }
@@ -515,7 +696,38 @@ async function crawlListingPage(page, appConfig, logger) {
         pageNumber: pageN,
         pageFound: items.length,
         newlyAdded: aggregated.size - before,
-        totalAggregated: aggregated.size
+        totalAggregated: aggregated.size,
+        responseStatus: response ? response.status() : null
+      });
+    }
+    // When a page returned 0 items, surface what the source actually
+    // served us (Cloudflare challenge text, empty body, redirect, etc.)
+    // so it shows up in `docker compose logs web` without needing
+    // CRAWL_DEBUG=1.
+    if (logger && items.length === 0) {
+      const blocker = await detectAntiBotChallenge(page).catch(() => null);
+      let titleSample = "";
+      let bodySample = "";
+      try {
+        titleSample = (await page.title()) || "";
+      } catch {
+        titleSample = "";
+      }
+      try {
+        bodySample = await page.evaluate(() =>
+          ((document.body?.innerText || "")).replace(/\s+/g, " ").slice(0, 240)
+        );
+      } catch {
+        bodySample = "";
+      }
+      logger.warn("listing_page_returned_zero", {
+        pageUrl,
+        pageNumber: pageN,
+        finalUrl: page.url(),
+        responseStatus: response ? response.status() : null,
+        title: titleSample.slice(0, 160),
+        bodySample,
+        antiBot: blocker || null
       });
     }
 
@@ -819,13 +1031,8 @@ async function withRetry(fn, retries, logger) {
 }
 
 async function runCrawl(appConfig, logger, options = {}) {
-  const browser = await chromium.launch({ headless: appConfig.crawler.headless });
-  const context = await browser.newContext({
-    locale: "ar",
-    viewport: { width: 1366, height: 768 },
-    userAgent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-  });
+  const browser = await launchCrawlerBrowser(appConfig);
+  const context = await createCrawlerContext(browser);
   const page = await context.newPage();
 
   try {
@@ -919,13 +1126,8 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
   logger.info("series_episode_refresh_browser_starting", {
     headless: appConfig.crawler.headless
   });
-  const browser = await chromium.launch({ headless: appConfig.crawler.headless });
-  const context = await browser.newContext({
-    locale: "ar",
-    viewport: { width: 1366, height: 768 },
-    userAgent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-  });
+  const browser = await launchCrawlerBrowser(appConfig);
+  const context = await createCrawlerContext(browser);
   const page = await context.newPage();
   page.on("pageerror", (err) => {
     logger.warn("series_episode_refresh_page_error", crawlerErrorMeta(err));
@@ -1101,13 +1303,8 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
 
 async function runSeriesDiscovery(appConfig, logger) {
   logger.info("series_discovery_browser_starting", { headless: appConfig.crawler.headless });
-  const browser = await chromium.launch({ headless: appConfig.crawler.headless });
-  const context = await browser.newContext({
-    locale: "ar",
-    viewport: { width: 1366, height: 768 },
-    userAgent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-  });
+  const browser = await launchCrawlerBrowser(appConfig);
+  const context = await createCrawlerContext(browser);
   const page = await context.newPage();
   page.on("pageerror", (err) => {
     logger.warn("series_discovery_page_error", crawlerErrorMeta(err));

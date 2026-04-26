@@ -216,6 +216,25 @@ function updateRefreshProgressFromLog(line) {
       pageUrl: payload.pageUrl || null,
       updatedAt: payload.ts || new Date().toISOString()
     };
+  } else if (payload.message === "listing_page_anti_bot_detected") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "listing_page_anti_bot_detected",
+      pageNumber: payload.pageNumber || null,
+      candidateBase: payload.candidateBase || null,
+      status: payload.status || null,
+      title: payload.title || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "listing_page_anti_bot_persisted") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "listing_page_anti_bot_persisted",
+      pageNumber: payload.pageNumber || null,
+      candidateBase: payload.candidateBase || null,
+      status: payload.status || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
   } else if (payload.message === "listing_mirror_probe") {
     refreshState.progress = {
       ...(refreshState.progress || {}),

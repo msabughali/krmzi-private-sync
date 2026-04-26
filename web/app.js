@@ -246,6 +246,14 @@ function refreshProgressText(data, fallback) {
     const hostSuffix = host ? ` — ${host}` : "";
     return `جاري تحميل صفحة ${progress.pageNumber || 1}${attemptSuffix}${hostSuffix}…`;
   }
+  if (progress.phase === "listing_page_anti_bot_detected") {
+    const host = hostFromUrl(progress.candidateBase);
+    return `تم اكتشاف تحقق Cloudflare${host ? ` على ${host}` : ""}، جاري الانتظار…`;
+  }
+  if (progress.phase === "listing_page_anti_bot_persisted") {
+    const host = hostFromUrl(progress.candidateBase);
+    return `${host || "المصدر"} لا يزال محظورًا، جاري التبديل لمرآة أخرى…`;
+  }
   if (progress.phase === "probing_listing_mirror") {
     const host = hostFromUrl(progress.candidateBase || progress.candidateUrl);
     return `جاري تجربة مرآة بديلة${host ? ` — ${host}` : ""}…`;
