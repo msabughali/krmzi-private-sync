@@ -254,7 +254,7 @@ function refreshProgressText(data, fallback) {
 
 async function pollRefreshDone(loadingMessage) {
   for (;;) {
-    const res = await fetch("/api/refresh-status");
+    const res = await fetch("/api/refresh-status", { cache: "no-store" });
     const data = await res.json();
     setStatusLoading(refreshProgressText(data, loadingMessage));
     if (!data.running) return data;
@@ -276,7 +276,13 @@ async function runRefresh({ buttonId, endpoint, loadingMessage }) {
   setStatusLoading(loadingMessage);
 
   try {
-    const res = await fetch(endpoint, { method: "POST" });
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: "{}",
+      credentials: "same-origin",
+      cache: "no-store"
+    });
     const data = await res.json().catch(() => ({}));
 
     if (res.status === 409) {

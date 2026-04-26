@@ -21,12 +21,27 @@ async function sendFile(res, filePath) {
   const ext = path.extname(filePath);
   const type = MIME[ext] || "application/octet-stream";
   const content = await fs.readFile(filePath);
-  res.writeHead(200, { "content-type": type });
+  // Coolify (and its Traefik proxy) plus browsers happily cache HTML/JS forever
+  // unless we say otherwise, so deployments shipping new UI behavior never reach
+  // the user. Force revalidation on every request for app shell assets.
+  const noCacheExts = new Set([".html", ".js", ".css"]);
+  const headers = { "content-type": type };
+  if (noCacheExts.has(ext)) {
+    headers["cache-control"] = "no-store, must-revalidate";
+    headers.pragma = "no-cache";
+    headers.expires = "0";
+  }
+  res.writeHead(200, headers);
   res.end(content);
 }
 
 function sendJson(res, status, body) {
-  res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
+  res.writeHead(status, {
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store, must-revalidate",
+    pragma: "no-cache",
+    expires: "0"
+  });
   res.end(JSON.stringify(body));
 }
 
@@ -158,7 +173,19 @@ function updateRefreshProgressFromLog(line) {
 }
 
 function startRefreshCrawl(args = []) {
-  const entry = path.join(process.cwd(), "src", "index.js");
+  const entry = path.resolve(__dirname, "index.js");
+  process.stdout.write(
+    `${JSON.stringify({
+      ts: new Date().toISOString(),
+      level: "info",
+      message: "refresh_crawl_starting",
+      entry,
+      cwd: process.cwd(),
+      args,
+      seriesFile: config.series.filePath,
+      episodesFile: config.episodes.filePath
+    })}\n`
+  );
   const child = spawn(process.execPath, [entry, ...args], {
     cwd: process.cwd(),
     env: {
