@@ -33,3 +33,7 @@ test-results/
 *.log
 logs/
 
+# Local-only docker compose overrides (used to expose ports during dev)
+docker-compose.override.yml
+docker-compose.override.yaml
+
