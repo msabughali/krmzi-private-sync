@@ -10,6 +10,9 @@ services:
         required: false
     environment:
       WEB_PORT: 8787
+      # krmzy.com currently 30x-redirects datacenter IPs to a "Coming Soon"
+      # placeholder on krmzi.tv; krmzi.onl is the live primary host.
+      SOURCE_BASE_URL: https://krmzi.onl
       MAX_EPISODES_PER_RUN: 1000
       MAX_LIST_PAGES: 80
       EPISODES_FILE_PATH: /app/data/episodes.json
@@ -39,6 +42,7 @@ services:
       - path: .env
         required: false
     environment:
+      SOURCE_BASE_URL: https://krmzi.onl
       MAX_EPISODES_PER_RUN: 1000
       MAX_LIST_PAGES: 80
       EPISODES_FILE_PATH: /app/data/episodes.json

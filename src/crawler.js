@@ -365,7 +365,11 @@ function buildPageUrl(baseUrl, listPath, pageNumber) {
 }
 
 function buildMirrorBaseCandidates(baseUrl) {
-  const known = ["https://krmzy.com", "https://krmzi.onl", "https://krmzi.org", "https://krmzi.com"];
+  // krmzi.onl is the currently-active primary host; the others stay as
+  // fallbacks because the source has historically rotated between them.
+  // Note: krmzy.com is currently 30x-redirecting datacenter IPs to a
+  // "Coming Soon" placeholder on krmzi.tv, so keep it last.
+  const known = ["https://krmzi.onl", "https://krmzi.org", "https://krmzi.com", "https://krmzy.com"];
   const normalized = [];
   const push = (u) => {
     try {

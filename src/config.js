@@ -13,7 +13,7 @@ function parseIntSafe(value, fallback) {
 
 module.exports = {
   source: {
-    baseUrl: process.env.SOURCE_BASE_URL || "https://krmzy.com",
+    baseUrl: process.env.SOURCE_BASE_URL || "https://krmzi.onl",
     listPath: process.env.SOURCE_LIST_PATH || "/",
     maxEpisodesPerRun: parseIntSafe(process.env.MAX_EPISODES_PER_RUN, 1000),
     maxListPages: parseIntSafe(process.env.MAX_LIST_PAGES, 80),
