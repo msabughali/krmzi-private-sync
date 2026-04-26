@@ -225,14 +225,37 @@ async function loadEpisodes() {
   }
 }
 
+function hostFromUrl(value) {
+  if (!value) return "";
+  try {
+    return new URL(value).host;
+  } catch {
+    return String(value);
+  }
+}
+
 function refreshProgressText(data, fallback) {
   const progress = data?.progress || {};
   if (!progress.phase) return fallback;
+  if (progress.phase === "starting_browser") {
+    return "جاري تشغيل المتصفح…";
+  }
+  if (progress.phase === "loading_listing_page") {
+    const host = hostFromUrl(progress.candidateBase || progress.pageUrl);
+    const attemptSuffix = progress.attempt && progress.attempt > 1 ? ` (محاولة ${progress.attempt})` : "";
+    const hostSuffix = host ? ` — ${host}` : "";
+    return `جاري تحميل صفحة ${progress.pageNumber || 1}${attemptSuffix}${hostSuffix}…`;
+  }
+  if (progress.phase === "probing_listing_mirror") {
+    const host = hostFromUrl(progress.candidateBase || progress.candidateUrl);
+    return `جاري تجربة مرآة بديلة${host ? ` — ${host}` : ""}…`;
+  }
   if (progress.phase === "listing_page_load_failed_retrying_mirror") {
-    return `تعذر تحميل صفحة من المصدر، جاري تجربة مرآة أخرى… صفحة ${progress.pageNumber || ""}`;
+    return `تعذر تحميل صفحة ${progress.pageNumber || ""} من المصدر، جاري تجربة مرآة أخرى…`;
   }
   if (progress.phase === "scanning_listing_pages") {
-    return `جاري فحص صفحات المسلسلات… تم العثور على ${progress.totalAggregated || 0}`;
+    const pageLabel = progress.pageNumber ? `صفحة ${progress.pageNumber}، ` : "";
+    return `جاري فحص صفحات المسلسلات… ${pageLabel}تم العثور على ${progress.totalAggregated || 0}`;
   }
   if (progress.phase === "series_candidates_discovered") {
     return `تم العثور على ${progress.count || 0} مسلسل، جاري الحفظ…`;
@@ -241,7 +264,8 @@ function refreshProgressText(data, fallback) {
     return `تم تحديث المسلسلات: جديد ${progress.added || 0}، موجود ${progress.skipped || 0}`;
   }
   if (progress.phase === "checking_series") {
-    return `جاري فحص حلقات: ${progress.seriesName || ""}`;
+    const counter = progress.processed && progress.total ? ` (${progress.processed}/${progress.total})` : "";
+    return `جاري فحص حلقات${counter}: ${progress.seriesName || ""}`;
   }
   if (progress.phase === "resolving_episode") {
     return `جاري جلب الحلقة ${progress.episodeNumber || ""}: ${progress.seriesName || ""}`;

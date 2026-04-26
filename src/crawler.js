@@ -277,12 +277,23 @@ async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBa
   const candidates = buildMirrorBaseCandidates(activeBaseUrl);
   const tried = new Set();
   let lastError = null;
+  let attempt = 0;
 
   for (const candidateBase of candidates) {
     if (tried.has(candidateBase)) continue;
     tried.add(candidateBase);
+    attempt += 1;
 
     const pageUrl = buildPageUrl(candidateBase, appConfig.source.listPath, pageNumber);
+    if (logger?.info) {
+      logger.info("listing_page_navigating", {
+        pageNumber,
+        attempt,
+        candidateBase,
+        pageUrl,
+        timeoutMs: appConfig.source.navigationTimeoutMs
+      });
+    }
     try {
       const response = await page.goto(pageUrl, {
         waitUntil: "domcontentloaded",
@@ -296,6 +307,7 @@ async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBa
           pageUrl,
           candidateBase,
           pageNumber,
+          attempt,
           message: err instanceof Error ? err.message : String(err)
         });
       }
@@ -500,6 +512,7 @@ async function crawlListingPage(page, appConfig, logger) {
     if (logger) {
       logger.info("list_page_scanned", {
         pageUrl,
+        pageNumber: pageN,
         pageFound: items.length,
         newlyAdded: aggregated.size - before,
         totalAggregated: aggregated.size

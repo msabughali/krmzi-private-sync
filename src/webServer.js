@@ -197,18 +197,48 @@ function updateRefreshProgressFromLog(line) {
       phase: "starting_series_scan",
       updatedAt: payload.ts || new Date().toISOString()
     };
+  } else if (
+    payload.message === "series_discovery_browser_starting" ||
+    payload.message === "series_episode_refresh_browser_starting"
+  ) {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "starting_browser",
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "listing_page_navigating") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "loading_listing_page",
+      pageNumber: payload.pageNumber || null,
+      attempt: payload.attempt || 1,
+      candidateBase: payload.candidateBase || null,
+      pageUrl: payload.pageUrl || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "listing_mirror_probe") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "probing_listing_mirror",
+      candidateBase: payload.candidateBase || null,
+      candidateUrl: payload.candidateUrl || null,
+      found: payload.found || 0,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
   } else if (payload.message === "listing_page_load_failed") {
     refreshState.progress = {
       phase: "listing_page_load_failed_retrying_mirror",
       pageUrl: payload.pageUrl || null,
       candidateBase: payload.candidateBase || null,
       pageNumber: payload.pageNumber || null,
+      attempt: payload.attempt || null,
       updatedAt: payload.ts || new Date().toISOString()
     };
   } else if (payload.message === "list_page_scanned") {
     refreshState.progress = {
       phase: "scanning_listing_pages",
       pageUrl: payload.pageUrl || null,
+      pageNumber: payload.pageNumber || null,
       pageFound: payload.pageFound || 0,
       newlyAdded: payload.newlyAdded || 0,
       totalAggregated: payload.totalAggregated || 0,
