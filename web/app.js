@@ -225,10 +225,38 @@ async function loadEpisodes() {
   }
 }
 
-async function pollRefreshDone() {
+function refreshProgressText(data, fallback) {
+  const progress = data?.progress || {};
+  if (!progress.phase) return fallback;
+  if (progress.phase === "listing_page_load_failed_retrying_mirror") {
+    return `تعذر تحميل صفحة من المصدر، جاري تجربة مرآة أخرى… صفحة ${progress.pageNumber || ""}`;
+  }
+  if (progress.phase === "scanning_listing_pages") {
+    return `جاري فحص صفحات المسلسلات… تم العثور على ${progress.totalAggregated || 0}`;
+  }
+  if (progress.phase === "series_candidates_discovered") {
+    return `تم العثور على ${progress.count || 0} مسلسل، جاري الحفظ…`;
+  }
+  if (progress.phase === "series_scan_finished") {
+    return `تم تحديث المسلسلات: جديد ${progress.added || 0}، موجود ${progress.skipped || 0}`;
+  }
+  if (progress.phase === "checking_series") {
+    return `جاري فحص حلقات: ${progress.seriesName || ""}`;
+  }
+  if (progress.phase === "resolving_episode") {
+    return `جاري جلب الحلقة ${progress.episodeNumber || ""}: ${progress.seriesName || ""}`;
+  }
+  if (progress.phase === "saved_series") {
+    return `تم حفظ ${progress.saved || 0} حلقة من ${progress.seriesName || ""}`;
+  }
+  return fallback;
+}
+
+async function pollRefreshDone(loadingMessage) {
   for (;;) {
     const res = await fetch("/api/refresh-status");
     const data = await res.json();
+    setStatusLoading(refreshProgressText(data, loadingMessage));
     if (!data.running) return data;
     await new Promise((r) => setTimeout(r, 1000));
   }
@@ -253,7 +281,7 @@ async function runRefresh({ buttonId, endpoint, loadingMessage }) {
 
     if (res.status === 409) {
       setStatusLoading(loadingMessage);
-      const outcome = await pollRefreshDone();
+      const outcome = await pollRefreshDone(loadingMessage);
       if (outcome.lastExitCode === 0) {
         setStatusText("تم. جاري إعادة التحميل…");
         window.location.reload();
@@ -269,7 +297,7 @@ async function runRefresh({ buttonId, endpoint, loadingMessage }) {
       return;
     }
 
-    const outcome = await pollRefreshDone();
+    const outcome = await pollRefreshDone(loadingMessage);
 
     if (outcome.lastExitCode !== 0) {
       setStatusText(

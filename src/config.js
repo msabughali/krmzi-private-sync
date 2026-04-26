@@ -15,8 +15,8 @@ module.exports = {
   source: {
     baseUrl: process.env.SOURCE_BASE_URL || "https://krmzy.com",
     listPath: process.env.SOURCE_LIST_PATH || "/",
-    maxEpisodesPerRun: parseIntSafe(process.env.MAX_EPISODES_PER_RUN, 50),
-    maxListPages: parseIntSafe(process.env.MAX_LIST_PAGES, 5),
+    maxEpisodesPerRun: parseIntSafe(process.env.MAX_EPISODES_PER_RUN, 1000),
+    maxListPages: parseIntSafe(process.env.MAX_LIST_PAGES, 80),
     navigationTimeoutMs: parseIntSafe(process.env.NAVIGATION_TIMEOUT_MS, 60000)
   },
   crawler: {

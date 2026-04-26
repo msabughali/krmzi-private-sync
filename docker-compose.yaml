@@ -12,6 +12,8 @@ services:
         required: false
     environment:
       WEB_PORT: 8787
+      MAX_EPISODES_PER_RUN: 1000
+      MAX_LIST_PAGES: 80
       EPISODES_FILE_PATH: /app/data/episodes.json
       SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
@@ -40,6 +42,8 @@ services:
       - path: .env
         required: false
     environment:
+      MAX_EPISODES_PER_RUN: 1000
+      MAX_LIST_PAGES: 80
       EPISODES_FILE_PATH: /app/data/episodes.json
       SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json

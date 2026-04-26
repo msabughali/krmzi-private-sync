@@ -273,6 +273,38 @@ function buildMirrorBaseCandidates(baseUrl) {
   return normalized;
 }
 
+async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBaseUrl, logger) {
+  const candidates = buildMirrorBaseCandidates(activeBaseUrl);
+  const tried = new Set();
+  let lastError = null;
+
+  for (const candidateBase of candidates) {
+    if (tried.has(candidateBase)) continue;
+    tried.add(candidateBase);
+
+    const pageUrl = buildPageUrl(candidateBase, appConfig.source.listPath, pageNumber);
+    try {
+      const response = await page.goto(pageUrl, {
+        waitUntil: "domcontentloaded",
+        timeout: appConfig.source.navigationTimeoutMs
+      });
+      return { response, pageUrl, activeBaseUrl: candidateBase };
+    } catch (err) {
+      lastError = err;
+      if (logger?.warn) {
+        logger.warn("listing_page_load_failed", {
+          pageUrl,
+          candidateBase,
+          pageNumber,
+          message: err instanceof Error ? err.message : String(err)
+        });
+      }
+    }
+  }
+
+  throw lastError || new Error(`Unable to load listing page ${pageNumber}`);
+}
+
 function normalizeSeriesTitle(value) {
   return parseSeriesName(value) || "";
 }
@@ -376,12 +408,10 @@ async function crawlListingPage(page, appConfig, logger) {
   let activeBaseUrl = appConfig.source.baseUrl;
 
   for (let pageN = 1; pageN <= maxPages && aggregated.size < maxEpisodes; pageN += 1) {
-    let pageUrl = buildPageUrl(activeBaseUrl, appConfig.source.listPath, pageN);
-
-    const response = await page.goto(pageUrl, {
-      waitUntil: "domcontentloaded",
-      timeout: appConfig.source.navigationTimeoutMs
-    });
+    const nav = await gotoListingPageWithFallback(page, appConfig, pageN, activeBaseUrl, logger);
+    let pageUrl = nav.pageUrl;
+    let response = nav.response;
+    activeBaseUrl = nav.activeBaseUrl;
     await humanPause(appConfig.crawler);
 
     if (logger && debug) {

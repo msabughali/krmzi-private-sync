@@ -117,6 +117,43 @@ function updateRefreshProgressFromLog(line) {
       total: payload.seriesTotal || null,
       updatedAt: payload.ts || new Date().toISOString()
     };
+  } else if (payload.message === "series_refresh_started") {
+    refreshState.progress = {
+      phase: "starting_series_scan",
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "listing_page_load_failed") {
+    refreshState.progress = {
+      phase: "listing_page_load_failed_retrying_mirror",
+      pageUrl: payload.pageUrl || null,
+      candidateBase: payload.candidateBase || null,
+      pageNumber: payload.pageNumber || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "list_page_scanned") {
+    refreshState.progress = {
+      phase: "scanning_listing_pages",
+      pageUrl: payload.pageUrl || null,
+      pageFound: payload.pageFound || 0,
+      newlyAdded: payload.newlyAdded || 0,
+      totalAggregated: payload.totalAggregated || 0,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "discovered_series_candidates") {
+    refreshState.progress = {
+      phase: "series_candidates_discovered",
+      count: payload.count || 0,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "series_refresh_finished") {
+    refreshState.progress = {
+      phase: "series_scan_finished",
+      discovered: payload.discovered || 0,
+      added: payload.added || 0,
+      skipped: payload.skipped || 0,
+      total: payload.total || 0,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
   }
 }
 
