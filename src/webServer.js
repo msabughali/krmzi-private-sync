@@ -85,8 +85,30 @@ const refreshState = {
   lastFinishedAt: null,
   lastExitCode: null,
   progress: null,
-  lastSaved: null
+  lastSaved: null,
+  startedAt: null,
+  pid: null,
+  args: null
 };
+
+function emitLog(level, message, meta = {}) {
+  process.stdout.write(
+    `${JSON.stringify({ ts: new Date().toISOString(), level, message, ...meta })}\n`
+  );
+}
+
+function errorMeta(err) {
+  if (!err) return { error: "unknown" };
+  if (err instanceof Error) {
+    return {
+      error: err.message,
+      name: err.name,
+      stack: err.stack ? String(err.stack).split("\n").slice(0, 8).join("\n") : null,
+      code: err.code || null
+    };
+  }
+  return { error: String(err) };
+}
 
 async function statSafe(filePath) {
   try {
@@ -241,56 +263,127 @@ function updateRefreshProgressFromLog(line) {
 
 function startRefreshCrawl(args = []) {
   const entry = path.resolve(__dirname, "index.js");
-  process.stdout.write(
-    `${JSON.stringify({
-      ts: new Date().toISOString(),
-      level: "info",
-      message: "refresh_crawl_starting",
-      entry,
-      cwd: process.cwd(),
-      args,
-      seriesFile: config.series.filePath,
-      episodesFile: config.episodes.filePath
-    })}\n`
-  );
-  const child = spawn(process.execPath, [entry, ...args], {
+  const startedAt = Date.now();
+  emitLog("info", "refresh_crawl_starting", {
+    entry,
     cwd: process.cwd(),
-    env: {
-      ...process.env,
-      STATE_FILE_PATH: config.state.filePath,
-      EPISODES_FILE_PATH: config.episodes.filePath,
-      SERIES_FILE_PATH: config.series.filePath
-    },
-    stdio: ["ignore", "pipe", "pipe"]
+    args,
+    seriesFile: config.series.filePath,
+    episodesFile: config.episodes.filePath
   });
+
+  let child;
+  try {
+    child = spawn(process.execPath, [entry, ...args], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        STATE_FILE_PATH: config.state.filePath,
+        EPISODES_FILE_PATH: config.episodes.filePath,
+        SERIES_FILE_PATH: config.series.filePath
+      },
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+  } catch (err) {
+    emitLog("error", "refresh_spawn_threw", { args, ...errorMeta(err) });
+    throw err;
+  }
+
+  refreshState.pid = child.pid || null;
+  refreshState.startedAt = new Date(startedAt).toISOString();
+  refreshState.args = args;
+  emitLog("info", "refresh_child_spawned", { pid: child.pid || null, args });
 
   let stdoutBuf = "";
   let stderrBuf = "";
+  let stdoutLineBuf = "";
+  let stderrLineBuf = "";
+
+  function flushStdoutLine(line) {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    // Forward the child's structured log line verbatim so it appears in
+    // `docker compose logs web`. Each crawl log already includes ts/level/
+    // message, so we just append a `source` tag and re-emit.
+    let parsed = null;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      parsed = null;
+    }
+    if (parsed && typeof parsed === "object") {
+      emitLog(parsed.level || "info", parsed.message || "refresh_crawl_log", {
+        ...parsed,
+        source: "refresh_crawl",
+        pid: child.pid || null
+      });
+    } else {
+      emitLog("info", "refresh_crawl_stdout", {
+        source: "refresh_crawl",
+        pid: child.pid || null,
+        line: trimmed
+      });
+    }
+    updateRefreshProgressFromLog(trimmed);
+  }
+
+  function flushStderrLine(line) {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    emitLog("error", "refresh_crawl_stderr", {
+      source: "refresh_crawl",
+      pid: child.pid || null,
+      line: trimmed
+    });
+  }
+
   if (child.stdout) {
     child.stdout.on("data", (chunk) => {
       const text = String(chunk);
       stdoutBuf += text;
-      for (const line of text.split(/\r?\n/)) {
-        if (line.trim()) updateRefreshProgressFromLog(line.trim());
-      }
+      stdoutLineBuf += text;
+      const parts = stdoutLineBuf.split(/\r?\n/);
+      stdoutLineBuf = parts.pop() || "";
+      for (const line of parts) flushStdoutLine(line);
       if (stdoutBuf.length > 6000) stdoutBuf = stdoutBuf.slice(-6000);
+    });
+    child.stdout.on("error", (err) => {
+      emitLog("error", "refresh_child_stdout_error", { ...errorMeta(err), pid: child.pid || null });
     });
   }
   if (child.stderr) {
     child.stderr.on("data", (chunk) => {
-      stderrBuf += String(chunk);
+      const text = String(chunk);
+      stderrBuf += text;
+      stderrLineBuf += text;
+      const parts = stderrLineBuf.split(/\r?\n/);
+      stderrLineBuf = parts.pop() || "";
+      for (const line of parts) flushStderrLine(line);
       if (stderrBuf.length > 6000) stderrBuf = stderrBuf.slice(-6000);
+    });
+    child.stderr.on("error", (err) => {
+      emitLog("error", "refresh_child_stderr_error", { ...errorMeta(err), pid: child.pid || null });
     });
   }
 
   child.on("error", (err) => {
     refreshState.running = false;
-    refreshState.lastError = err.message;
+    refreshState.lastError = err && err.message ? err.message : String(err);
     refreshState.lastExitCode = -1;
     refreshState.lastFinishedAt = new Date().toISOString();
+    emitLog("error", "refresh_child_error", {
+      pid: child.pid || null,
+      args,
+      durationMs: Date.now() - startedAt,
+      ...errorMeta(err)
+    });
   });
 
-  child.on("close", (code) => {
+  child.on("close", (code, signal) => {
+    if (stdoutLineBuf.trim()) flushStdoutLine(stdoutLineBuf);
+    if (stderrLineBuf.trim()) flushStderrLine(stderrLineBuf);
+    stdoutLineBuf = "";
+    stderrLineBuf = "";
     refreshState.running = false;
     refreshState.lastExitCode = code;
     if (code === 0) {
@@ -298,7 +391,7 @@ function startRefreshCrawl(args = []) {
     } else {
       const parts = [stderrBuf.trim(), stdoutBuf.trim()].filter(Boolean);
       const tail = parts.join("\n---\n").slice(-2000);
-      refreshState.lastError = tail || `Process exited with code ${code}`;
+      refreshState.lastError = tail || `Process exited with code ${code} (signal=${signal || "none"})`;
     }
     refreshState.lastFinishedAt = new Date().toISOString();
     if (refreshState.progress) {
@@ -308,6 +401,15 @@ function startRefreshCrawl(args = []) {
         updatedAt: refreshState.lastFinishedAt
       };
     }
+    emitLog(code === 0 ? "info" : "error", "refresh_child_exited", {
+      pid: child.pid || null,
+      args,
+      code,
+      signal: signal || null,
+      durationMs: Date.now() - startedAt,
+      stdoutTail: code === 0 ? null : stdoutBuf.slice(-1000) || null,
+      stderrTail: code === 0 ? null : stderrBuf.slice(-1000) || null
+    });
   });
 }
 
@@ -370,59 +472,58 @@ async function handler(req, res) {
     });
   }
 
-  if (reqUrl.pathname === "/api/refresh") {
-    if (req.method !== "POST") {
-      res.setHeader("Allow", "POST");
-      return sendJson(res, 405, { error: "method_not_allowed" });
-    }
-    if (refreshState.running) {
-      return sendJson(res, 409, {
-        error: "already_running",
-        message: "A crawl is already in progress."
-      });
-    }
-    refreshState.running = true;
-    refreshState.lastError = null;
-    refreshState.lastExitCode = null;
-    refreshState.lastFinishedAt = null;
-    refreshState.progress = { phase: "starting", updatedAt: new Date().toISOString() };
-    try {
-      startRefreshCrawl(["--once"]);
-    } catch (err) {
-      refreshState.running = false;
-      refreshState.lastError = err instanceof Error ? err.message : String(err);
-      refreshState.lastFinishedAt = new Date().toISOString();
-      refreshState.lastExitCode = -1;
-      return sendJson(res, 500, { error: "spawn_failed", message: refreshState.lastError });
-    }
-    return sendJson(res, 202, { ok: true, accepted: true });
-  }
+  if (reqUrl.pathname === "/api/refresh" || reqUrl.pathname === "/api/refresh-series") {
+    const isSeriesOnly = reqUrl.pathname === "/api/refresh-series";
+    const action = isSeriesOnly ? "refresh_series" : "refresh_episodes";
+    const args = isSeriesOnly ? ["--series-only"] : ["--once"];
+    const initialPhase = isSeriesOnly ? "starting_series_scan" : "starting";
 
-  if (reqUrl.pathname === "/api/refresh-series") {
+    emitLog("info", "refresh_request_received", {
+      action,
+      method: req.method,
+      ip: req.socket?.remoteAddress || null,
+      userAgent: req.headers["user-agent"] || null
+    });
+
     if (req.method !== "POST") {
+      emitLog("warn", "refresh_request_method_not_allowed", {
+        action,
+        method: req.method
+      });
       res.setHeader("Allow", "POST");
       return sendJson(res, 405, { error: "method_not_allowed" });
     }
     if (refreshState.running) {
+      emitLog("warn", "refresh_request_already_running", {
+        action,
+        currentArgs: refreshState.args,
+        currentPid: refreshState.pid,
+        startedAt: refreshState.startedAt
+      });
       return sendJson(res, 409, {
         error: "already_running",
         message: "A crawl is already in progress."
       });
     }
+
     refreshState.running = true;
     refreshState.lastError = null;
     refreshState.lastExitCode = null;
     refreshState.lastFinishedAt = null;
-    refreshState.progress = { phase: "starting_series_scan", updatedAt: new Date().toISOString() };
+    refreshState.progress = { phase: initialPhase, updatedAt: new Date().toISOString() };
+
     try {
-      startRefreshCrawl(["--series-only"]);
+      startRefreshCrawl(args);
     } catch (err) {
       refreshState.running = false;
       refreshState.lastError = err instanceof Error ? err.message : String(err);
       refreshState.lastFinishedAt = new Date().toISOString();
       refreshState.lastExitCode = -1;
+      emitLog("error", "refresh_spawn_failed", { action, args, ...errorMeta(err) });
       return sendJson(res, 500, { error: "spawn_failed", message: refreshState.lastError });
     }
+
+    emitLog("info", "refresh_request_accepted", { action, args, pid: refreshState.pid });
     return sendJson(res, 202, { ok: true, accepted: true });
   }
 
@@ -504,22 +605,31 @@ async function logStartupDataState() {
   process.stdout.write(`${JSON.stringify(payload)}\n`);
 }
 
+process.on("uncaughtException", (err) => {
+  emitLog("error", "web_uncaught_exception", errorMeta(err));
+});
+process.on("unhandledRejection", (reason) => {
+  emitLog("error", "web_unhandled_rejection", errorMeta(reason));
+});
+
 http
   .createServer((req, res) => {
     handler(req, res).catch((err) => {
-      sendJson(res, 500, { error: "server_error", message: err.message });
+      emitLog("error", "request_handler_failed", {
+        path: req.url || null,
+        method: req.method || null,
+        ...errorMeta(err)
+      });
+      try {
+        sendJson(res, 500, { error: "server_error", message: err && err.message ? err.message : String(err) });
+      } catch (writeErr) {
+        emitLog("error", "request_response_send_failed", errorMeta(writeErr));
+      }
     });
   })
   .listen(PORT, () => {
-    process.stdout.write(`Web UI: http://localhost:${PORT}\n`);
+    emitLog("info", "web_server_listening", { port: PORT, url: `http://localhost:${PORT}` });
     logStartupDataState().catch((err) => {
-      process.stdout.write(
-        `${JSON.stringify({
-          ts: new Date().toISOString(),
-          level: "error",
-          message: "startup_probe_failed",
-          error: err && err.message ? err.message : String(err)
-        })}\n`
-      );
+      emitLog("error", "startup_probe_failed", errorMeta(err));
     });
   });

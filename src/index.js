@@ -13,6 +13,41 @@ const {
   parseSeriesName
 } = require("./parser");
 
+function errorMeta(err) {
+  if (!err) return { error: "unknown" };
+  if (err instanceof Error) {
+    return {
+      error: err.message,
+      name: err.name,
+      stack: err.stack ? String(err.stack).split("\n").slice(0, 8).join("\n") : null,
+      code: err.code || null
+    };
+  }
+  return { error: String(err) };
+}
+
+async function withStage(activeLogger, stage, meta, fn) {
+  const startedAt = Date.now();
+  activeLogger.info("stage_started", { stage, ...meta });
+  try {
+    const result = await fn();
+    activeLogger.info("stage_finished", {
+      stage,
+      durationMs: Date.now() - startedAt,
+      ...meta
+    });
+    return result;
+  } catch (err) {
+    activeLogger.error("stage_failed", {
+      stage,
+      durationMs: Date.now() - startedAt,
+      ...meta,
+      ...errorMeta(err)
+    });
+    throw err;
+  }
+}
+
 function pickUnsynced(crawled, state) {
   return crawled.filter((ep) => !isSynced(state, ep.episodeUrl));
 }
@@ -286,17 +321,51 @@ function mergeSeriesReferences(existingRef, discovered) {
 
 async function runSeriesOnly(options = {}) {
   const activeLogger = options.silent ? { info: () => {}, warn: () => {}, error: () => {} } : logger;
-  activeLogger.info("series_refresh_started", { seriesFile: config.series.filePath });
-  const seriesRef = await loadSeriesReference(config.series.filePath);
-  const discovered = await runSeriesDiscovery(config, activeLogger);
-  const merged = mergeSeriesReferences(seriesRef, discovered);
-  await fs.mkdir(path.dirname(config.series.filePath), { recursive: true });
-  await fs.writeFile(config.series.filePath, JSON.stringify(merged, null, 2), "utf8");
+  const startedAt = Date.now();
+  activeLogger.info("series_refresh_started", {
+    seriesFile: config.series.filePath,
+    pid: process.pid
+  });
+
+  const seriesRef = await withStage(
+    activeLogger,
+    "load_series_reference",
+    { seriesFile: config.series.filePath },
+    () => loadSeriesReference(config.series.filePath)
+  );
+  activeLogger.info("series_reference_loaded", {
+    existingCount: Array.isArray(seriesRef?.series) ? seriesRef.series.length : 0
+  });
+
+  const discovered = await withStage(
+    activeLogger,
+    "discover_series_from_listing",
+    {},
+    () => runSeriesDiscovery(config, activeLogger)
+  );
+
+  const merged = await withStage(
+    activeLogger,
+    "merge_series_reference",
+    { discovered: discovered.length },
+    () => Promise.resolve(mergeSeriesReferences(seriesRef, discovered))
+  );
+
+  await withStage(
+    activeLogger,
+    "write_series_reference",
+    { seriesFile: config.series.filePath, total: merged.count, added: merged.added, skipped: merged.skipped },
+    async () => {
+      await fs.mkdir(path.dirname(config.series.filePath), { recursive: true });
+      await fs.writeFile(config.series.filePath, JSON.stringify(merged, null, 2), "utf8");
+    }
+  );
 
   let seriesFileSize = null;
   try {
     seriesFileSize = (await fs.stat(config.series.filePath)).size;
-  } catch {
+  } catch (err) {
+    activeLogger.warn("series_file_stat_failed", errorMeta(err));
     seriesFileSize = null;
   }
 
@@ -306,7 +375,8 @@ async function runSeriesOnly(options = {}) {
     skipped: merged.skipped,
     total: merged.count,
     seriesFile: config.series.filePath,
-    seriesFileSize
+    seriesFileSize,
+    durationMs: Date.now() - startedAt
   });
   return {
     discovered: discovered.length,
@@ -326,14 +396,39 @@ function getFlagValue(flagName) {
 async function runOnce(options = {}) {
   const activeLogger = options.silent ? { info: () => {}, warn: () => {}, error: () => {} } : logger;
   const reset = Boolean(options.reset);
+  const startedAt = Date.now();
   activeLogger.info("run_started", {
     reset,
+    singleEpisodeUrl: options.singleEpisodeUrl || null,
     episodesFile: config.episodes.filePath,
-    seriesFile: config.series.filePath
+    seriesFile: config.series.filePath,
+    pid: process.pid
   });
-  const state = await loadState(config.state.filePath);
-  const storeData = await loadEpisodes(config.episodes.filePath);
-  let seriesRef = await loadSeriesReference(config.series.filePath);
+
+  const state = await withStage(
+    activeLogger,
+    "load_state",
+    { stateFile: config.state.filePath },
+    () => loadState(config.state.filePath)
+  );
+  const storeData = await withStage(
+    activeLogger,
+    "load_episodes",
+    { episodesFile: config.episodes.filePath },
+    () => loadEpisodes(config.episodes.filePath)
+  );
+  activeLogger.info("episodes_loaded", {
+    existingCount: Array.isArray(storeData.episodes) ? storeData.episodes.length : 0
+  });
+  let seriesRef = await withStage(
+    activeLogger,
+    "load_series_reference",
+    { seriesFile: config.series.filePath },
+    () => loadSeriesReference(config.series.filePath)
+  );
+  activeLogger.info("series_reference_loaded", {
+    existingCount: Array.isArray(seriesRef?.series) ? seriesRef.series.length : 0
+  });
 
   // Coolify deploys frequently start with an empty series.json (no persistent
   // volume yet, or a fresh re-seed). Without populating it first the episode
@@ -344,10 +439,22 @@ async function runOnce(options = {}) {
     activeLogger.info("series_reference_empty_running_discovery_first", {
       seriesFile: config.series.filePath
     });
-    const discovered = await runSeriesDiscovery(config, activeLogger);
+    const discovered = await withStage(
+      activeLogger,
+      "seed_series_via_discovery",
+      {},
+      () => runSeriesDiscovery(config, activeLogger)
+    );
     const merged = mergeSeriesReferences(seriesRef, discovered);
-    await fs.mkdir(path.dirname(config.series.filePath), { recursive: true });
-    await fs.writeFile(config.series.filePath, JSON.stringify(merged, null, 2), "utf8");
+    await withStage(
+      activeLogger,
+      "write_series_reference_seed",
+      { added: merged.added, skipped: merged.skipped, total: merged.count },
+      async () => {
+        await fs.mkdir(path.dirname(config.series.filePath), { recursive: true });
+        await fs.writeFile(config.series.filePath, JSON.stringify(merged, null, 2), "utf8");
+      }
+    );
     activeLogger.info("series_reference_seeded_during_episode_refresh", {
       discovered: discovered.length,
       added: merged.added,
@@ -358,21 +465,39 @@ async function runOnce(options = {}) {
   }
 
   const knownSeries = buildKnownSeriesSnapshot(seriesRef, storeData.episodes);
+  activeLogger.info("known_series_snapshot_built", {
+    seriesNames: knownSeries.seriesNames.length,
+    knownEpisodeUrls: knownSeries.episodeUrls.length
+  });
   if (!options.singleEpisodeUrl) {
     knownSeries.onSeriesResult = async (seriesResult, progress) => {
-      const storeEpisodes = transformForStore([seriesResult]);
-      storeData.episodes = upsertEpisodes(storeData.episodes, storeEpisodes);
-      await saveEpisodes(config.episodes.filePath, storeData);
-      await saveSeriesReference(config.series.filePath, storeData.episodes);
-      activeLogger.info("series_progress_saved", {
-        ...progress,
-        stored: storeData.episodes.length
-      });
+      try {
+        const storeEpisodes = transformForStore([seriesResult]);
+        storeData.episodes = upsertEpisodes(storeData.episodes, storeEpisodes);
+        await saveEpisodes(config.episodes.filePath, storeData);
+        await saveSeriesReference(config.series.filePath, storeData.episodes);
+        activeLogger.info("series_progress_saved", {
+          ...progress,
+          stored: storeData.episodes.length
+        });
+      } catch (err) {
+        activeLogger.error("series_progress_save_failed", {
+          ...progress,
+          ...errorMeta(err)
+        });
+        throw err;
+      }
     };
   }
-  const crawled = options.singleEpisodeUrl
-    ? await runCrawl(config, activeLogger, { ...options, knownSeries })
-    : await runSeriesEpisodeRefresh(config, activeLogger, seriesRef, knownSeries);
+  const crawled = await withStage(
+    activeLogger,
+    options.singleEpisodeUrl ? "run_single_episode_crawl" : "run_series_episode_refresh",
+    { singleEpisodeUrl: options.singleEpisodeUrl || null, seriesCount: knownSeries.seriesNames.length },
+    async () =>
+      options.singleEpisodeUrl
+        ? runCrawl(config, activeLogger, { ...options, knownSeries })
+        : runSeriesEpisodeRefresh(config, activeLogger, seriesRef, knownSeries)
+  );
   const unsynced = pickUnsynced(crawled, state);
   const outbound = transformForSync(unsynced);
 
@@ -394,19 +519,31 @@ async function runOnce(options = {}) {
     storeData.episodes = upsertEpisodes(storeData.episodes, storeEpisodes);
   }
 
-  await saveEpisodes(config.episodes.filePath, storeData);
-  await saveSeriesReference(config.series.filePath, storeData.episodes);
+  await withStage(
+    activeLogger,
+    "save_episodes",
+    { episodesFile: config.episodes.filePath, count: storeData.episodes.length },
+    () => saveEpisodes(config.episodes.filePath, storeData)
+  );
+  await withStage(
+    activeLogger,
+    "save_series_reference",
+    { seriesFile: config.series.filePath },
+    () => saveSeriesReference(config.series.filePath, storeData.episodes)
+  );
 
   let episodesFileSize = null;
   let seriesFileSize = null;
   try {
     episodesFileSize = (await fs.stat(config.episodes.filePath)).size;
-  } catch {
+  } catch (err) {
+    activeLogger.warn("episodes_file_stat_failed", errorMeta(err));
     episodesFileSize = null;
   }
   try {
     seriesFileSize = (await fs.stat(config.series.filePath)).size;
-  } catch {
+  } catch (err) {
+    activeLogger.warn("series_file_stat_failed", errorMeta(err));
     seriesFileSize = null;
   }
 
@@ -420,6 +557,7 @@ async function runOnce(options = {}) {
     episodesFileSize,
     seriesReference: config.series.filePath,
     seriesFileSize,
+    durationMs: Date.now() - startedAt,
     dryRun: config.runtime.dryRun
   });
 
@@ -445,20 +583,36 @@ async function runOnce(options = {}) {
     });
   }
 
-  activeLogger.info("run_finished");
+  activeLogger.info("run_finished", {
+    durationMs: Date.now() - startedAt,
+    stored: storeData.episodes.length,
+    crawled: crawled.length,
+    outbound: outbound.length
+  });
   return { crawled, unsynced, outbound, stored: storeData.episodes.length };
 }
 
 async function runLoop() {
   const intervalMs = config.scheduler.intervalMinutes * 60 * 1000;
+  let iteration = 0;
   for (;;) {
+    iteration += 1;
+    const startedAt = Date.now();
+    logger.info("loop_iteration_started", { iteration, intervalMinutes: config.scheduler.intervalMinutes });
     try {
       await runOnce();
+      logger.info("loop_iteration_finished", {
+        iteration,
+        durationMs: Date.now() - startedAt
+      });
     } catch (error) {
       logger.error("run_failed", {
-        message: error instanceof Error ? error.message : String(error)
+        iteration,
+        durationMs: Date.now() - startedAt,
+        ...errorMeta(error)
       });
     }
+    logger.info("loop_iteration_sleeping", { iteration, sleepMs: intervalMs });
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }
 }
@@ -493,9 +647,14 @@ async function main() {
   }
 }
 
+process.on("uncaughtException", (err) => {
+  logger.error("crawl_uncaught_exception", errorMeta(err));
+});
+process.on("unhandledRejection", (reason) => {
+  logger.error("crawl_unhandled_rejection", errorMeta(reason));
+});
+
 main().catch((error) => {
-  logger.error("fatal_error", {
-    message: error instanceof Error ? error.message : String(error)
-  });
+  logger.error("fatal_error", errorMeta(error));
   process.exitCode = 1;
 });

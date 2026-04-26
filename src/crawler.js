@@ -786,13 +786,20 @@ async function hydrateSeriesEpisodes(
   return hydrated;
 }
 
-async function withRetry(fn, retries) {
+async function withRetry(fn, retries, logger) {
   let lastError = null;
   for (let i = 0; i < retries; i += 1) {
     try {
       return await fn(i + 1);
     } catch (err) {
       lastError = err;
+      if (logger?.warn && i + 1 < retries) {
+        logger.warn("retry_attempt_failed", {
+          attempt: i + 1,
+          remaining: retries - i - 1,
+          ...crawlerErrorMeta(err)
+        });
+      }
     }
   }
   throw lastError;
@@ -883,7 +890,22 @@ async function runCrawl(appConfig, logger, options = {}) {
   }
 }
 
+function crawlerErrorMeta(err) {
+  if (!err) return { error: "unknown" };
+  if (err instanceof Error) {
+    return {
+      error: err.message,
+      name: err.name,
+      stack: err.stack ? String(err.stack).split("\n").slice(0, 6).join("\n") : null
+    };
+  }
+  return { error: String(err) };
+}
+
 async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries = {}) {
+  logger.info("series_episode_refresh_browser_starting", {
+    headless: appConfig.crawler.headless
+  });
   const browser = await chromium.launch({ headless: appConfig.crawler.headless });
   const context = await browser.newContext({
     locale: "ar",
@@ -892,14 +914,25 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
   });
   const page = await context.newPage();
+  page.on("pageerror", (err) => {
+    logger.warn("series_episode_refresh_page_error", crawlerErrorMeta(err));
+  });
 
   try {
     const results = [];
     const allSeries = Array.isArray(seriesRef?.series) ? seriesRef.series : [];
     let processed = 0;
+    let failedSeriesCount = 0;
     for (const series of allSeries) {
-      if (!series?.seriesName || !series.latestEpisodeUrl) continue;
+      if (!series?.seriesName || !series.latestEpisodeUrl) {
+        logger.warn("series_skipped_invalid_entry", {
+          seriesName: series?.seriesName || null,
+          hasLatestEpisodeUrl: Boolean(series?.latestEpisodeUrl)
+        });
+        continue;
+      }
       processed += 1;
+      const seriesStartedAt = Date.now();
       logger.info("checking_series_episodes", {
         seriesName: series.seriesName,
         latestEpisodeUrl: series.latestEpisodeUrl,
@@ -907,10 +940,25 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
         total: allSeries.length
       });
 
-      const basicChain = await withRetry(
-        () => extractSeriesEpisodeList(page, series, appConfig),
-        appConfig.crawler.retries
-      );
+      let basicChain;
+      try {
+        basicChain = await withRetry(
+          () => extractSeriesEpisodeList(page, series, appConfig),
+          appConfig.crawler.retries,
+          logger
+        );
+      } catch (err) {
+        failedSeriesCount += 1;
+        logger.error("series_episode_list_extract_failed", {
+          seriesName: series.seriesName,
+          latestEpisodeUrl: series.latestEpisodeUrl,
+          processed,
+          total: allSeries.length,
+          ...crawlerErrorMeta(err)
+        });
+        await humanPause(appConfig.crawler);
+        continue;
+      }
       const known = knownForSeries(knownSeries, series.seriesName);
       const missing = basicChain.filter((item) => !isKnownSeriesEpisode(item, known));
 
@@ -919,13 +967,25 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
           seriesName: series.seriesName,
           total: basicChain.length,
           processed,
-          seriesTotal: allSeries.length
+          seriesTotal: allSeries.length,
+          durationMs: Date.now() - seriesStartedAt
         });
         await humanPause(appConfig.crawler);
         continue;
       }
 
+      logger.info("series_has_missing_episodes", {
+        seriesName: series.seriesName,
+        chainSize: basicChain.length,
+        knownEpisodeUrls: (known.episodeUrls || []).length,
+        missing: missing.length,
+        processed,
+        total: allSeries.length
+      });
+
       const hydrated = [];
+      let resolvedSuccess = 0;
+      let resolvedFailures = 0;
       for (const item of missing) {
         try {
           const resolved = await withRetry(
@@ -944,18 +1004,22 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
                 { includeSeriesEpisodes: false }
               );
             },
-            appConfig.crawler.retries
+            appConfig.crawler.retries,
+            logger
           );
           hydrated.push(mergeHydratedSeriesEpisode(
             { ...item, seriesName: series.seriesName },
             resolved
           ));
+          resolvedSuccess += 1;
           await humanPause(appConfig.crawler);
         } catch (err) {
+          resolvedFailures += 1;
           logger.warn("missing_series_episode_resolve_failed", {
             seriesName: series.seriesName,
             episodeUrl: item.episodeUrl,
-            message: err instanceof Error ? err.message : String(err)
+            episodeNumber: item.episodeNumber,
+            ...crawlerErrorMeta(err)
           });
           hydrated.push({ ...item, seriesName: series.seriesName });
         }
@@ -972,24 +1036,58 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
       };
       results.push(seriesResult);
       if (typeof knownSeries.onSeriesResult === "function") {
-        await knownSeries.onSeriesResult(seriesResult, {
-          seriesName: series.seriesName,
-          processed,
-          total: allSeries.length,
-          missing: missing.length,
-          saved: hydrated.length
-        });
+        try {
+          await knownSeries.onSeriesResult(seriesResult, {
+            seriesName: series.seriesName,
+            processed,
+            total: allSeries.length,
+            missing: missing.length,
+            saved: hydrated.length
+          });
+        } catch (err) {
+          logger.error("series_progress_callback_failed", {
+            seriesName: series.seriesName,
+            processed,
+            total: allSeries.length,
+            ...crawlerErrorMeta(err)
+          });
+          throw err;
+        }
       }
+      logger.info("series_processed", {
+        seriesName: series.seriesName,
+        processed,
+        total: allSeries.length,
+        missing: missing.length,
+        resolvedSuccess,
+        resolvedFailures,
+        durationMs: Date.now() - seriesStartedAt
+      });
       await humanPause(appConfig.crawler);
     }
+    logger.info("series_episode_refresh_completed", {
+      total: allSeries.length,
+      processed,
+      results: results.length,
+      failedSeriesCount
+    });
     return results;
   } finally {
-    await context.close();
-    await browser.close();
+    try {
+      await context.close();
+    } catch (err) {
+      logger.warn("series_episode_refresh_context_close_failed", crawlerErrorMeta(err));
+    }
+    try {
+      await browser.close();
+    } catch (err) {
+      logger.warn("series_episode_refresh_browser_close_failed", crawlerErrorMeta(err));
+    }
   }
 }
 
 async function runSeriesDiscovery(appConfig, logger) {
+  logger.info("series_discovery_browser_starting", { headless: appConfig.crawler.headless });
   const browser = await chromium.launch({ headless: appConfig.crawler.headless });
   const context = await browser.newContext({
     locale: "ar",
@@ -998,14 +1096,28 @@ async function runSeriesDiscovery(appConfig, logger) {
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
   });
   const page = await context.newPage();
+  page.on("pageerror", (err) => {
+    logger.warn("series_discovery_page_error", crawlerErrorMeta(err));
+  });
 
   try {
     const episodes = await crawlListingPage(page, appConfig, logger);
     logger.info("discovered_series_candidates", { count: episodes.length });
     return episodes;
+  } catch (err) {
+    logger.error("series_discovery_failed", crawlerErrorMeta(err));
+    throw err;
   } finally {
-    await context.close();
-    await browser.close();
+    try {
+      await context.close();
+    } catch (err) {
+      logger.warn("series_discovery_context_close_failed", crawlerErrorMeta(err));
+    }
+    try {
+      await browser.close();
+    } catch (err) {
+      logger.warn("series_discovery_browser_close_failed", crawlerErrorMeta(err));
+    }
   }
 }
 
