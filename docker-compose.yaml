@@ -15,6 +15,7 @@ services:
       EPISODES_FILE_PATH: /app/data/episodes.json
       SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
+      SEED_DATA_MODE: missing
     expose:
       - "8787"
     ports:
@@ -42,6 +43,7 @@ services:
       EPISODES_FILE_PATH: /app/data/episodes.json
       SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
+      SEED_DATA_MODE: missing
     volumes:
       - krmzi-data:/app/data
     depends_on:

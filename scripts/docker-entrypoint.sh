@@ -3,6 +3,7 @@ set -eu
 
 DATA_DIR="/app/data"
 SEED_DIR="/app/data-seed"
+SEED_DATA_MODE="${SEED_DATA_MODE:-missing}"
 
 mkdir -p "$DATA_DIR"
 
@@ -10,7 +11,13 @@ seed_file() {
   name="$1"
   src="${SEED_DIR}/${name}"
   dst="${DATA_DIR}/${name}"
-  if [ -f "$src" ] && [ ! -s "$dst" ]; then
+  if [ ! -f "$src" ]; then
+    return
+  fi
+  if [ "$SEED_DATA_MODE" = "force" ]; then
+    cp "$src" "$dst"
+    echo "force-seeded ${name} into ${DATA_DIR}"
+  elif [ ! -s "$dst" ]; then
     cp "$src" "$dst"
     echo "seeded ${name} into ${DATA_DIR}"
   fi

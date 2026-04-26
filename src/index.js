@@ -368,7 +368,8 @@ async function runOnce(options = {}) {
     dryRun: config.runtime.dryRun
   });
 
-  if (outbound.length > 0 && !config.runtime.dryRun) {
+  const syncConfigured = Boolean(config.sync.endpoint && config.sync.token);
+  if (outbound.length > 0 && !config.runtime.dryRun && syncConfigured) {
     await syncEpisodes(outbound, config, activeLogger);
     for (const episode of unsynced) {
       if (episode.videoUrl) markSynced(state, episode.episodeUrl);
@@ -381,6 +382,12 @@ async function runOnce(options = {}) {
     activeLogger.info("nothing_to_sync");
   } else if (config.runtime.dryRun) {
     activeLogger.info("dry_run_skip_sync", { count: outbound.length });
+  } else if (!syncConfigured) {
+    activeLogger.warn("remote_sync_not_configured_skip_sync", {
+      count: outbound.length,
+      missingEndpoint: !config.sync.endpoint,
+      missingToken: !config.sync.token
+    });
   }
 
   activeLogger.info("run_finished");
