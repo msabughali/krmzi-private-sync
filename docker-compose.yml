@@ -15,7 +15,10 @@ services:
       EPISODES_FILE_PATH: /app/data/episodes.json
       SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
-      SEED_DATA_MODE: missing
+      # auto: overwrite the volume on image rebuild (new bundled seed
+      # snapshot), keep user data otherwise. Set to `force` to always
+      # overwrite, or `missing` to only fill empty files.
+      SEED_DATA_MODE: auto
     expose:
       - "8787"
     volumes:
@@ -41,7 +44,7 @@ services:
       EPISODES_FILE_PATH: /app/data/episodes.json
       SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
-      SEED_DATA_MODE: missing
+      SEED_DATA_MODE: auto
     volumes:
       - krmzi-data:/app/data
     depends_on:
