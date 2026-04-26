@@ -2,18 +2,13 @@
   "name": "krmzi-private-sync",
   "version": "1.0.0",
   "description": "Private daily crawler for KRMZI episodes and secure sync to target server",
-  "main": "src/index.js",
+  "main": "src/webServer.js",
   "type": "commonjs",
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
-    "start": "node src/webServer.js",
-    "web": "node src/webServer.js",
-    "worker": "node src/index.js --loop",
-    "run:once": "node src/index.js --once",
-    "run:loop": "node src/index.js --loop",
-    "install:browsers": "playwright install chromium"
+    "start": "node src/webServer.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

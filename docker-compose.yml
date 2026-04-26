@@ -2,11 +2,9 @@ services:
   web:
     build:
       context: .
-    image: krmzi-private-sync:latest
-    container_name: krmzi-web
     restart: unless-stopped
     # Coolify injects env vars from the dashboard at runtime.
-    # env_file is only used for local `docker compose up`.
+    # `env_file` is only used when running `docker compose up` locally.
     env_file:
       - path: .env
         required: false
@@ -20,8 +18,6 @@ services:
       SEED_DATA_MODE: missing
     expose:
       - "8787"
-    ports:
-      - "8787:8787"
     volumes:
       - krmzi-data:/app/data
     healthcheck:
@@ -29,14 +25,12 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 20s
+      start_period: 30s
     command: ["node", "src/webServer.js"]
 
   worker:
     build:
       context: .
-    image: krmzi-private-sync:latest
-    container_name: krmzi-worker
     restart: unless-stopped
     env_file:
       - path: .env
@@ -51,7 +45,8 @@ services:
     volumes:
       - krmzi-data:/app/data
     depends_on:
-      - web
+      web:
+        condition: service_started
     command: ["node", "src/index.js", "--loop"]
 
 volumes:

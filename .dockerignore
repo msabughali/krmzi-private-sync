@@ -14,15 +14,14 @@ node_modules
 .env.*
 !.env.example
 
-# Runtime data lives on a mounted volume
+# Runtime data lives on a mounted volume; only the seed snapshots are bundled
 data
 !data/episodes.json
 !data/series.json
 !data/state.json
 
-# Repo-only tooling / docs
+# Repo-only tooling / docs — only the entrypoint script is needed in the image
 README.md
-deploy
 scripts
 !scripts/docker-entrypoint.sh
 
@@ -31,5 +30,6 @@ scripts
 *.swo
 *.log
 
-# Stray artifact
-, r.candidates[0]); }
+# Local-only docker compose files (override.yml etc.) should not be baked in
+docker-compose.override.yml
+docker-compose.override.yaml

@@ -33,5 +33,3 @@ test-results/
 *.log
 logs/
 
-# Misc
-, r.candidates[0]); }

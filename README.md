@@ -1,84 +1,27 @@
 # KRMZI Private Episode Sync
 
-Private crawler that discovers episode pages from `https://krmzi.onl`, resolves playable Dailymotion links via browser automation, and securely syncs new episodes to your private target API.
+Private crawler that discovers episode pages from `https://krmzi.onl`, resolves
+playable Dailymotion links via browser automation, and securely syncs new
+episodes to your private target API.
+
+> **Runtime:** this project is only supported via **Docker Compose** (locally or
+> through Coolify). All other run methods (systemd, cron, bare `node`) have
+> been intentionally removed to keep one source of truth.
 
 ## Project structure
 
-- `src/index.js`: run orchestration (crawl -> dedupe -> sync -> state save)
-- `src/webServer.js`: simple frontend + episodes API server
-- `src/crawler.js`: Playwright crawler with human-like interaction and retries
-- `src/parser.js`: episode and video parsing helpers
-- `src/syncClient.js`: authenticated POST client for target server sync
-- `src/stateStore.js`: local persistent state to avoid duplicate syncing
-- `src/episodesStore.js`: local episodes storage used by the frontend
-- `web/`: simple frontend (list + player page)
-- `deploy/systemd/`: service + timer units
-- `deploy/cron/`: cron entry template
-- `Dockerfile`, `docker-compose.yml`: containerized deployment
+- `src/index.js`: run orchestration (crawl → dedupe → sync → state save). Used by the `worker` service.
+- `src/webServer.js`: episodes API + frontend server. Used by the `web` service.
+- `src/crawler.js`: Playwright crawler with human-like interaction and retries.
+- `src/parser.js`: episode and video parsing helpers.
+- `src/syncClient.js`: authenticated POST client for target server sync.
+- `src/stateStore.js`: local persistent state to avoid duplicate syncing.
+- `src/episodesStore.js`: local episodes storage used by the frontend.
+- `web/`: simple frontend (list + player page).
+- `Dockerfile`, `docker-compose.yml`: containerized deployment (the only supported way).
+- `scripts/docker-entrypoint.sh`: seeds `/app/data/*.json` from the bundled snapshot on first boot.
 
-## 1) Local setup
-
-1. Install dependencies:
-
-```bash
-npm install
-npx playwright install chromium
-```
-
-2. Prepare environment:
-
-```bash
-cp .env.example .env
-```
-
-3. Edit `.env` and set:
-
-- `TARGET_SYNC_ENDPOINT` (private endpoint on your destination server)
-- `TARGET_SYNC_TOKEN` (long random secret token)
-
-4. Run once:
-
-```bash
-npm run run:once
-```
-
-Single episode test:
-
-```bash
-node src/index.js --once --episode-url="https://krmzi.onl/episode/your-episode-slug/"
-```
-
-Single episode JSON output (script-friendly):
-
-```bash
-node src/index.js --once --print-json --episode-url="https://krmzi.onl/episode/your-episode-slug/"
-```
-
-5. Run looping worker (every `INTERVAL_MINUTES`):
-
-```bash
-npm run run:loop
-```
-
-## Simple frontend
-
-Run:
-
-```bash
-npm run web
-```
-
-Open:
-
-`http://localhost:8787`
-
-How it works:
-
-- List page calls `/api/episodes` and shows all pulled episodes
-- Clicking an episode opens `/play` and embeds the `playerUrl` directly
-- Episodes are saved in `EPISODES_FILE_PATH` (default `/app/data/episodes.json` in container)
-
-## 2) Target API contract
+## 1) Target API contract
 
 The crawler sends:
 
@@ -107,86 +50,43 @@ The target server should:
 - upsert by unique key (`episodeUrl` or `slug + episodeNumber`)
 - return `2xx` response for success
 
-## 3) systemd deployment
+## 2) Run locally with Docker Compose
 
-1. Copy project to server:
+The compose stack ships two services that share a named volume `krmzi-data`
+mounted at `/app/data` (holds `episodes.json`, `series.json`, `state.json`):
 
-```bash
-sudo mkdir -p /opt/krmzi-private-sync
-sudo rsync -av ./ /opt/krmzi-private-sync/
-cd /opt/krmzi-private-sync
-npm install --omit=dev
-npx playwright install --with-deps chromium
-cp .env.example .env
-```
+- `web`: runs the UI + API on port `8787` (default `CMD`).
+- `worker`: runs `node src/index.js --loop` for periodic crawls.
 
-2. Install units:
-
-```bash
-sudo cp deploy/systemd/krmzi-sync.service /etc/systemd/system/
-sudo cp deploy/systemd/krmzi-sync.timer /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now krmzi-sync.timer
-```
-
-3. Check status:
-
-```bash
-systemctl status krmzi-sync.timer
-journalctl -u krmzi-sync.service -f
-```
-
-## 4) cron deployment
-
-Use file `deploy/cron/krmzi-sync.cron` as template:
-
-```bash
-crontab -e
-```
-
-Paste:
-
-```cron
-*/30 * * * * cd /opt/krmzi-private-sync && /usr/bin/env node src/index.js --once >> /var/log/krmzi-sync.log 2>&1
-```
-
-## 5) Docker deployment
-
-The image ships two runtime modes:
-
-- `web` service (default CMD): runs the UI + API on port `8787`
-- `worker` service: runs `node src/index.js --loop` for periodic crawls
-
-Both share a named volume (`krmzi-data`) mounted at `/app/data` which holds
-`episodes.json` and `state.json`.
-
-1. Build and run:
+Steps:
 
 ```bash
 cp .env.example .env
+# edit .env and set SOURCE_BASE_URL, optional TARGET_SYNC_*, etc.
+
 docker compose up -d --build
 ```
 
-2. Open `http://SERVER_IP:8787`.
+Open `http://localhost:8787`.
 
-3. Logs:
+Logs / lifecycle:
 
 ```bash
 docker compose logs -f web
 docker compose logs -f worker
-```
-
-4. Stop:
-
-```bash
 docker compose down
 ```
 
-## 6) Coolify deployment
+That is the only supported local workflow. Do not run `node src/...` outside
+the container — the data paths, Playwright browser, and entrypoint seeding all
+assume the Docker environment.
 
-This repo is ready to deploy on [Coolify](https://coolify.io/) as a **Docker Compose** application.
+## 3) Coolify deployment
 
-### 6.1 Push to GitHub
+This repo is built to deploy on [Coolify](https://coolify.io/) as a
+**Docker Compose** application.
+
+### 3.1 Push to GitHub
 
 ```bash
 git init
@@ -197,17 +97,35 @@ git remote add origin git@github.com:<you>/<repo>.git
 git push -u origin main
 ```
 
-`.env` and the `data/` JSON files are already excluded by `.gitignore`.
+`.env` and the `data/*.json` runtime files are excluded by `.gitignore`.
 
-### 6.2 Create the Coolify resource
+### 3.2 Create the Coolify resource
 
-1. In Coolify, **New Resource → Docker Compose → Public Repository** (or Private via GitHub App).
-2. Repository: your GitHub URL. Branch: `main`. Base directory: `/`. Compose file: `docker-compose.yml`.
-3. Click **Save** and let Coolify parse the compose file. It will detect two services: `web` and `worker`.
+1. **New Resource → Docker Compose → Public Repository** (or Private via the
+   GitHub App).
+2. Repository: your GitHub URL. Branch: `main`. Base directory: `/`.
+   Compose file: `docker-compose.yml`.
+3. Click **Save** and let Coolify parse the compose file. It will detect two
+   services: `web` and `worker`.
 
-### 6.3 Environment variables
+### 3.3 Why this compose file is Coolify-safe
 
-Open the **Environment Variables** tab and add at least:
+The compose intentionally avoids three things that commonly break Coolify
+redeploys:
+
+- **No `container_name`** — Coolify generates unique container names per
+  deploy. Hard-coded names cause `Conflict. The container name is already in use`
+  on the second deploy.
+- **No host `ports:` mapping** — only `expose: ["8787"]` is declared. Coolify’s
+  built-in Traefik proxy routes the service domain directly to the exposed
+  port, which avoids host-port collisions when the same server runs other apps.
+- **No fixed `image:` tag** — Coolify tags built images per resource so two
+  Coolify projects can build the same compose file without overwriting each
+  other’s image.
+
+### 3.4 Environment variables
+
+Open the **Environment Variables** tab on the resource and add at least:
 
 | Key | Example | Notes |
 | --- | --- | --- |
@@ -227,20 +145,23 @@ Optional (only if you also sync to a remote API):
 | `TARGET_SYNC_TOKEN` | `<long-random-token>` (mark as secret) |
 
 Coolify injects these variables into both services automatically — there is no
-need for a `.env` file on the server.
+need for a `.env` file on the server. The compose file’s `env_file: .env`
+entry is declared with `required: false` so it is silently skipped when the
+file is absent.
 
-### 6.4 Domain & port
+### 3.5 Domain & port
 
-- In the **Domains** tab for the `web` service, enter your domain (e.g. `krmzi.example.com`).
-- The exposed port is `8787`. Coolify’s built‑in proxy (Traefik) will route
-  `:443 → :8787` automatically and issue a Let’s Encrypt certificate.
+- In the **Domains** tab for the `web` service, enter your domain
+  (e.g. `krmzi.example.com`).
+- The exposed port is `8787`. Coolify’s proxy will route `:443 → :8787`
+  automatically and issue a Let’s Encrypt certificate.
 - The `worker` service has no domain — it runs in the background.
 
-### 6.5 Persistent storage
+### 3.6 Persistent storage
 
 The compose file declares a named volume `krmzi-data` mounted at `/app/data`.
 Coolify creates this volume on the host and reuses it across redeploys, so
-`episodes.json` and `state.json` survive rebuilds.
+`episodes.json`, `series.json`, and `state.json` survive rebuilds.
 
 If you prefer a host path, switch the volume in `docker-compose.yml` to:
 
@@ -251,23 +172,22 @@ volumes:
 
 and make sure Coolify’s server user can write to it.
 
-### 6.6 Healthcheck
+### 3.7 Healthcheck
 
-The web service exposes `GET /api/health` and the Dockerfile declares a
-`HEALTHCHECK` against it. Coolify uses this to gate zero‑downtime deploys and
+The web service exposes `GET /api/health` and the compose file declares a
+`HEALTHCHECK` against it. Coolify uses this to gate zero-downtime deploys and
 restart the container on failures.
 
-### 6.7 Deploy
+### 3.8 Deploy
 
-Click **Deploy**. First build takes a few minutes (Chromium + its system deps).
-Once healthy, open your domain and you should see the episode list. Click
-**Refresh** to trigger a crawl, or let the `worker` service populate
-`episodes.json` on its own schedule.
+Click **Deploy**. The first build takes a few minutes (Chromium + its system
+deps). Once healthy, open your domain and you should see the episode list.
+The `worker` service populates `episodes.json` on its own schedule.
 
-## Privacy and reliability recommendations
+## 4) Privacy and reliability recommendations
 
-- Keep `TARGET_SYNC_ENDPOINT` private (VPN, private subnet, or IP allowlist)
-- Rotate `TARGET_SYNC_TOKEN` regularly
-- Use `DRY_RUN=true` before production
-- Keep `data/state.json` persistent to avoid duplicate pushes
-- Add alerts on repeated `run_failed` logs
+- Keep `TARGET_SYNC_ENDPOINT` private (VPN, private subnet, or IP allowlist).
+- Rotate `TARGET_SYNC_TOKEN` regularly.
+- Use `DRY_RUN=true` before production.
+- Keep the `krmzi-data` volume persistent to avoid duplicate pushes.
+- Add alerts on repeated `run_failed` logs.

@@ -1,1 +1,0 @@
-*/30 * * * * cd /opt/krmzi-private-sync && /usr/bin/env node src/index.js --once >> /var/log/krmzi-sync.log 2>&1
