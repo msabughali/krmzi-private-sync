@@ -17,6 +17,7 @@ seed_file() {
 }
 
 seed_file "episodes.json"
+seed_file "series.json"
 seed_file "state.json"
 
 # Existing volumes may already contain an empty baseline file like:
@@ -26,6 +27,13 @@ if [ -f "${SEED_DIR}/episodes.json" ] && [ -f "${DATA_DIR}/episodes.json" ]; the
   if grep -Eq '"episodes"[[:space:]]*:[[:space:]]*\[[[:space:]]*\]' "${DATA_DIR}/episodes.json"; then
     cp "${SEED_DIR}/episodes.json" "${DATA_DIR}/episodes.json"
     echo "replaced empty episodes.json with seeded snapshot"
+  fi
+fi
+
+if [ -f "${SEED_DIR}/series.json" ] && [ -f "${DATA_DIR}/series.json" ]; then
+  if grep -Eq '"series"[[:space:]]*:[[:space:]]*\[[[:space:]]*\]' "${DATA_DIR}/series.json"; then
+    cp "${SEED_DIR}/series.json" "${DATA_DIR}/series.json"
+    echo "replaced empty series.json with seeded snapshot"
   fi
 fi
 

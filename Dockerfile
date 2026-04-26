@@ -26,7 +26,7 @@ COPY data ./data-seed
 COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY .env.example ./.env.example
 
-# Runtime data lives on a mounted volume (episodes.json, state.json)
+# Runtime data lives on a mounted volume (episodes.json, series.json, state.json)
 RUN mkdir -p /app/data
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

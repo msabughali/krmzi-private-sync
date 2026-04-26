@@ -13,6 +13,7 @@ services:
     environment:
       WEB_PORT: 8787
       EPISODES_FILE_PATH: /app/data/episodes.json
+      SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
     expose:
       - "8787"
@@ -39,6 +40,7 @@ services:
         required: false
     environment:
       EPISODES_FILE_PATH: /app/data/episodes.json
+      SERIES_FILE_PATH: /app/data/series.json
       STATE_FILE_PATH: /app/data/state.json
     volumes:
       - krmzi-data:/app/data
