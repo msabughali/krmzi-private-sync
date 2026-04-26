@@ -254,6 +254,24 @@ function refreshProgressText(data, fallback) {
     const host = hostFromUrl(progress.candidateBase);
     return `${host || "المصدر"} لا يزال محظورًا، جاري التبديل لمرآة أخرى…`;
   }
+  if (progress.phase === "listing_page_placeholder_detected") {
+    const host = hostFromUrl(progress.candidateBase);
+    const finalHost = hostFromUrl(progress.finalUrl);
+    const where = finalHost && finalHost !== host ? ` (تحويل إلى ${finalHost})` : "";
+    return `${host || "المصدر"} يعرض صفحة "قادم قريبًا"${where}، جاري تجربة مرآة أخرى…`;
+  }
+  if (progress.phase === "listing_page_redirected_offsite") {
+    const requested = progress.requestedHost || hostFromUrl(progress.candidateBase) || "المصدر";
+    const finalHost = progress.finalHost || "نطاق آخر";
+    return `${requested} يحوّل الطلب إلى ${finalHost}، جاري تجربة مرآة أخرى…`;
+  }
+  if (progress.phase === "listing_page_geofence_suspected") {
+    const mirrors = progress.mirrorsTried || 0;
+    const proxyHint = progress.proxyConfigured
+      ? "البروكسي مفعّل لكن المصدر لا يزال يحجب الـ IP."
+      : "اضبط CRAWLER_PROXY_SERVER ببروكسي سكني، أو أضف مرآة جديدة عبر LISTING_MIRRORS.";
+    return `يبدو أن المصدر يحجب الخادم بناءً على الـ IP بعد تجربة ${mirrors} مرآة. ${proxyHint}`;
+  }
   if (progress.phase === "probing_listing_mirror") {
     const host = hostFromUrl(progress.candidateBase || progress.candidateUrl);
     return `جاري تجربة مرآة بديلة${host ? ` — ${host}` : ""}…`;

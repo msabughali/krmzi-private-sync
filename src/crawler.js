@@ -49,11 +49,40 @@ const CHROMIUM_LAUNCH_ARGS = [
   "--no-sandbox"
 ];
 
-async function launchCrawlerBrowser(appConfig) {
-  return chromium.launch({
+function buildLaunchProxyConfig(appConfig) {
+  const proxy = appConfig?.crawler?.proxy || {};
+  if (!proxy.server) return null;
+  const cfg = { server: proxy.server };
+  if (proxy.username) cfg.username = proxy.username;
+  if (proxy.password) cfg.password = proxy.password;
+  if (proxy.bypass) cfg.bypass = proxy.bypass;
+  return cfg;
+}
+
+function summarizeProxyForLog(proxyCfg) {
+  if (!proxyCfg) return null;
+  return {
+    server: proxyCfg.server,
+    username: proxyCfg.username ? "<set>" : "",
+    password: proxyCfg.password ? "<set>" : "",
+    bypass: proxyCfg.bypass || ""
+  };
+}
+
+async function launchCrawlerBrowser(appConfig, logger) {
+  const proxy = buildLaunchProxyConfig(appConfig);
+  if (logger?.info) {
+    logger.info("crawler_browser_launch", {
+      headless: appConfig.crawler.headless,
+      proxy: summarizeProxyForLog(proxy)
+    });
+  }
+  const launchOpts = {
     headless: appConfig.crawler.headless,
     args: CHROMIUM_LAUNCH_ARGS
-  });
+  };
+  if (proxy) launchOpts.proxy = proxy;
+  return chromium.launch(launchOpts);
 }
 
 async function createCrawlerContext(browser) {
@@ -364,12 +393,15 @@ function buildPageUrl(baseUrl, listPath, pageNumber) {
   return base.toString();
 }
 
-function buildMirrorBaseCandidates(baseUrl) {
+function buildMirrorBaseCandidates(baseUrl, appConfig) {
   // krmzi.onl is the currently-active primary host; the others stay as
   // fallbacks because the source has historically rotated between them.
   // Note: krmzy.com is currently 30x-redirecting datacenter IPs to a
   // "Coming Soon" placeholder on krmzi.tv, so keep it last.
   const known = ["https://krmzi.onl", "https://krmzi.org", "https://krmzi.com", "https://krmzy.com"];
+  const extras = Array.isArray(appConfig?.source?.extraMirrors)
+    ? appConfig.source.extraMirrors
+    : [];
   const normalized = [];
   const push = (u) => {
     try {
@@ -380,15 +412,84 @@ function buildMirrorBaseCandidates(baseUrl) {
     }
   };
   push(baseUrl);
+  // User-supplied mirrors take priority over the built-in fallback list so
+  // operators can promote a freshly-discovered mirror without redeploying.
+  for (const item of extras) push(item);
   for (const item of known) push(item);
   return normalized;
 }
 
+// "Coming Soon" / domain-parking placeholders served when the upstream
+// blocks datacenter IPs. Detection patterns target both the Arabic
+// "قادم قريبًا" headline and common English placeholder titles.
+const PLACEHOLDER_TITLE_PATTERNS = [
+  /قادم\s*قريب/i,
+  /coming\s*soon/i,
+  /under\s*construction/i,
+  /site\s*not\s*ready/i,
+  /موقع\s*قيد\s*الإنشاء/i
+];
+
+const PLACEHOLDER_BODY_PATTERNS = [
+  /قادم\s*قريب/i,
+  /coming\s*soon/i
+];
+
+function detectPlaceholderPage(title, bodySample) {
+  const t = String(title || "");
+  const b = String(bodySample || "");
+  const titleHit = PLACEHOLDER_TITLE_PATTERNS.find((re) => re.test(t));
+  const bodyHit = PLACEHOLDER_BODY_PATTERNS.find((re) => re.test(b));
+  if (!titleHit && !bodyHit) return null;
+  return {
+    title: t.slice(0, 200),
+    bodySample: b.replace(/\s+/g, " ").slice(0, 240),
+    matchedTitlePattern: titleHit ? titleHit.source : null,
+    matchedBodyPattern: bodyHit ? bodyHit.source : null
+  };
+}
+
+async function detectPlaceholderOnPage(page) {
+  let title = "";
+  let bodySample = "";
+  try {
+    title = (await page.title()) || "";
+  } catch {
+    title = "";
+  }
+  try {
+    bodySample = await page.evaluate(() =>
+      ((document.body?.innerText || "")).replace(/\s+/g, " ").slice(0, 800)
+    );
+  } catch {
+    bodySample = "";
+  }
+  return detectPlaceholderPage(title, bodySample);
+}
+
+function hostOfUrl(value) {
+  try {
+    return new URL(value).hostname.replace(/^www\./i, "");
+  } catch {
+    return null;
+  }
+}
+
+function detectOffsiteRedirect(requestedUrl, finalUrl) {
+  const requested = hostOfUrl(requestedUrl);
+  const finalHost = hostOfUrl(finalUrl);
+  if (!requested || !finalHost) return null;
+  if (requested === finalHost) return null;
+  return { requestedHost: requested, finalHost };
+}
+
 async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBaseUrl, logger) {
-  const candidates = buildMirrorBaseCandidates(activeBaseUrl);
+  const candidates = buildMirrorBaseCandidates(activeBaseUrl, appConfig);
   const tried = new Set();
   let lastError = null;
   let attempt = 0;
+  let placeholderHits = 0;
+  let offsiteRedirectHits = 0;
 
   for (const candidateBase of candidates) {
     if (tried.has(candidateBase)) continue;
@@ -412,6 +513,21 @@ async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBa
       });
       const status = response ? response.status() : null;
       const finalUrl = page.url();
+      const offsite = detectOffsiteRedirect(pageUrl, finalUrl);
+      if (offsite) {
+        offsiteRedirectHits += 1;
+        if (logger?.warn) {
+          logger.warn("listing_page_redirected_offsite", {
+            pageUrl,
+            finalUrl,
+            candidateBase,
+            pageNumber,
+            attempt,
+            status,
+            ...offsite
+          });
+        }
+      }
 
       let blocker = await detectAntiBotChallenge(page);
       if (blocker || (status && status >= 400)) {
@@ -455,6 +571,27 @@ async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBa
         // Fall through to next candidate.
         continue;
       }
+
+      // Treat "Coming Soon" / domain-parking pages as a hard miss for this
+      // mirror so we keep trying alternates, and surface a clear log line
+      // operators can grep for.
+      const placeholder = await detectPlaceholderOnPage(page);
+      if (placeholder) {
+        placeholderHits += 1;
+        if (logger?.warn) {
+          logger.warn("listing_page_placeholder_detected", {
+            pageUrl,
+            finalUrl: page.url(),
+            candidateBase,
+            pageNumber,
+            attempt,
+            status,
+            ...placeholder
+          });
+        }
+        continue;
+      }
+
       return { response, pageUrl, activeBaseUrl: candidateBase };
     } catch (err) {
       lastError = err;
@@ -468,6 +605,25 @@ async function gotoListingPageWithFallback(page, appConfig, pageNumber, activeBa
         });
       }
     }
+  }
+
+  // If every mirror produced a Coming-Soon page or an offsite redirect, the
+  // most likely cause is datacenter-IP geofencing applied by the upstream
+  // source. Emit a single high-signal log so operators see the remediation
+  // path (configure a residential proxy via CRAWLER_PROXY_SERVER) without
+  // having to correlate per-mirror warnings.
+  const proxyConfigured = Boolean(appConfig?.crawler?.proxy?.server);
+  if (logger?.error && (placeholderHits > 0 || offsiteRedirectHits > 0)) {
+    logger.error("listing_page_geofence_suspected", {
+      pageNumber,
+      mirrorsTried: tried.size,
+      placeholderHits,
+      offsiteRedirectHits,
+      proxyConfigured,
+      hint: proxyConfigured
+        ? "Proxy is configured but the source still served a placeholder. The proxy IP may also be flagged — try a residential proxy."
+        : "Source is likely geofencing this server's IP. Configure CRAWLER_PROXY_SERVER (residential proxy) or set LISTING_MIRRORS to a working mirror."
+    });
   }
 
   throw lastError || new Error(`Unable to load listing page ${pageNumber}`);
@@ -624,7 +780,7 @@ async function crawlListingPage(page, appConfig, logger) {
 
     // If the first listing page is empty, probe known mirrors automatically.
     if (items.length === 0 && pageN === 1) {
-      const candidates = buildMirrorBaseCandidates(activeBaseUrl).filter(
+      const candidates = buildMirrorBaseCandidates(activeBaseUrl, appConfig).filter(
         (candidate) => candidate !== new URL(activeBaseUrl).origin
       );
       for (const candidateBase of candidates) {
@@ -661,20 +817,27 @@ async function crawlListingPage(page, appConfig, logger) {
           }
           await waitForChallengeToClear(page, 8000, 1000);
         }
-        const candidateItems = await parseEpisodeLinks(
-          page,
-          candidateBase,
-          Math.max(remaining * 4, remaining)
-        );
+        const placeholder = await detectPlaceholderOnPage(page).catch(() => null);
+        const offsite = detectOffsiteRedirect(candidateUrl, page.url());
+        const candidateItems = placeholder
+          ? []
+          : await parseEpisodeLinks(
+              page,
+              candidateBase,
+              Math.max(remaining * 4, remaining)
+            );
 
         if (logger) {
           logger.info("listing_mirror_probe", {
             fromBase: activeBaseUrl,
             candidateBase,
             candidateUrl,
+            finalUrl: page.url(),
             status: candidateResponse ? candidateResponse.status() : null,
             found: candidateItems.length,
-            antiBotDetected: Boolean(blocker)
+            antiBotDetected: Boolean(blocker),
+            placeholderDetected: Boolean(placeholder),
+            offsiteRedirect: offsite || null
           });
         }
 
@@ -1035,7 +1198,7 @@ async function withRetry(fn, retries, logger) {
 }
 
 async function runCrawl(appConfig, logger, options = {}) {
-  const browser = await launchCrawlerBrowser(appConfig);
+  const browser = await launchCrawlerBrowser(appConfig, logger);
   const context = await createCrawlerContext(browser);
   const page = await context.newPage();
 
@@ -1130,7 +1293,7 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
   logger.info("series_episode_refresh_browser_starting", {
     headless: appConfig.crawler.headless
   });
-  const browser = await launchCrawlerBrowser(appConfig);
+  const browser = await launchCrawlerBrowser(appConfig, logger);
   const context = await createCrawlerContext(browser);
   const page = await context.newPage();
   page.on("pageerror", (err) => {
@@ -1307,7 +1470,7 @@ async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries
 
 async function runSeriesDiscovery(appConfig, logger) {
   logger.info("series_discovery_browser_starting", { headless: appConfig.crawler.headless });
-  const browser = await launchCrawlerBrowser(appConfig);
+  const browser = await launchCrawlerBrowser(appConfig, logger);
   const context = await createCrawlerContext(browser);
   const page = await context.newPage();
   page.on("pageerror", (err) => {

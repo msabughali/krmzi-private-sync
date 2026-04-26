@@ -235,6 +235,38 @@ function updateRefreshProgressFromLog(line) {
       status: payload.status || null,
       updatedAt: payload.ts || new Date().toISOString()
     };
+  } else if (payload.message === "listing_page_placeholder_detected") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "listing_page_placeholder_detected",
+      pageNumber: payload.pageNumber || null,
+      candidateBase: payload.candidateBase || null,
+      finalUrl: payload.finalUrl || null,
+      title: payload.title || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "listing_page_redirected_offsite") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "listing_page_redirected_offsite",
+      pageNumber: payload.pageNumber || null,
+      candidateBase: payload.candidateBase || null,
+      requestedHost: payload.requestedHost || null,
+      finalHost: payload.finalHost || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "listing_page_geofence_suspected") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "listing_page_geofence_suspected",
+      pageNumber: payload.pageNumber || null,
+      mirrorsTried: payload.mirrorsTried || null,
+      placeholderHits: payload.placeholderHits || 0,
+      offsiteRedirectHits: payload.offsiteRedirectHits || 0,
+      proxyConfigured: Boolean(payload.proxyConfigured),
+      hint: payload.hint || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
   } else if (payload.message === "listing_mirror_probe") {
     refreshState.progress = {
       ...(refreshState.progress || {}),

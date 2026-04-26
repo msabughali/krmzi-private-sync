@@ -13,6 +13,16 @@ services:
       # krmzy.com currently 30x-redirects datacenter IPs to a "Coming Soon"
       # placeholder on krmzi.tv; krmzi.onl is the live primary host.
       SOURCE_BASE_URL: https://krmzi.onl
+      # Optional comma-separated list of additional mirror origins to try
+      # before the built-in fallback chain. Add a freshly-found mirror here
+      # without redeploying:  LISTING_MIRRORS: "https://newhost.tld"
+      # LISTING_MIRRORS: ""
+      # Outbound proxy for Playwright. REQUIRED when the source geofences
+      # this server's IP (datacenter blocks). Use a residential proxy.
+      #   CRAWLER_PROXY_SERVER: "http://gate.smartproxy.com:7000"
+      #   CRAWLER_PROXY_USERNAME: "user"
+      #   CRAWLER_PROXY_PASSWORD: "pass"
+      #   CRAWLER_PROXY_BYPASS: ""
       MAX_EPISODES_PER_RUN: 1000
       MAX_LIST_PAGES: 80
       EPISODES_FILE_PATH: /app/data/episodes.json
@@ -43,6 +53,14 @@ services:
         required: false
     environment:
       SOURCE_BASE_URL: https://krmzi.onl
+      # Mirror these on the worker too so scheduled crawls use the same
+      # source / proxy as web-triggered refreshes. Coolify users can set
+      # these once at the project level instead.
+      # LISTING_MIRRORS: ""
+      # CRAWLER_PROXY_SERVER: "http://gate.smartproxy.com:7000"
+      # CRAWLER_PROXY_USERNAME: "user"
+      # CRAWLER_PROXY_PASSWORD: "pass"
+      # CRAWLER_PROXY_BYPASS: ""
       MAX_EPISODES_PER_RUN: 1000
       MAX_LIST_PAGES: 80
       EPISODES_FILE_PATH: /app/data/episodes.json
