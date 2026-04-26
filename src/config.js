@@ -38,6 +38,10 @@ module.exports = {
     filePath:
       process.env.EPISODES_FILE_PATH || path.join(process.cwd(), "data", "episodes.json")
   },
+  series: {
+    filePath:
+      process.env.SERIES_FILE_PATH || path.join(process.cwd(), "data", "series.json")
+  },
   scheduler: {
     intervalMinutes: parseIntSafe(process.env.INTERVAL_MINUTES, 30)
   },

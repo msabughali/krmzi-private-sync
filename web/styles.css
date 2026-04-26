@@ -200,6 +200,23 @@ a:hover {
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
 }
 
+.refresh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.refresh-btn--secondary {
+  background: var(--bg-soft);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.refresh-btn--secondary:hover:not(:disabled) {
+  background: var(--border-strong);
+  border-color: var(--accent);
+}
+
 .refresh-btn:hover:not(:disabled) {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
@@ -485,10 +502,58 @@ a:hover {
   cursor: progress;
 }
 
+.episode-chain {
+  margin: 18px 0 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-elevated);
+}
+
+.episode-chain-title {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.episode-chain-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.episode-chain-btn {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-soft);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 9px 12px;
+  min-height: 40px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.episode-chain-btn:hover {
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.episode-chain-btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 @media (max-width: 640px) {
   .provider-btn {
     flex: 1 1 calc(50% - 6px);
     min-width: 0;
     padding: 14px 12px;
+  }
+
+  .episode-chain-btn {
+    flex: 1 1 calc(50% - 4px);
   }
 }

@@ -29,6 +29,10 @@
       <p id="meta" class="player-meta"></p>
       <p id="playerHint" class="hint">اختر سيرفر لفتح الحلقة في نافذة جديدة.</p>
       <div id="providers" class="providers"></div>
+      <section id="episodeChain" class="episode-chain" hidden>
+        <h3 class="episode-chain-title">الحلقات</h3>
+        <div id="episodeChainList" class="episode-chain-list"></div>
+      </section>
       <figure id="posterWrap" class="poster-wrap" hidden>
         <img
           id="poster"
@@ -40,17 +44,27 @@
     </main>
     <script>
       const qp = new URLSearchParams(window.location.search);
-      const playerUrl = qp.get("url");
-      const episodeUrl = qp.get("episodeUrl");
-      const title = qp.get("title") || "مشغّل الحلقة";
-      const provider = qp.get("provider") || "unknown";
+      const initialPlayerUrl = qp.get("url");
+      const initialEpisodeUrl = qp.get("episodeUrl");
+      const initialTitle = qp.get("title") || "مشغّل الحلقة";
+      const initialProvider = qp.get("provider") || "unknown";
       const imageUrlFromQuery = qp.get("imageUrl") || "";
-      document.getElementById("title").textContent = title;
-      document.getElementById("meta").textContent = `المزود: ${provider}`;
+      const titleEl = document.getElementById("title");
+      const metaEl = document.getElementById("meta");
       const providersWrap = document.getElementById("providers");
       const playerHint = document.getElementById("playerHint");
       const posterWrap = document.getElementById("posterWrap");
       const posterImg = document.getElementById("poster");
+      const episodeChain = document.getElementById("episodeChain");
+      const episodeChainList = document.getElementById("episodeChainList");
+
+      let currentEpisode = {
+        title: initialTitle,
+        episodeUrl: initialEpisodeUrl,
+        playerUrl: initialPlayerUrl,
+        playerProvider: initialProvider,
+        imageUrl: imageUrlFromQuery
+      };
 
       function openPlayer(url) {
         if (!url) return;
@@ -63,43 +77,98 @@
         return n === "dailymotion" || n === "ok";
       }
 
-      function showPoster(url) {
+      function episodeUrlKey(value) {
+        try {
+          const u = new URL(value);
+          let pathname = u.pathname;
+          try {
+            pathname = decodeURIComponent(pathname);
+          } catch {
+            // Keep browser-normalized path when decoding fails.
+          }
+          return `${u.origin.toLowerCase()}${pathname.replace(/\/+$/, "")}${u.search}`;
+        } catch {
+          return String(value || "");
+        }
+      }
+
+      function episodeTitle(ep) {
+        return ep?.title || ep?.slug?.replace(/-/g, " ") || ep?.episodeUrl || "مشغّل الحلقة";
+      }
+
+      function updateHeader() {
+        const title = episodeTitle(currentEpisode);
+        const provider = currentEpisode.playerProvider || "unknown";
+        titleEl.textContent = title;
+        metaEl.textContent = `المزود: ${provider}`;
+        document.title = `${title} — قرمزي`;
+      }
+
+      function showPoster(url, title) {
+        posterWrap.hidden = true;
+        posterImg.removeAttribute("src");
         if (!url) return;
         posterImg.onerror = () => {
           posterWrap.hidden = true;
         };
         posterImg.src = url;
-        posterImg.alt = title;
+        posterImg.alt = title || "";
         posterWrap.hidden = false;
       }
 
-      if (imageUrlFromQuery) {
-        showPoster(imageUrlFromQuery);
-      } else if (episodeUrl) {
-        fetch("/api/episodes")
-          .then((r) => r.json())
-          .then((payload) => {
-            const list = Array.isArray(payload.episodes) ? payload.episodes : [];
-            const match = list.find((e) => e && e.episodeUrl === episodeUrl);
-            if (match && match.imageUrl) showPoster(match.imageUrl);
-          })
-          .catch(() => {});
+      function findEpisodeWithChain(list, targetUrl) {
+        const targetKey = episodeUrlKey(targetUrl);
+        for (const ep of list) {
+          if (!ep) continue;
+          const chain = Array.isArray(ep.seriesEpisodes) ? ep.seriesEpisodes : [];
+          if (episodeUrlKey(ep.episodeUrl) === targetKey) {
+            return { episode: ep, chain: chain.length ? chain : [ep] };
+          }
+          const nested = chain.find((item) => episodeUrlKey(item?.episodeUrl) === targetKey);
+          if (nested) return { episode: nested, chain };
+        }
+        return { episode: null, chain: [] };
+      }
+
+      function setCurrentEpisode(ep, options = {}) {
+        if (!ep) return;
+        currentEpisode = {
+          ...currentEpisode,
+          ...ep,
+          title: episodeTitle(ep),
+          playerUrl: ep.playerUrl || ep.videoUrl || null,
+          playerId: ep.playerId || ep.videoId || null
+        };
+        updateHeader();
+        showPoster(currentEpisode.imageUrl, currentEpisode.title);
+        renderProviders();
+
+        if (options.pushState !== false && currentEpisode.episodeUrl) {
+          const next = new URL(window.location.href);
+          next.searchParams.set("episodeUrl", currentEpisode.episodeUrl);
+          next.searchParams.set("title", currentEpisode.title);
+          next.searchParams.set("provider", currentEpisode.playerProvider || "unknown");
+          next.searchParams.set("url", currentEpisode.playerUrl || "");
+          next.searchParams.set("imageUrl", currentEpisode.imageUrl || "");
+          window.history.pushState({}, "", next);
+        }
       }
 
       function buildResolveUrl(serverName) {
         const base = "/api/resolve-server";
-        const key = episodeUrl
-          ? `episodeUrl=${encodeURIComponent(episodeUrl)}`
-          : `playerUrl=${encodeURIComponent(playerUrl || "")}`;
+        const key = currentEpisode.episodeUrl
+          ? `episodeUrl=${encodeURIComponent(currentEpisode.episodeUrl)}`
+          : `playerUrl=${encodeURIComponent(currentEpisode.playerUrl || "")}`;
         const server = serverName ? `&server=${encodeURIComponent(serverName)}` : "";
         return `${base}?${key}${server}&preferDirect=1`;
       }
 
       async function renderProviders() {
-        if (!playerUrl && !episodeUrl) return;
+        if (!currentEpisode.playerUrl && !currentEpisode.episodeUrl) return;
         if (playerHint) {
           playerHint.textContent = "يفتح السيرفر في نفس الصفحة على جميع الأجهزة (وضع اختبار).";
         }
+        providersWrap.innerHTML = "";
         try {
           const res = await fetch(buildResolveUrl(""));
           const payload = await res.json();
@@ -149,7 +218,61 @@
         }
       }
 
-      renderProviders();
+      function renderEpisodeChain(chain) {
+        const items = Array.isArray(chain) ? chain : [];
+        if (!items.length) {
+          episodeChain.hidden = true;
+          episodeChainList.innerHTML = "";
+          return;
+        }
+
+        episodeChain.hidden = false;
+        episodeChainList.innerHTML = "";
+        const activeKey = episodeUrlKey(currentEpisode.episodeUrl);
+
+        for (const ep of items) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "episode-chain-btn";
+          if (episodeUrlKey(ep.episodeUrl) === activeKey) {
+            btn.classList.add("episode-chain-btn--active");
+            btn.setAttribute("aria-current", "true");
+          }
+          const number = ep.episodeNumber ?? "";
+          btn.textContent = number ? `حلقة ${number}` : episodeTitle(ep);
+          btn.onclick = () => {
+            setCurrentEpisode(ep);
+            renderEpisodeChain(items);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          };
+          episodeChainList.appendChild(btn);
+        }
+      }
+
+      async function init() {
+        updateHeader();
+        if (imageUrlFromQuery) showPoster(imageUrlFromQuery, currentEpisode.title);
+
+        try {
+          const payload = await fetch("/api/episodes").then((r) => r.json());
+          const list = Array.isArray(payload.episodes) ? payload.episodes : [];
+          const found = findEpisodeWithChain(list, currentEpisode.episodeUrl);
+          if (found.episode) {
+            setCurrentEpisode(found.episode, { pushState: false });
+          } else {
+            renderProviders();
+          }
+          renderEpisodeChain(found.chain);
+        } catch {
+          renderProviders();
+        }
+      }
+
+      window.addEventListener("popstate", () => {
+        window.location.reload();
+      });
+
+      init();
     </script>
   </body>
 </html>

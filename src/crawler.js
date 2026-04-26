@@ -1,6 +1,8 @@
 const { chromium } = require("playwright");
 const {
   parseEpisodeLinks,
+  extractSlugFromEpisodeUrl,
+  parseSeriesName,
   extractDailymotionVideoId,
   detectPlayerProvider,
   extractPlayerMetadata,
@@ -271,6 +273,85 @@ function buildMirrorBaseCandidates(baseUrl) {
   return normalized;
 }
 
+function normalizeSeriesTitle(value) {
+  return parseSeriesName(value) || "";
+}
+
+async function extractSeriesEpisodesFromPage(page, episodeUrl) {
+  const currentTitle = await page
+    .locator("h1")
+    .first()
+    .textContent({ timeout: 1000 })
+    .catch(() => "");
+  const seriesKey = normalizeSeriesTitle(
+    currentTitle || extractSlugFromEpisodeUrl(episodeUrl)
+  );
+  const allLinks = await parseEpisodeLinks(page, episodeUrl, 300);
+  const deduped = [];
+  const seen = new Set();
+
+  for (const item of allLinks) {
+    if (!item.episodeUrl || seen.has(item.episodeUrl)) continue;
+    const itemKey = normalizeSeriesTitle(
+      item.title || extractSlugFromEpisodeUrl(item.episodeUrl)
+    );
+    if (seriesKey && itemKey && itemKey !== seriesKey) continue;
+    seen.add(item.episodeUrl);
+    deduped.push({
+      title: item.title || itemKey || null,
+      seriesName: item.seriesName || itemKey || null,
+      episodeUrl: item.episodeUrl,
+      slug: extractSlugFromEpisodeUrl(item.episodeUrl),
+      episodeNumber: item.episodeNumber ?? null,
+      imageUrl: sanitizeStoredEpisodeImageUrl(item.listingImageUrl)
+    });
+  }
+
+  return deduped.sort((a, b) => {
+    const an = Number.isFinite(a.episodeNumber) ? a.episodeNumber : -1;
+    const bn = Number.isFinite(b.episodeNumber) ? b.episodeNumber : -1;
+    return bn - an;
+  });
+}
+
+function urlKey(value) {
+  try {
+    const u = new URL(value);
+    let pathname = u.pathname;
+    try {
+      pathname = decodeURIComponent(pathname);
+    } catch {
+      // Keep the URL parser's normalized path if decoding fails.
+    }
+    const normalizedPath = pathname.replace(/\/+$/, "");
+    return `${u.origin.toLowerCase()}${normalizedPath}${u.search}`;
+  } catch {
+    return String(value || "");
+  }
+}
+
+function seriesChainKey(seriesEpisodes) {
+  if (!Array.isArray(seriesEpisodes) || seriesEpisodes.length === 0) return null;
+  const urls = seriesEpisodes.map((ep) => urlKey(ep.episodeUrl)).filter(Boolean).sort();
+  return urls.length ? urls.join("|") : null;
+}
+
+function mergeHydratedSeriesEpisode(baseEpisode, resolvedEpisode) {
+  return {
+    ...baseEpisode,
+    seriesName: baseEpisode.seriesName || resolvedEpisode.seriesName || null,
+    videoUrl: resolvedEpisode.videoUrl || null,
+    videoId: resolvedEpisode.videoId || null,
+    playerProvider: resolvedEpisode.playerProvider || null,
+    playerServers: Array.isArray(resolvedEpisode.playerServers)
+      ? resolvedEpisode.playerServers
+      : [],
+    imageUrl:
+      sanitizeStoredEpisodeImageUrl(resolvedEpisode.imageUrl) ||
+      sanitizeStoredEpisodeImageUrl(baseEpisode.imageUrl)
+  };
+}
+
 async function hasPaginationForNext(page, nextPageNumber) {
   return page.evaluate((nextN) => {
     const anchors = Array.from(document.querySelectorAll('.pagination a[href*="/page/"]'));
@@ -341,7 +422,7 @@ async function crawlListingPage(page, appConfig, logger) {
     }
 
     const remaining = maxEpisodes - aggregated.size;
-    let items = await parseEpisodeLinks(page, activeBaseUrl, remaining);
+    let items = await parseEpisodeLinks(page, activeBaseUrl, Math.max(remaining * 4, remaining));
 
     // If the first listing page is empty, probe known mirrors automatically.
     if (items.length === 0 && pageN === 1) {
@@ -355,7 +436,11 @@ async function crawlListingPage(page, appConfig, logger) {
           timeout: appConfig.source.navigationTimeoutMs
         });
         await humanPause(appConfig.crawler);
-        const candidateItems = await parseEpisodeLinks(page, candidateBase, remaining);
+        const candidateItems = await parseEpisodeLinks(
+          page,
+          candidateBase,
+          Math.max(remaining * 4, remaining)
+        );
 
         if (logger) {
           logger.info("listing_mirror_probe", {
@@ -377,7 +462,8 @@ async function crawlListingPage(page, appConfig, logger) {
     }
     const before = aggregated.size;
     for (const it of items) {
-      if (!aggregated.has(it.episodeUrl)) aggregated.set(it.episodeUrl, it);
+      const key = it.seriesName || normalizeSeriesTitle(it.title || it.episodeUrl) || it.episodeUrl;
+      if (!aggregated.has(key)) aggregated.set(key, it);
       if (aggregated.size >= maxEpisodes) break;
     }
 
@@ -391,7 +477,7 @@ async function crawlListingPage(page, appConfig, logger) {
     }
 
     if (aggregated.size >= maxEpisodes) break;
-    if (aggregated.size === before) break; // page returned zero new items => stop
+    if (items.length === 0) break; // page returned zero items => stop
     const hasNext = await hasPaginationForNext(page, pageN + 1);
     if (!hasNext) break;
   }
@@ -399,7 +485,14 @@ async function crawlListingPage(page, appConfig, logger) {
   return Array.from(aggregated.values());
 }
 
-async function resolveEpisodeVideo(page, episodeUrl, appConfig, listingImageUrl = null) {
+async function resolveEpisodeVideo(
+  page,
+  episodeUrl,
+  appConfig,
+  listingImageUrl = null,
+  options = {}
+) {
+  const includeSeriesEpisodes = options.includeSeriesEpisodes !== false;
   const candidates = [];
   const seen = new Set();
   let playerCandidateResolver = null;
@@ -458,6 +551,9 @@ async function resolveEpisodeVideo(page, episodeUrl, appConfig, listingImageUrl 
       imageUrl = sanitizeStoredEpisodeImageUrl(rawImage) || null;
     }
     const tAfterImage = Date.now();
+    const seriesEpisodes = includeSeriesEpisodes
+      ? await extractSeriesEpisodesFromPage(page, episodeUrl)
+      : [];
 
     // Some pages auto-load the iframe on DOMContentLoaded; give it a tiny head start.
     if (!hasPlayerCandidate()) {
@@ -550,13 +646,114 @@ async function resolveEpisodeVideo(page, episodeUrl, appConfig, listingImageUrl 
       videoId,
       playerProvider,
       playerServers: servers,
-      imageUrl
+      imageUrl,
+      seriesEpisodes
     };
   } finally {
     page.off("request", trackRequest);
     page.off("response", trackResponse);
     page.off("popup", onPopup);
   }
+}
+
+async function extractSeriesEpisodeList(page, seriesRef, appConfig) {
+  if (!seriesRef?.latestEpisodeUrl) return [];
+  await page.goto(seriesRef.latestEpisodeUrl, {
+    waitUntil: "domcontentloaded",
+    timeout: appConfig.source.navigationTimeoutMs
+  });
+  return extractSeriesEpisodesFromPage(page, seriesRef.latestEpisodeUrl);
+}
+
+function knownForSeries(knownSeries, seriesName) {
+  const bySeries = knownSeries?.episodesBySeries || {};
+  return bySeries[seriesName] || { episodeUrls: [], episodeNumbers: [] };
+}
+
+function isKnownSeriesEpisode(item, known) {
+  if (!item) return false;
+  const urls = new Set((known.episodeUrls || []).map((u) => urlKey(u)));
+  const nums = new Set(
+    (known.episodeNumbers || [])
+      .filter((n) => Number.isFinite(n))
+      .map((n) => Number(n))
+  );
+  if (item.episodeUrl && urls.has(urlKey(item.episodeUrl))) return true;
+  if (Number.isFinite(item.episodeNumber) && nums.has(Number(item.episodeNumber))) return true;
+  return false;
+}
+
+async function hydrateSeriesEpisodes(
+  page,
+  parentEpisode,
+  resolvedEpisode,
+  appConfig,
+  logger,
+  options = {}
+) {
+  const basicChain = Array.isArray(resolvedEpisode.seriesEpisodes)
+    ? resolvedEpisode.seriesEpisodes
+    : [];
+  if (basicChain.length === 0) return [];
+
+  const hydrated = [];
+  const currentKey = urlKey(parentEpisode.episodeUrl);
+  const knownEpisodeUrls = options.knownEpisodeUrls instanceof Set
+    ? options.knownEpisodeUrls
+    : new Set();
+  const knownEpisodeNumbers = options.knownEpisodeNumbers instanceof Set
+    ? options.knownEpisodeNumbers
+    : new Set();
+
+  for (const item of basicChain) {
+    if (!item?.episodeUrl) continue;
+    const itemKey = urlKey(item.episodeUrl);
+    if (itemKey === currentKey) {
+      hydrated.push(mergeHydratedSeriesEpisode(item, resolvedEpisode));
+      continue;
+    }
+    if (knownEpisodeUrls.has(itemKey)) {
+      hydrated.push(item);
+      continue;
+    }
+    if (Number.isFinite(item.episodeNumber) && knownEpisodeNumbers.has(Number(item.episodeNumber))) {
+      hydrated.push(item);
+      continue;
+    }
+
+    try {
+      const itemResolved = await withRetry(
+        async (attempt) => {
+          logger.info("resolving_series_episode", {
+            episodeUrl: item.episodeUrl,
+            parentEpisodeUrl: parentEpisode.episodeUrl,
+            attempt
+          });
+          return resolveEpisodeVideo(
+            page,
+            item.episodeUrl,
+            appConfig,
+            item.imageUrl || null,
+            { includeSeriesEpisodes: false }
+          );
+        },
+        appConfig.crawler.retries
+      );
+      hydrated.push(mergeHydratedSeriesEpisode(item, itemResolved));
+      await humanPause(appConfig.crawler);
+    } catch (err) {
+      if (logger?.warn) {
+        logger.warn("series_episode_resolve_failed", {
+          episodeUrl: item.episodeUrl,
+          parentEpisodeUrl: parentEpisode.episodeUrl,
+          message: err instanceof Error ? err.message : String(err)
+        });
+      }
+      hydrated.push(item);
+    }
+  }
+
+  return hydrated;
 }
 
 async function withRetry(fn, retries) {
@@ -593,8 +790,25 @@ async function runCrawl(appConfig, logger, options = {}) {
       : await crawlListingPage(page, appConfig, logger);
     logger.info("discovered_episodes", { count: episodes.length });
     const results = [];
+    const hydratedChains = new Map();
+    const knownSeriesNames = new Set(options.knownSeries?.seriesNames || []);
+    const knownEpisodeUrls = new Set(
+      (options.knownSeries?.episodeUrls || []).map((u) => urlKey(u))
+    );
 
     for (const episode of episodes) {
+      const seriesName =
+        episode.seriesName || normalizeSeriesTitle(episode.title || episode.episodeUrl);
+      const knownSeries = seriesName && knownSeriesNames.has(seriesName);
+      const listingEpisodeKnown = knownEpisodeUrls.has(urlKey(episode.episodeUrl));
+      if (knownSeries && listingEpisodeKnown) {
+        logger.info("skipping_known_series_episode", {
+          seriesName,
+          episodeUrl: episode.episodeUrl
+        });
+        continue;
+      }
+
       const resolved = await withRetry(
         async (attempt) => {
           logger.info("resolving_episode", {
@@ -605,11 +819,30 @@ async function runCrawl(appConfig, logger, options = {}) {
             page,
             episode.episodeUrl,
             appConfig,
-            episode.listingImageUrl || null
+            episode.listingImageUrl || null,
+            { includeSeriesEpisodes: true }
           );
         },
         appConfig.crawler.retries
       );
+
+      const chainKey = seriesChainKey(resolved.seriesEpisodes);
+      if (chainKey) {
+        if (hydratedChains.has(chainKey)) {
+          resolved.seriesEpisodes = hydratedChains.get(chainKey);
+        } else {
+          resolved.seriesEpisodes = await hydrateSeriesEpisodes(
+            page,
+            episode,
+            resolved,
+            appConfig,
+            logger,
+            { knownEpisodeUrls: knownSeries ? knownEpisodeUrls : new Set() }
+          );
+          hydratedChains.set(chainKey, resolved.seriesEpisodes);
+        }
+      }
+
       results.push({ ...episode, ...resolved });
       await humanPause(appConfig.crawler);
     }
@@ -620,4 +853,130 @@ async function runCrawl(appConfig, logger, options = {}) {
   }
 }
 
-module.exports = { runCrawl };
+async function runSeriesEpisodeRefresh(appConfig, logger, seriesRef, knownSeries = {}) {
+  const browser = await chromium.launch({ headless: appConfig.crawler.headless });
+  const context = await browser.newContext({
+    locale: "ar",
+    viewport: { width: 1366, height: 768 },
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+  });
+  const page = await context.newPage();
+
+  try {
+    const results = [];
+    const allSeries = Array.isArray(seriesRef?.series) ? seriesRef.series : [];
+    let processed = 0;
+    for (const series of allSeries) {
+      if (!series?.seriesName || !series.latestEpisodeUrl) continue;
+      processed += 1;
+      logger.info("checking_series_episodes", {
+        seriesName: series.seriesName,
+        latestEpisodeUrl: series.latestEpisodeUrl,
+        processed,
+        total: allSeries.length
+      });
+
+      const basicChain = await withRetry(
+        () => extractSeriesEpisodeList(page, series, appConfig),
+        appConfig.crawler.retries
+      );
+      const known = knownForSeries(knownSeries, series.seriesName);
+      const missing = basicChain.filter((item) => !isKnownSeriesEpisode(item, known));
+
+      if (missing.length === 0) {
+        logger.info("series_episodes_already_complete", {
+          seriesName: series.seriesName,
+          total: basicChain.length,
+          processed,
+          seriesTotal: allSeries.length
+        });
+        await humanPause(appConfig.crawler);
+        continue;
+      }
+
+      const hydrated = [];
+      for (const item of missing) {
+        try {
+          const resolved = await withRetry(
+            async (attempt) => {
+              logger.info("resolving_missing_series_episode", {
+                seriesName: series.seriesName,
+                episodeUrl: item.episodeUrl,
+                episodeNumber: item.episodeNumber,
+                attempt
+              });
+              return resolveEpisodeVideo(
+                page,
+                item.episodeUrl,
+                appConfig,
+                item.imageUrl || series.imageUrl || null,
+                { includeSeriesEpisodes: false }
+              );
+            },
+            appConfig.crawler.retries
+          );
+          hydrated.push(mergeHydratedSeriesEpisode(
+            { ...item, seriesName: series.seriesName },
+            resolved
+          ));
+          await humanPause(appConfig.crawler);
+        } catch (err) {
+          logger.warn("missing_series_episode_resolve_failed", {
+            seriesName: series.seriesName,
+            episodeUrl: item.episodeUrl,
+            message: err instanceof Error ? err.message : String(err)
+          });
+          hydrated.push({ ...item, seriesName: series.seriesName });
+        }
+      }
+
+      const latest = basicChain[0] || missing[0] || null;
+      const seriesResult = {
+        title: series.seriesName,
+        seriesName: series.seriesName,
+        episodeUrl: latest?.episodeUrl || series.latestEpisodeUrl,
+        episodeNumber: latest?.episodeNumber ?? series.latestEpisodeNumber ?? null,
+        imageUrl: series.imageUrl || null,
+        seriesEpisodes: hydrated
+      };
+      results.push(seriesResult);
+      if (typeof knownSeries.onSeriesResult === "function") {
+        await knownSeries.onSeriesResult(seriesResult, {
+          seriesName: series.seriesName,
+          processed,
+          total: allSeries.length,
+          missing: missing.length,
+          saved: hydrated.length
+        });
+      }
+      await humanPause(appConfig.crawler);
+    }
+    return results;
+  } finally {
+    await context.close();
+    await browser.close();
+  }
+}
+
+async function runSeriesDiscovery(appConfig, logger) {
+  const browser = await chromium.launch({ headless: appConfig.crawler.headless });
+  const context = await browser.newContext({
+    locale: "ar",
+    viewport: { width: 1366, height: 768 },
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+  });
+  const page = await context.newPage();
+
+  try {
+    const episodes = await crawlListingPage(page, appConfig, logger);
+    logger.info("discovered_series_candidates", { count: episodes.length });
+    return episodes;
+  } finally {
+    await context.close();
+    await browser.close();
+  }
+}
+
+module.exports = { runCrawl, runSeriesDiscovery, runSeriesEpisodeRefresh };

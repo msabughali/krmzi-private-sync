@@ -35,21 +35,100 @@ function safeJoin(base, candidate) {
   return normalized.startsWith(base) ? normalized : null;
 }
 
+function episodeUrlKey(value) {
+  try {
+    const u = new URL(value);
+    let pathname = u.pathname;
+    try {
+      pathname = decodeURIComponent(pathname);
+    } catch {
+      // Keep the URL parser's normalized path if decoding fails.
+    }
+    return `${u.origin.toLowerCase()}${pathname.replace(/\/+$/, "")}${u.search}`;
+  } catch {
+    return String(value || "");
+  }
+}
+
+function findStoredEpisodeByUrl(episodes, episodeUrl) {
+  if (!episodeUrl || !Array.isArray(episodes)) return null;
+  const targetKey = episodeUrlKey(episodeUrl);
+  for (const ep of episodes) {
+    if (!ep || typeof ep !== "object") continue;
+    if (episodeUrlKey(ep.episodeUrl) === targetKey) return ep;
+    if (Array.isArray(ep.seriesEpisodes)) {
+      const nested = ep.seriesEpisodes.find((item) => episodeUrlKey(item?.episodeUrl) === targetKey);
+      if (nested) return nested;
+    }
+  }
+  return null;
+}
+
 const refreshState = {
   running: false,
   lastError: null,
   lastFinishedAt: null,
-  lastExitCode: null
+  lastExitCode: null,
+  progress: null
 };
 
-function startRefreshCrawl() {
+function updateRefreshProgressFromLog(line) {
+  let payload = null;
+  try {
+    payload = JSON.parse(line);
+  } catch {
+    return;
+  }
+  if (!payload || typeof payload !== "object") return;
+
+  if (payload.message === "checking_series_episodes") {
+    refreshState.progress = {
+      phase: "checking_series",
+      seriesName: payload.seriesName || null,
+      processed: payload.processed || null,
+      total: payload.total || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "resolving_missing_series_episode") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "resolving_episode",
+      seriesName: payload.seriesName || null,
+      episodeNumber: payload.episodeNumber || null,
+      episodeUrl: payload.episodeUrl || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "series_progress_saved") {
+    refreshState.progress = {
+      phase: "saved_series",
+      seriesName: payload.seriesName || null,
+      processed: payload.processed || null,
+      total: payload.total || null,
+      missing: payload.missing || 0,
+      saved: payload.saved || 0,
+      stored: payload.stored || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "series_episodes_already_complete") {
+    refreshState.progress = {
+      phase: "skipped_complete_series",
+      seriesName: payload.seriesName || null,
+      processed: payload.processed || null,
+      total: payload.seriesTotal || null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+  }
+}
+
+function startRefreshCrawl(args = []) {
   const entry = path.join(process.cwd(), "src", "index.js");
-  const child = spawn(process.execPath, [entry, "--once", "--reset"], {
+  const child = spawn(process.execPath, [entry, ...args], {
     cwd: process.cwd(),
     env: {
       ...process.env,
       STATE_FILE_PATH: config.state.filePath,
-      EPISODES_FILE_PATH: config.episodes.filePath
+      EPISODES_FILE_PATH: config.episodes.filePath,
+      SERIES_FILE_PATH: config.series.filePath
     },
     stdio: ["ignore", "pipe", "pipe"]
   });
@@ -58,7 +137,11 @@ function startRefreshCrawl() {
   let stderrBuf = "";
   if (child.stdout) {
     child.stdout.on("data", (chunk) => {
-      stdoutBuf += String(chunk);
+      const text = String(chunk);
+      stdoutBuf += text;
+      for (const line of text.split(/\r?\n/)) {
+        if (line.trim()) updateRefreshProgressFromLog(line.trim());
+      }
       if (stdoutBuf.length > 6000) stdoutBuf = stdoutBuf.slice(-6000);
     });
   }
@@ -87,6 +170,13 @@ function startRefreshCrawl() {
       refreshState.lastError = tail || `Process exited with code ${code}`;
     }
     refreshState.lastFinishedAt = new Date().toISOString();
+    if (refreshState.progress) {
+      refreshState.progress = {
+        ...refreshState.progress,
+        phase: code === 0 ? "finished" : "failed",
+        updatedAt: refreshState.lastFinishedAt
+      };
+    }
   });
 }
 
@@ -102,7 +192,8 @@ async function handler(req, res) {
       running: refreshState.running,
       lastError: refreshState.lastError,
       lastFinishedAt: refreshState.lastFinishedAt,
-      lastExitCode: refreshState.lastExitCode
+      lastExitCode: refreshState.lastExitCode,
+      progress: refreshState.progress
     });
   }
 
@@ -121,8 +212,37 @@ async function handler(req, res) {
     refreshState.lastError = null;
     refreshState.lastExitCode = null;
     refreshState.lastFinishedAt = null;
+    refreshState.progress = { phase: "starting", updatedAt: new Date().toISOString() };
     try {
-      startRefreshCrawl();
+      startRefreshCrawl(["--once"]);
+    } catch (err) {
+      refreshState.running = false;
+      refreshState.lastError = err instanceof Error ? err.message : String(err);
+      refreshState.lastFinishedAt = new Date().toISOString();
+      refreshState.lastExitCode = -1;
+      return sendJson(res, 500, { error: "spawn_failed", message: refreshState.lastError });
+    }
+    return sendJson(res, 202, { ok: true, accepted: true });
+  }
+
+  if (reqUrl.pathname === "/api/refresh-series") {
+    if (req.method !== "POST") {
+      res.setHeader("Allow", "POST");
+      return sendJson(res, 405, { error: "method_not_allowed" });
+    }
+    if (refreshState.running) {
+      return sendJson(res, 409, {
+        error: "already_running",
+        message: "A crawl is already in progress."
+      });
+    }
+    refreshState.running = true;
+    refreshState.lastError = null;
+    refreshState.lastExitCode = null;
+    refreshState.lastFinishedAt = null;
+    refreshState.progress = { phase: "starting_series_scan", updatedAt: new Date().toISOString() };
+    try {
+      startRefreshCrawl(["--series-only"]);
     } catch (err) {
       refreshState.running = false;
       refreshState.lastError = err instanceof Error ? err.message : String(err);
@@ -147,7 +267,7 @@ async function handler(req, res) {
     );
     const data = await loadEpisodes(config.episodes.filePath);
     const fromEpisode = episodeUrl
-      ? data.episodes.find((ep) => ep.episodeUrl === episodeUrl)
+      ? findStoredEpisodeByUrl(data.episodes, episodeUrl)
       : null;
     const playerUrl = playerUrlParam || fromEpisode?.playerUrl || null;
     const storedServers = Array.isArray(fromEpisode?.playerServers)

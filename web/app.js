@@ -210,33 +210,38 @@ async function pollRefreshDone() {
   }
 }
 
-document.getElementById("refreshBtn")?.addEventListener("click", async () => {
-  const btn = document.getElementById("refreshBtn");
+async function runRefresh({ buttonId, endpoint, loadingMessage }) {
+  const btn = document.getElementById(buttonId);
   const status = document.getElementById("status");
   if (!btn || !status) return;
 
+  const buttons = [
+    document.getElementById("refreshBtn"),
+    document.getElementById("refreshSeriesBtn")
+  ].filter(Boolean);
+  for (const item of buttons) item.disabled = true;
   btn.disabled = true;
-  setStatusLoading("جاري جلب البيانات");
+  setStatusLoading(loadingMessage);
 
   try {
-    const res = await fetch("/api/refresh", { method: "POST" });
+    const res = await fetch(endpoint, { method: "POST" });
     const data = await res.json().catch(() => ({}));
 
     if (res.status === 409) {
-      setStatusLoading("جاري جلب البيانات");
+      setStatusLoading(loadingMessage);
       const outcome = await pollRefreshDone();
       if (outcome.lastExitCode === 0) {
         setStatusText("تم. جاري إعادة التحميل…");
         window.location.reload();
         return;
       }
-      btn.disabled = false;
+      for (const item of buttons) item.disabled = false;
       return;
     }
 
     if (!res.ok) {
       setStatusText(data.message || `فشل التحديث (${res.status}).`);
-      btn.disabled = false;
+      for (const item of buttons) item.disabled = false;
       return;
     }
 
@@ -248,7 +253,7 @@ document.getElementById("refreshBtn")?.addEventListener("click", async () => {
           (outcome.lastError ? `: ${outcome.lastError}` : ".") +
           " راجع سجل الخادم."
       );
-      btn.disabled = false;
+      for (const item of buttons) item.disabled = false;
       return;
     }
 
@@ -256,8 +261,24 @@ document.getElementById("refreshBtn")?.addEventListener("click", async () => {
     window.location.reload();
   } catch (err) {
     setStatusText(`خطأ: ${err.message}`);
-    btn.disabled = false;
+    for (const item of buttons) item.disabled = false;
   }
+}
+
+document.getElementById("refreshBtn")?.addEventListener("click", () => {
+  runRefresh({
+    buttonId: "refreshBtn",
+    endpoint: "/api/refresh",
+    loadingMessage: "جاري جلب بيانات الحلقات"
+  });
+});
+
+document.getElementById("refreshSeriesBtn")?.addEventListener("click", () => {
+  runRefresh({
+    buttonId: "refreshSeriesBtn",
+    endpoint: "/api/refresh-series",
+    loadingMessage: "جاري فحص المسلسلات"
+  });
 });
 
 loadEpisodes();

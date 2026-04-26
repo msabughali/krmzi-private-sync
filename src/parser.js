@@ -11,6 +11,25 @@ function parseEpisodeNumber(text) {
   return match ? Number.parseInt(match[1], 10) : null;
 }
 
+function parseSeriesName(text) {
+  let value = String(text || "");
+  try {
+    value = decodeURIComponent(value);
+  } catch {
+    // Keep original text when it is not URI-encoded.
+  }
+  return value
+    .replace(/\s*-\s*قرمزي\s*$/i, "")
+    .replace(/^نهاية\s+الموسم\s+/i, "")
+    .replace(/^حلقة\s*\d+\s+/i, "")
+    .replace(/^episode\s*\d+\s+/i, "")
+    .replace(/\s+(?:مسلسل\s*)?الحلقة\s*\d+\s*$/i, "")
+    .replace(/\s+episode\s*\d+\s*$/i, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim() || null;
+}
+
 async function parseEpisodeLinks(page, baseUrl, maxCount) {
   // Lazy-load adapters: many themes delay populating background-image on
   // off-screen cards and keep the real URL in a data-* attribute. Trigger a
@@ -149,9 +168,11 @@ async function parseEpisodeLinks(page, baseUrl, maxCount) {
       listingImageUrl = null;
     }
 
+    const label = item.title || item.text || "";
     dedup.set(full, {
       episodeUrl: full,
-      title: item.title || item.text || null,
+      title: label || null,
+      seriesName: parseSeriesName(label || full),
       episodeNumber: parseEpisodeNumber(item.text || item.title || ""),
       listingImageUrl
     });
@@ -178,6 +199,7 @@ async function parseEpisodeLinks(page, baseUrl, maxCount) {
       dedup.set(full, {
         episodeUrl: full,
         title: null,
+        seriesName: parseSeriesName(full),
         episodeNumber: parseEpisodeNumber(full),
         listingImageUrl: null
       });
@@ -427,6 +449,7 @@ module.exports = {
   normalizeUrl,
   parseEpisodeLinks,
   parseEpisodeNumber,
+  parseSeriesName,
   extractSlugFromEpisodeUrl,
   extractDailymotionVideoId,
   detectPlayerProvider,
