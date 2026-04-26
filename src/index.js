@@ -286,23 +286,35 @@ function mergeSeriesReferences(existingRef, discovered) {
 
 async function runSeriesOnly(options = {}) {
   const activeLogger = options.silent ? { info: () => {}, warn: () => {}, error: () => {} } : logger;
-  activeLogger.info("series_refresh_started");
+  activeLogger.info("series_refresh_started", { seriesFile: config.series.filePath });
   const seriesRef = await loadSeriesReference(config.series.filePath);
   const discovered = await runSeriesDiscovery(config, activeLogger);
   const merged = mergeSeriesReferences(seriesRef, discovered);
   await fs.mkdir(path.dirname(config.series.filePath), { recursive: true });
   await fs.writeFile(config.series.filePath, JSON.stringify(merged, null, 2), "utf8");
+
+  let seriesFileSize = null;
+  try {
+    seriesFileSize = (await fs.stat(config.series.filePath)).size;
+  } catch {
+    seriesFileSize = null;
+  }
+
   activeLogger.info("series_refresh_finished", {
     discovered: discovered.length,
     added: merged.added,
     skipped: merged.skipped,
-    total: merged.count
+    total: merged.count,
+    seriesFile: config.series.filePath,
+    seriesFileSize
   });
   return {
     discovered: discovered.length,
     added: merged.added,
     skipped: merged.skipped,
-    total: merged.count
+    total: merged.count,
+    seriesFile: config.series.filePath,
+    seriesFileSize
   };
 }
 
@@ -314,10 +326,37 @@ function getFlagValue(flagName) {
 async function runOnce(options = {}) {
   const activeLogger = options.silent ? { info: () => {}, warn: () => {}, error: () => {} } : logger;
   const reset = Boolean(options.reset);
-  activeLogger.info("run_started", { reset });
+  activeLogger.info("run_started", {
+    reset,
+    episodesFile: config.episodes.filePath,
+    seriesFile: config.series.filePath
+  });
   const state = await loadState(config.state.filePath);
   const storeData = await loadEpisodes(config.episodes.filePath);
-  const seriesRef = await loadSeriesReference(config.series.filePath);
+  let seriesRef = await loadSeriesReference(config.series.filePath);
+
+  // Coolify deploys frequently start with an empty series.json (no persistent
+  // volume yet, or a fresh re-seed). Without populating it first the episode
+  // refresh would iterate an empty list and silently save nothing — looking
+  // exactly like "the refresh button does not save data".
+  const noSeriesYet = !Array.isArray(seriesRef?.series) || seriesRef.series.length === 0;
+  if (!options.singleEpisodeUrl && noSeriesYet) {
+    activeLogger.info("series_reference_empty_running_discovery_first", {
+      seriesFile: config.series.filePath
+    });
+    const discovered = await runSeriesDiscovery(config, activeLogger);
+    const merged = mergeSeriesReferences(seriesRef, discovered);
+    await fs.mkdir(path.dirname(config.series.filePath), { recursive: true });
+    await fs.writeFile(config.series.filePath, JSON.stringify(merged, null, 2), "utf8");
+    activeLogger.info("series_reference_seeded_during_episode_refresh", {
+      discovered: discovered.length,
+      added: merged.added,
+      skipped: merged.skipped,
+      total: merged.count
+    });
+    seriesRef = await loadSeriesReference(config.series.filePath);
+  }
+
   const knownSeries = buildKnownSeriesSnapshot(seriesRef, storeData.episodes);
   if (!options.singleEpisodeUrl) {
     knownSeries.onSeriesResult = async (seriesResult, progress) => {
@@ -358,13 +397,29 @@ async function runOnce(options = {}) {
   await saveEpisodes(config.episodes.filePath, storeData);
   await saveSeriesReference(config.series.filePath, storeData.episodes);
 
+  let episodesFileSize = null;
+  let seriesFileSize = null;
+  try {
+    episodesFileSize = (await fs.stat(config.episodes.filePath)).size;
+  } catch {
+    episodesFileSize = null;
+  }
+  try {
+    seriesFileSize = (await fs.stat(config.series.filePath)).size;
+  } catch {
+    seriesFileSize = null;
+  }
+
   activeLogger.info("run_prepared", {
     crawled: crawled.length,
     unsynced: unsynced.length,
     outbound: outbound.length,
     reset,
     stored: storeData.episodes.length,
+    episodesFile: config.episodes.filePath,
+    episodesFileSize,
     seriesReference: config.series.filePath,
+    seriesFileSize,
     dryRun: config.runtime.dryRun
   });
 

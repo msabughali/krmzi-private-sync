@@ -226,6 +226,30 @@ a:hover {
   transform: translateY(1px);
 }
 
+.data-info {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.data-info--error {
+  border-color: var(--accent);
+  background: rgba(220, 20, 60, 0.08);
+  color: var(--text);
+}
+
+.data-info code {
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
 .refresh-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;

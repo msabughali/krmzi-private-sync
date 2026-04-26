@@ -84,8 +84,46 @@ const refreshState = {
   lastError: null,
   lastFinishedAt: null,
   lastExitCode: null,
-  progress: null
+  progress: null,
+  lastSaved: null
 };
+
+async function statSafe(filePath) {
+  try {
+    const stat = await fs.stat(filePath);
+    return {
+      path: filePath,
+      exists: true,
+      size: stat.size,
+      mtime: stat.mtime.toISOString(),
+      isFile: stat.isFile()
+    };
+  } catch (err) {
+    return {
+      path: filePath,
+      exists: false,
+      error: err && err.code ? err.code : String(err && err.message ? err.message : err)
+    };
+  }
+}
+
+async function probeDataDirectory() {
+  const dir = path.dirname(config.episodes.filePath);
+  const probe = path.join(dir, ".write-probe");
+  try {
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(probe, String(Date.now()), "utf8");
+    const back = await fs.readFile(probe, "utf8");
+    await fs.unlink(probe).catch(() => {});
+    return { writable: true, dir, sample: back };
+  } catch (err) {
+    return {
+      writable: false,
+      dir,
+      error: err && err.code ? err.code : String(err && err.message ? err.message : err)
+    };
+  }
+}
 
 function updateRefreshProgressFromLog(line) {
   let payload = null;
@@ -166,6 +204,35 @@ function updateRefreshProgressFromLog(line) {
       discovered: payload.discovered || 0,
       added: payload.added || 0,
       skipped: payload.skipped || 0,
+      total: payload.total || 0,
+      seriesFile: payload.seriesFile || null,
+      seriesFileSize: payload.seriesFileSize ?? null,
+      updatedAt: payload.ts || new Date().toISOString()
+    };
+    refreshState.lastSaved = {
+      type: "series_only",
+      seriesFile: payload.seriesFile || null,
+      seriesFileSize: payload.seriesFileSize ?? null,
+      total: payload.total || 0,
+      added: payload.added || 0,
+      at: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "run_prepared") {
+    refreshState.lastSaved = {
+      type: "episodes_run",
+      episodesFile: payload.episodesFile || null,
+      episodesFileSize: payload.episodesFileSize ?? null,
+      seriesFile: payload.seriesReference || null,
+      seriesFileSize: payload.seriesFileSize ?? null,
+      stored: payload.stored ?? null,
+      crawled: payload.crawled ?? null,
+      at: payload.ts || new Date().toISOString()
+    };
+  } else if (payload.message === "series_reference_seeded_during_episode_refresh") {
+    refreshState.progress = {
+      ...(refreshState.progress || {}),
+      phase: "series_reference_seeded",
+      added: payload.added || 0,
       total: payload.total || 0,
       updatedAt: payload.ts || new Date().toISOString()
     };
@@ -257,7 +324,49 @@ async function handler(req, res) {
       lastError: refreshState.lastError,
       lastFinishedAt: refreshState.lastFinishedAt,
       lastExitCode: refreshState.lastExitCode,
-      progress: refreshState.progress
+      progress: refreshState.progress,
+      lastSaved: refreshState.lastSaved
+    });
+  }
+
+  if (reqUrl.pathname === "/api/data-info" && req.method === "GET") {
+    const [episodes, series, state, probe] = await Promise.all([
+      statSafe(config.episodes.filePath),
+      statSafe(config.series.filePath),
+      statSafe(config.state.filePath),
+      probeDataDirectory()
+    ]);
+    let storedEpisodes = null;
+    let storedSeries = null;
+    try {
+      const data = await loadEpisodes(config.episodes.filePath);
+      storedEpisodes = Array.isArray(data?.episodes) ? data.episodes.length : 0;
+    } catch {
+      storedEpisodes = null;
+    }
+    try {
+      const seriesRaw = await fs.readFile(config.series.filePath, "utf8").catch(() => "{}");
+      const seriesParsed = JSON.parse(seriesRaw);
+      storedSeries = Array.isArray(seriesParsed?.series) ? seriesParsed.series.length : 0;
+    } catch {
+      storedSeries = null;
+    }
+    return sendJson(res, 200, {
+      cwd: process.cwd(),
+      uid: typeof process.getuid === "function" ? process.getuid() : null,
+      gid: typeof process.getgid === "function" ? process.getgid() : null,
+      env: {
+        EPISODES_FILE_PATH: config.episodes.filePath,
+        SERIES_FILE_PATH: config.series.filePath,
+        STATE_FILE_PATH: config.state.filePath
+      },
+      counts: {
+        episodes: storedEpisodes,
+        series: storedSeries
+      },
+      files: { episodes, series, state },
+      writeProbe: probe,
+      lastSaved: refreshState.lastSaved
     });
   }
 
@@ -373,6 +482,28 @@ async function handler(req, res) {
   }
 }
 
+async function logStartupDataState() {
+  const [probe, episodes, series, state] = await Promise.all([
+    probeDataDirectory(),
+    statSafe(config.episodes.filePath),
+    statSafe(config.series.filePath),
+    statSafe(config.state.filePath)
+  ]);
+  const payload = {
+    ts: new Date().toISOString(),
+    level: probe.writable ? "info" : "error",
+    message: probe.writable
+      ? "data_directory_writable"
+      : "data_directory_not_writable_data_will_not_persist",
+    cwd: process.cwd(),
+    uid: typeof process.getuid === "function" ? process.getuid() : null,
+    gid: typeof process.getgid === "function" ? process.getgid() : null,
+    probe,
+    files: { episodes, series, state }
+  };
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
+}
+
 http
   .createServer((req, res) => {
     handler(req, res).catch((err) => {
@@ -381,4 +512,14 @@ http
   })
   .listen(PORT, () => {
     process.stdout.write(`Web UI: http://localhost:${PORT}\n`);
+    logStartupDataState().catch((err) => {
+      process.stdout.write(
+        `${JSON.stringify({
+          ts: new Date().toISOString(),
+          level: "error",
+          message: "startup_probe_failed",
+          error: err && err.message ? err.message : String(err)
+        })}\n`
+      );
+    });
   });

@@ -323,6 +323,56 @@ async function runRefresh({ buttonId, endpoint, loadingMessage }) {
   }
 }
 
+function formatBytes(n) {
+  if (!Number.isFinite(n) || n <= 0) return "0";
+  const units = ["B", "KB", "MB", "GB"];
+  let v = n;
+  let i = 0;
+  while (v >= 1024 && i < units.length - 1) {
+    v /= 1024;
+    i += 1;
+  }
+  return `${v.toFixed(v >= 10 ? 0 : 1)} ${units[i]}`;
+}
+
+async function loadDataInfo() {
+  const box = document.getElementById("dataInfo");
+  if (!box) return;
+  try {
+    const res = await fetch("/api/data-info", { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    const probe = data.writeProbe || {};
+    const ep = data.files?.episodes || {};
+    const sr = data.files?.series || {};
+    const ok = probe.writable === true;
+    box.classList.toggle("data-info--error", !ok);
+    const parts = [];
+    if (!ok) {
+      parts.push(
+        `<strong>تنبيه:</strong> مجلد البيانات <code>${probe.dir || ""}</code> غير قابل للكتابة (${probe.error || "؟"}). الزرّان لن يحفظا حتى يتم ضبط مجلد دائم على Coolify.`
+      );
+    }
+    parts.push(
+      `الحلقات: <code>${data.env?.EPISODES_FILE_PATH || ""}</code> — ${data.counts?.episodes ?? "?"} حلقة (${ep.exists ? formatBytes(ep.size) : "غير موجود"})`
+    );
+    parts.push(
+      `المسلسلات: <code>${data.env?.SERIES_FILE_PATH || ""}</code> — ${data.counts?.series ?? "?"} مسلسل (${sr.exists ? formatBytes(sr.size) : "غير موجود"})`
+    );
+    if (data.lastSaved) {
+      const ls = data.lastSaved;
+      const stamp = ls.at ? new Date(ls.at).toLocaleString() : "";
+      parts.push(`آخر حفظ: ${ls.type === "series_only" ? "تحديث المسلسلات" : "تحديث الحلقات"} — ${stamp}`);
+    }
+    box.innerHTML = parts.map((p) => `<div>${p}</div>`).join("");
+    box.hidden = false;
+  } catch {
+    // best-effort UI panel; ignore failures
+  }
+}
+
+loadDataInfo();
+
 document.getElementById("refreshBtn")?.addEventListener("click", () => {
   runRefresh({
     buttonId: "refreshBtn",
