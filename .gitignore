@@ -16,6 +16,8 @@ data/*.json
 data/*.json.bak
 data/*.backup-*
 data/*.before-*
+# Marker written by docker-entrypoint.sh when running with a host bind mount.
+data/.seed-version
 
 # OS / editor
 .DS_Store
@@ -36,4 +38,13 @@ logs/
 # Local-only docker compose overrides (used to expose ports during dev)
 docker-compose.override.yml
 docker-compose.override.yaml
+
+# Local data snapshots taken before potentially destructive operations.
+# Individual snapshots can be checked in explicitly (e.g. with `git add -f`)
+# when they are intended as a recovery point committed alongside an ops
+# change. New unrelated backups stay local by default.
+backups/*
+!backups/README.md
+!backups/20260427-215039/
+!backups/20260427-215039/**
 
