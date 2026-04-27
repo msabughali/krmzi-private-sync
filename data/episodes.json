@@ -20671,9 +20671,9 @@
     {
       "title": "مسلسل القبيحة",
       "seriesName": "مسلسل القبيحة",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-4/",
-      "slug": "مسلسل-القبيحة-الحلقة-4",
-      "episodeNumber": 4,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-5/",
+      "slug": "مسلسل-القبيحة-الحلقة-5",
+      "episodeNumber": 5,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -20681,6 +20681,43 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg",
       "discoveredAt": "2026-04-26T00:05:26.262Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل القبيحة الحلقة 5 - قرمزي",
+          "seriesName": "مسلسل القبيحة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-5/",
+          "slug": "مسلسل-القبيحة-الحلقة-5",
+          "episodeNumber": 5,
+          "playerUrl": "https://www.dailymotion.com/video/k1wkyU5L5ODqgSFJdiE",
+          "playerId": "k1wkyU5L5ODqgSFJdiE",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "0uuo3b07p2ml"
+            },
+            {
+              "name": "estream",
+              "id": "edgtq2g2v235"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k1wkyU5L5ODqgSFJdiE"
+            },
+            {
+              "name": "ok",
+              "id": "14134832663281"
+            },
+            {
+              "name": "Pro HD",
+              "id": "lm6yw5txqob4"
+            },
+            {
+              "name": "Red HD",
+              "id": "9sbomzc8ltal"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg"
+        },
         {
           "title": "مسلسل القبيحة الحلقة 4 - قرمزي",
           "seriesName": "مسلسل القبيحة",
@@ -20826,7 +20863,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.698Z"
+      "updatedAt": "2026-04-27T18:44:06.923Z"
     },
     {
       "title": "مسلسل الطبيب",
