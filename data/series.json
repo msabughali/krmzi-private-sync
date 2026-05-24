@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-27T18:52:01.110Z",
+  "generatedAt": "2026-05-24T06:37:35.266Z",
   "count": 30,
   "series": [
     {
@@ -17,15 +17,33 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:02:35.140Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل أخي",
-      "latestEpisodeNumber": 13,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-13/",
+      "latestEpisodeNumber": 16,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/ABI-uzun.jpg",
-      "episodeCount": 13,
+      "episodeCount": 16,
       "episodes": [
+        {
+          "episodeNumber": 16,
+          "title": "مسلسل أخي الحلقة 16 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
+          "slug": "مسلسل-أخي-الحلقة-16"
+        },
+        {
+          "episodeNumber": 15,
+          "title": "مسلسل أخي الحلقة 15 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-15/",
+          "slug": "مسلسل-أخي-الحلقة-15"
+        },
+        {
+          "episodeNumber": 14,
+          "title": "مسلسل أخي الحلقة 14 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+          "slug": "مسلسل-أخي-الحلقة-14"
+        },
         {
           "episodeNumber": 13,
           "title": "مسلسل أخي الحلقة 13 - قرمزي",
@@ -106,7 +124,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:03:00.122Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل الأراضي المباركة",
@@ -147,15 +165,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:03:11.131Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل الحسد",
-      "latestEpisodeNumber": 29,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
+      "latestEpisodeNumber": 33,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg",
-      "episodeCount": 29,
+      "episodeCount": 33,
       "episodes": [
+        {
+          "episodeNumber": 33,
+          "title": "مسلسل الحسد الحلقة 33 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
+          "slug": "مسلسل-الحسد-الحلقة-33"
+        },
+        {
+          "episodeNumber": 32,
+          "title": "مسلسل الحسد الحلقة 32 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-32/",
+          "slug": "مسلسل-الحسد-الحلقة-32"
+        },
+        {
+          "episodeNumber": 31,
+          "title": "مسلسل الحسد الحلقة 31 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-31/",
+          "slug": "مسلسل-الحسد-الحلقة-31"
+        },
+        {
+          "episodeNumber": 30,
+          "title": "مسلسل الحسد الحلقة 30 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+          "slug": "مسلسل-الحسد-الحلقة-30"
+        },
         {
           "episodeNumber": 29,
           "title": "مسلسل الحسد الحلقة 29 - قرمزي",
@@ -332,15 +374,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:04:03.307Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل الخليفة",
-      "latestEpisodeNumber": 29,
-      "latestEpisodeUrl": "https://krmzy.com/episode/halef-episode-29/",
+      "latestEpisodeNumber": 33,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg",
-      "episodeCount": 29,
+      "episodeCount": 33,
       "episodes": [
+        {
+          "episodeNumber": 33,
+          "title": "مسلسل الخليفة الحلقة 33 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
+          "slug": "مسلسل-الخليفة-الحلقة-33"
+        },
+        {
+          "episodeNumber": 32,
+          "title": "مسلسل الخليفة الحلقة 32 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-32/",
+          "slug": "مسلسل-الخليفة-الحلقة-32"
+        },
+        {
+          "episodeNumber": 31,
+          "title": "مسلسل الخليفة الحلقة 31 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-31/",
+          "slug": "مسلسل-الخليفة-الحلقة-31"
+        },
+        {
+          "episodeNumber": 30,
+          "title": "مسلسل الخليفة الحلقة 30 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+          "slug": "مسلسل-الخليفة-الحلقة-30"
+        },
         {
           "episodeNumber": 29,
           "title": "مسلسل الخليفة الحلقة 29 - قرمزي",
@@ -517,15 +583,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:04:59.522Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل الشجاع",
-      "latestEpisodeNumber": 3,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-3/",
+      "latestEpisodeNumber": 7,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-7/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg",
-      "episodeCount": 3,
+      "episodeCount": 7,
       "episodes": [
+        {
+          "episodeNumber": 7,
+          "title": "مسلسل الشجاع الحلقة 7 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-7/",
+          "slug": "مسلسل-الشجاع-الحلقة-7"
+        },
+        {
+          "episodeNumber": 6,
+          "title": "مسلسل الشجاع الحلقة 6 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-6/",
+          "slug": "مسلسل-الشجاع-الحلقة-6"
+        },
+        {
+          "episodeNumber": 5,
+          "title": "مسلسل الشجاع الحلقة 5 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-5/",
+          "slug": "مسلسل-الشجاع-الحلقة-5"
+        },
+        {
+          "episodeNumber": 4,
+          "title": "مسلسل الشجاع الحلقة 4 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-4/",
+          "slug": "مسلسل-الشجاع-الحلقة-4"
+        },
         {
           "episodeNumber": 3,
           "title": "مسلسل الشجاع الحلقة 3 - قرمزي",
@@ -546,7 +636,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:05:06.054Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل الطبيب",
@@ -593,15 +683,33 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:05:18.351Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل القبيحة",
-      "latestEpisodeNumber": 5,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-5/",
+      "latestEpisodeNumber": 8,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-8/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg",
-      "episodeCount": 5,
+      "episodeCount": 8,
       "episodes": [
+        {
+          "episodeNumber": 8,
+          "title": "مسلسل القبيحة الحلقة 8 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-8/",
+          "slug": "مسلسل-القبيحة-الحلقة-8"
+        },
+        {
+          "episodeNumber": 7,
+          "title": "مسلسل القبيحة الحلقة 7 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-7/",
+          "slug": "مسلسل-القبيحة-الحلقة-7"
+        },
+        {
+          "episodeNumber": 6,
+          "title": "مسلسل القبيحة الحلقة 6 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-6/",
+          "slug": "مسلسل-القبيحة-الحلقة-6"
+        },
         {
           "episodeNumber": 5,
           "title": "مسلسل القبيحة الحلقة 5 - قرمزي",
@@ -634,7 +742,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:05:26.262Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل القضاء",
@@ -1215,7 +1323,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:08:28.908Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل المحتالون",
@@ -1358,15 +1466,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:09:10.200Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل المدينة البعيدة",
-      "latestEpisodeNumber": 58,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-58/",
+      "latestEpisodeNumber": 62,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-62/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg",
-      "episodeCount": 58,
+      "episodeCount": 62,
       "episodes": [
+        {
+          "episodeNumber": 62,
+          "title": "مسلسل المدينة البعيدة الحلقة 62 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-62/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-62"
+        },
+        {
+          "episodeNumber": 61,
+          "title": "مسلسل المدينة البعيدة الحلقة 61 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-61/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-61"
+        },
+        {
+          "episodeNumber": 60,
+          "title": "مسلسل المدينة البعيدة الحلقة 60 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-60/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-60"
+        },
+        {
+          "episodeNumber": 59,
+          "title": "مسلسل المدينة البعيدة الحلقة 59 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-59/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-59"
+        },
         {
           "episodeNumber": 58,
           "title": "مسلسل المدينة البعيدة الحلقة 58 - قرمزي",
@@ -1717,7 +1849,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:11:04.241Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل المشبوه",
@@ -1758,7 +1890,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:11:14.525Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل المشردون",
@@ -2075,7 +2207,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:12:53.684Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل أنا أمها",
@@ -2110,7 +2242,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:13:01.829Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل أنا ليمان",
@@ -2199,15 +2331,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:13:27.344Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل أنت من أحب",
-      "latestEpisodeNumber": 10,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-10/",
+      "latestEpisodeNumber": 14,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg",
-      "episodeCount": 10,
+      "episodeCount": 14,
       "episodes": [
+        {
+          "episodeNumber": 14,
+          "title": "مسلسل أنت من أحب الحلقة 14 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-14"
+        },
+        {
+          "episodeNumber": 13,
+          "title": "مسلسل أنت من أحب الحلقة 13 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-13/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-13"
+        },
+        {
+          "episodeNumber": 12,
+          "title": "مسلسل أنت من أحب الحلقة 12 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-12/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-12"
+        },
+        {
+          "episodeNumber": 11,
+          "title": "مسلسل أنت من أحب الحلقة 11 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-11/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-11"
+        },
         {
           "episodeNumber": 10,
           "title": "مسلسل أنت من أحب الحلقة 10 - قرمزي",
@@ -2270,15 +2426,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:13:46.462Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل تحت الأرض",
-      "latestEpisodeNumber": 12,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-12/",
+      "latestEpisodeNumber": 16,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg",
-      "episodeCount": 12,
+      "episodeCount": 16,
       "episodes": [
+        {
+          "episodeNumber": 16,
+          "title": "مسلسل تحت الأرض الحلقة 16 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-16"
+        },
+        {
+          "episodeNumber": 15,
+          "title": "مسلسل تحت الأرض الحلقة 15 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-15/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-15"
+        },
+        {
+          "episodeNumber": 14,
+          "title": "مسلسل تحت الأرض الحلقة 14 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-14"
+        },
+        {
+          "episodeNumber": 13,
+          "title": "مسلسل تحت الأرض الحلقة 13 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-13/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-13"
+        },
         {
           "episodeNumber": 12,
           "title": "مسلسل تحت الأرض الحلقة 12 - قرمزي",
@@ -2353,7 +2533,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:14:08.228Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل تحت نفس المطر",
@@ -2406,7 +2586,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:14:21.905Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل حب و دموع",
@@ -2459,15 +2639,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:14:35.441Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل حلم أشرف",
-      "latestEpisodeNumber": 41,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-41/",
+      "latestEpisodeNumber": 45,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-45/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg",
-      "episodeCount": 41,
+      "episodeCount": 45,
       "episodes": [
+        {
+          "episodeNumber": 45,
+          "title": "مسلسل حلم أشرف الحلقة 45 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-45/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-45"
+        },
+        {
+          "episodeNumber": 44,
+          "title": "مسلسل حلم أشرف الحلقة 44 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-44/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-44"
+        },
+        {
+          "episodeNumber": 43,
+          "title": "مسلسل حلم أشرف الحلقة 43 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-43/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-43"
+        },
+        {
+          "episodeNumber": 42,
+          "title": "مسلسل حلم أشرف الحلقة 42 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-42/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-42"
+        },
         {
           "episodeNumber": 41,
           "title": "مسلسل حلم أشرف الحلقة 41 - قرمزي",
@@ -2716,7 +2920,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:15:55.686Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل خفقان",
@@ -2805,7 +3009,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:16:21.574Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل دين الروح",
@@ -2984,15 +3188,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:17:16.480Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل شراب التوت",
-      "latestEpisodeNumber": 134,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-134/",
+      "latestEpisodeNumber": 138,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-138/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg",
-      "episodeCount": 134,
+      "episodeCount": 138,
       "episodes": [
+        {
+          "episodeNumber": 138,
+          "title": "مسلسل شراب التوت الحلقة 138 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-138/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-138"
+        },
+        {
+          "episodeNumber": 137,
+          "title": "مسلسل شراب التوت الحلقة 137 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-137/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-137"
+        },
+        {
+          "episodeNumber": 136,
+          "title": "مسلسل شراب التوت الحلقة 136 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-136/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-136"
+        },
+        {
+          "episodeNumber": 135,
+          "title": "مسلسل شراب التوت الحلقة 135 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-135/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-135"
+        },
         {
           "episodeNumber": 134,
           "title": "مسلسل شراب التوت الحلقة 134 - قرمزي",
@@ -3799,7 +4027,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:21:42.466Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل عيناك كالبحر الأسود",
@@ -3900,7 +4128,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:22:13.771Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل غريب في المرآة",
@@ -3953,7 +4181,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:22:27.602Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل قطاع الطرق",
@@ -4798,7 +5026,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:27:11.136Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل مثل الحلم",
@@ -4887,15 +5115,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:27:39.930Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل ورود و ذنوب",
-      "latestEpisodeNumber": 26,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-26/",
+      "latestEpisodeNumber": 30,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Guller-ve-Gunahlar-uzun.jpg",
-      "episodeCount": 26,
+      "episodeCount": 30,
       "episodes": [
+        {
+          "episodeNumber": 30,
+          "title": "مسلسل ورود و ذنوب الحلقة 30 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-30"
+        },
+        {
+          "episodeNumber": 29,
+          "title": "مسلسل ورود و ذنوب الحلقة 29 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-29"
+        },
+        {
+          "episodeNumber": 28,
+          "title": "مسلسل ورود و ذنوب الحلقة 28 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-28/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-28"
+        },
+        {
+          "episodeNumber": 27,
+          "title": "مسلسل ورود و ذنوب الحلقة 27 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-27/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-27"
+        },
         {
           "episodeNumber": 26,
           "title": "مسلسل ورود و ذنوب الحلقة 25 - قرمزي",
@@ -5054,7 +5306,7 @@
         }
       ],
       "discoveredAt": "2026-04-25T23:11:18.223Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "مسلسل ولي العهد",
@@ -5221,15 +5473,39 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:28:32.635Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     },
     {
       "seriesName": "هذا البحر سوف يفيض",
-      "latestEpisodeNumber": 25,
-      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-25/",
+      "latestEpisodeNumber": 29,
+      "latestEpisodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg",
-      "episodeCount": 25,
+      "episodeCount": 29,
       "episodes": [
+        {
+          "episodeNumber": 29,
+          "title": "هذا البحر سوف يفيض الحلقة 29 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-29"
+        },
+        {
+          "episodeNumber": 28,
+          "title": "هذا البحر سوف يفيض الحلقة 28 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-28/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-28"
+        },
+        {
+          "episodeNumber": 27,
+          "title": "هذا البحر سوف يفيض الحلقة 27 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-27/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-27"
+        },
+        {
+          "episodeNumber": 26,
+          "title": "هذا البحر سوف يفيض الحلقة 26 - قرمزي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-26/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-26"
+        },
         {
           "episodeNumber": 25,
           "title": "هذا البحر سوف يفيض الحلقة 25 - قرمزي",
@@ -5382,7 +5658,7 @@
         }
       ],
       "discoveredAt": "2026-04-26T00:29:23.471Z",
-      "updatedAt": "2026-04-27T18:52:01.110Z"
+      "updatedAt": "2026-05-24T06:37:35.266Z"
     }
   ]
 }

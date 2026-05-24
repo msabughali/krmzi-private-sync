@@ -165,7 +165,11 @@ function buildSeriesReference(episodes) {
   return {
     generatedAt: new Date().toISOString(),
     count: series.length,
-    series: series.sort((a, b) => a.seriesName.localeCompare(b.seriesName, "ar"))
+    series: series.sort((a, b) => {
+      const ta = Date.parse(a.updatedAt || a.discoveredAt || 0);
+      const tb = Date.parse(b.updatedAt || b.discoveredAt || 0);
+      return tb - ta;
+    })
   };
 }
 
@@ -189,9 +193,11 @@ async function saveSeriesReference(filePath, episodes) {
     });
   }
 
-  const series = Array.from(map.values()).sort((a, b) =>
-    a.seriesName.localeCompare(b.seriesName, "ar")
-  );
+  const series = Array.from(map.values()).sort((a, b) => {
+    const ta = Date.parse(a.updatedAt || a.discoveredAt || 0);
+    const tb = Date.parse(b.updatedAt || b.discoveredAt || 0);
+    return tb - ta;
+  });
   await fs.writeFile(
     filePath,
     JSON.stringify({ generatedAt: new Date().toISOString(), count: series.length, series }, null, 2),
@@ -204,6 +210,11 @@ async function loadSeriesReference(filePath) {
     const raw = await fs.readFile(filePath, "utf8");
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed.series)) parsed.series = [];
+    parsed.series.sort((a, b) => {
+      const ta = Date.parse(a.updatedAt || a.discoveredAt || 0);
+      const tb = Date.parse(b.updatedAt || b.discoveredAt || 0);
+      return tb - ta;
+    });
     return parsed;
   } catch (err) {
     if (err && err.code === "ENOENT") return { series: [] };
@@ -307,9 +318,11 @@ function mergeSeriesReferences(existingRef, discovered) {
     });
   }
 
-  const series = Array.from(map.values()).sort((a, b) =>
-    a.seriesName.localeCompare(b.seriesName, "ar")
-  );
+  const series = Array.from(map.values()).sort((a, b) => {
+    const ta = Date.parse(a.updatedAt || a.discoveredAt || 0);
+    const tb = Date.parse(b.updatedAt || b.discoveredAt || 0);
+    return tb - ta;
+  });
   return {
     generatedAt: now,
     count: series.length,

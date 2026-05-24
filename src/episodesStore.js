@@ -37,6 +37,7 @@ async function loadEpisodes(filePath) {
       if ("wrapperUrl" in ep) delete ep.wrapperUrl;
     }
   }
+  parsed.episodes.sort(compareByUpdatedDesc);
   return parsed;
 }
 
@@ -66,6 +67,12 @@ function seriesKey(ep) {
     ep?.episodeUrl ||
     ""
   );
+}
+
+function compareByUpdatedDesc(a, b) {
+  const ta = Date.parse(a.updatedAt || a.discoveredAt || 0);
+  const tb = Date.parse(b.updatedAt || b.discoveredAt || 0);
+  return tb - ta;
 }
 
 function mergeEpisodeDetail(prev = {}, incoming = {}) {
@@ -122,11 +129,7 @@ function upsertEpisodes(existing, incoming) {
     if ("wrapperUrl" in merged) delete merged.wrapperUrl;
     map.set(key, merged);
   }
-  return Array.from(map.values()).sort((a, b) => {
-    const ta = Date.parse(a.discoveredAt || a.updatedAt || 0);
-    const tb = Date.parse(b.discoveredAt || b.updatedAt || 0);
-    return tb - ta;
-  });
+  return Array.from(map.values()).sort(compareByUpdatedDesc);
 }
 
 module.exports = { loadEpisodes, saveEpisodes, upsertEpisodes };

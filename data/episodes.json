@@ -3,9 +3,9 @@
     {
       "title": "هذا البحر سوف يفيض",
       "seriesName": "هذا البحر سوف يفيض",
-      "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-25/",
-      "slug": "هذا-البحر-سوف-يفيض-الحلقة-25",
-      "episodeNumber": 25,
+      "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
+      "slug": "هذا-البحر-سوف-يفيض-الحلقة-29",
+      "episodeNumber": 29,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -13,6 +13,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg",
       "discoveredAt": "2026-04-26T00:29:23.471Z",
       "seriesEpisodes": [
+        {
+          "title": "هذا البحر سوف يفيض الحلقة 29 - قرمزي",
+          "seriesName": "هذا البحر سوف يفيض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-29",
+          "episodeNumber": 29,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "u23zr1knf2vt"
+            },
+            {
+              "name": "estream",
+              "id": "dvuz1tcif8to"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/z7j5/LyZvVNvAq"
+            },
+            {
+              "name": "ok",
+              "id": "15156585106112"
+            },
+            {
+              "name": "Pro HD",
+              "id": "nt7zdwdvb1sh"
+            },
+            {
+              "name": "Red HD",
+              "id": "kbsvdd4i22t3"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg"
+        },
+        {
+          "title": "هذا البحر سوف يفيض الحلقة 28 - قرمزي",
+          "seriesName": "هذا البحر سوف يفيض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-28/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-28",
+          "episodeNumber": 28,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "hgiwxf7i7g5t"
+            },
+            {
+              "name": "estream",
+              "id": "qubrsp6tftl3"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/mkXd/3U8zXCANF"
+            },
+            {
+              "name": "ok",
+              "id": "14482245159665"
+            },
+            {
+              "name": "Pro HD",
+              "id": "npnnrw6aity7"
+            },
+            {
+              "name": "Red HD",
+              "id": "bagzer2ea5zm"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg"
+        },
+        {
+          "title": "هذا البحر سوف يفيض الحلقة 27 - قرمزي",
+          "seriesName": "هذا البحر سوف يفيض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-27/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-27",
+          "episodeNumber": 27,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "m587mbkexitv"
+            },
+            {
+              "name": "estream",
+              "id": "0551aufb35t8"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/82kz/14ipio5U5"
+            },
+            {
+              "name": "ok",
+              "id": "14839998646785"
+            },
+            {
+              "name": "Pro HD",
+              "id": "veilnmmznur0"
+            },
+            {
+              "name": "Red HD",
+              "id": "rwe8woswkjvj"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg"
+        },
+        {
+          "title": "هذا البحر سوف يفيض الحلقة 26 - قرمزي",
+          "seriesName": "هذا البحر سوف يفيض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%87%d8%b0%d8%a7-%d8%a7%d9%84%d8%a8%d8%ad%d8%b1-%d8%b3%d9%88%d9%81-%d9%8a%d9%81%d9%8a%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-26/",
+          "slug": "هذا-البحر-سوف-يفيض-الحلقة-26",
+          "episodeNumber": 26,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "ifips6rj4dez"
+            },
+            {
+              "name": "estream",
+              "id": "6t29r72mur93"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/4nE9/4HkYYkLag"
+            },
+            {
+              "name": "ok",
+              "id": "14255918353137"
+            },
+            {
+              "name": "Pro HD",
+              "id": "m2mdvx2pxrwi"
+            },
+            {
+              "name": "Red HD",
+              "id": "8qmzid5fyrrd"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg"
+        },
         {
           "title": "هذا البحر سوف يفيض الحلقة 25 - قرمزي",
           "seriesName": "هذا البحر سوف يفيض",
@@ -935,7 +1083,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/11/Tasacak-Bu-deniz-uzun.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.695Z"
+      "updatedAt": "2026-05-24T06:37:35.252Z"
     },
     {
       "title": "مسلسل ولي العهد",
@@ -5640,9 +5788,9 @@
     {
       "title": "مسلسل شراب التوت",
       "seriesName": "مسلسل شراب التوت",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-134/",
-      "slug": "مسلسل-شراب-التوت-الحلقة-134",
-      "episodeNumber": 134,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-138/",
+      "slug": "مسلسل-شراب-التوت-الحلقة-138",
+      "episodeNumber": 138,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -5650,6 +5798,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg",
       "discoveredAt": "2026-04-26T00:21:42.466Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل شراب التوت الحلقة 138 - قرمزي",
+          "seriesName": "مسلسل شراب التوت",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-138/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-138",
+          "episodeNumber": 138,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "804dbd4xkuqx"
+            },
+            {
+              "name": "estream",
+              "id": "e7v27qm0z1d5"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/uPpJ/q8YFhD7q2"
+            },
+            {
+              "name": "ok",
+              "id": "14601176287985"
+            },
+            {
+              "name": "Pro HD",
+              "id": "f9qkryhq4ih4"
+            },
+            {
+              "name": "Red HD",
+              "id": "qafd3w92h7ac"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg"
+        },
+        {
+          "title": "مسلسل شراب التوت الحلقة 137 - قرمزي",
+          "seriesName": "مسلسل شراب التوت",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-137/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-137",
+          "episodeNumber": 137,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "e6h1lnnw2wu7"
+            },
+            {
+              "name": "estream",
+              "id": "orkiw9c4kk5n"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/N8ia/nAUwWDZ3m"
+            },
+            {
+              "name": "ok",
+              "id": "14482293787377"
+            },
+            {
+              "name": "Pro HD",
+              "id": "vuf99u1gpksz"
+            },
+            {
+              "name": "Red HD",
+              "id": "26y6dpp2cyoa"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg"
+        },
+        {
+          "title": "مسلسل شراب التوت الحلقة 136 - قرمزي",
+          "seriesName": "مسلسل شراب التوت",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-136/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-136",
+          "episodeNumber": 136,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "yq1bqf7ou0tv"
+            },
+            {
+              "name": "estream",
+              "id": "kbzpd8cd4nlt"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/GyST/R6QnsxHJD"
+            },
+            {
+              "name": "ok",
+              "id": "14367688362737"
+            },
+            {
+              "name": "Pro HD",
+              "id": "k22pwzjx6l4u"
+            },
+            {
+              "name": "Red HD",
+              "id": "3f07h3xuqdss"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg"
+        },
+        {
+          "title": "مسلسل شراب التوت الحلقة 135 - قرمزي",
+          "seriesName": "مسلسل شراب التوت",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%b4%d8%b1%d8%a7%d8%a8-%d8%a7%d9%84%d8%aa%d9%88%d8%aa-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-135/",
+          "slug": "مسلسل-شراب-التوت-الحلقة-135",
+          "episodeNumber": 135,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "0wkrzdwks40g"
+            },
+            {
+              "name": "estream",
+              "id": "aagx7eroskg7"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/y7QX/SLq1Mhg7x"
+            },
+            {
+              "name": "ok",
+              "id": "14263399680753"
+            },
+            {
+              "name": "Pro HD",
+              "id": "r5597eunrcv2"
+            },
+            {
+              "name": "Red HD",
+              "id": "mkp94p3o7y1w"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg"
+        },
         {
           "title": "مسلسل شراب التوت الحلقة 134 - قرمزي",
           "seriesName": "مسلسل شراب التوت",
@@ -9152,7 +9448,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kizilcik-Serbeti-Uzun.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.696Z"
+      "updatedAt": "2026-05-24T06:36:29.687Z"
     },
     {
       "title": "مسلسل دين الروح",
@@ -10498,9 +10794,9 @@
     {
       "title": "مسلسل حلم أشرف",
       "seriesName": "مسلسل حلم أشرف",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-41/",
-      "slug": "مسلسل-حلم-أشرف-الحلقة-41",
-      "episodeNumber": 41,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-45/",
+      "slug": "مسلسل-حلم-أشرف-الحلقة-45",
+      "episodeNumber": 45,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -10508,6 +10804,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg",
       "discoveredAt": "2026-04-26T00:15:55.686Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل حلم أشرف الحلقة 45 - قرمزي",
+          "seriesName": "مسلسل حلم أشرف",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-45/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-45",
+          "episodeNumber": 45,
+          "playerUrl": "https://www.dailymotion.com/video/kh503NDnfUjpk0G7tsS",
+          "playerId": "kh503NDnfUjpk0G7tsS",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "sfs3hkcq60tu"
+            },
+            {
+              "name": "estream",
+              "id": "tzc584eocgjd"
+            },
+            {
+              "name": "dailymotion",
+              "id": "kh503NDnfUjpk0G7tsS"
+            },
+            {
+              "name": "ok",
+              "id": "14848749603426"
+            },
+            {
+              "name": "Pro HD",
+              "id": "4wt3pu5tqu37"
+            },
+            {
+              "name": "Red HD",
+              "id": "rjfea66qfdj6"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg"
+        },
+        {
+          "title": "مسلسل حلم أشرف الحلقة 44 - قرمزي",
+          "seriesName": "مسلسل حلم أشرف",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-44/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-44",
+          "episodeNumber": 44,
+          "playerUrl": "https://www.dailymotion.com/video/k5jYom1DaODqaiG1F9S",
+          "playerId": "k5jYom1DaODqaiG1F9S",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "unpf7m5m82fc"
+            },
+            {
+              "name": "estream",
+              "id": "m3mzz8k30vb5"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k5jYom1DaODqaiG1F9S"
+            },
+            {
+              "name": "ok",
+              "id": "14727100107362"
+            },
+            {
+              "name": "Pro HD",
+              "id": "lsyfu6yrvvr7"
+            },
+            {
+              "name": "Red HD",
+              "id": "64u6jw0xyogs"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg"
+        },
+        {
+          "title": "مسلسل حلم أشرف الحلقة 43 - قرمزي",
+          "seriesName": "مسلسل حلم أشرف",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-43/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-43",
+          "episodeNumber": 43,
+          "playerUrl": "https://www.dailymotion.com/video/k5M5eJRlXeoylcFSktA",
+          "playerId": "k5M5eJRlXeoylcFSktA",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "97c9o1qy145h"
+            },
+            {
+              "name": "estream",
+              "id": "3fxoaidr4la2"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k5M5eJRlXeoylcFSktA"
+            },
+            {
+              "name": "ok",
+              "id": "14566184716898"
+            },
+            {
+              "name": "Pro HD",
+              "id": "oqqmignjpuc5"
+            },
+            {
+              "name": "Red HD",
+              "id": "tpc0d6u2y5rl"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg"
+        },
+        {
+          "title": "مسلسل حلم أشرف الحلقة 42 - قرمزي",
+          "seriesName": "مسلسل حلم أشرف",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%ad%d9%84%d9%85-%d8%a3%d8%b4%d8%b1%d9%81-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-42/",
+          "slug": "مسلسل-حلم-أشرف-الحلقة-42",
+          "episodeNumber": 42,
+          "playerUrl": "https://www.dailymotion.com/video/k4FNez8I9VWHqMFMFpu",
+          "playerId": "k4FNez8I9VWHqMFMFpu",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "hjzpxx1xkm7w"
+            },
+            {
+              "name": "estream",
+              "id": "ir39bs43735i"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k4FNez8I9VWHqMFMFpu"
+            },
+            {
+              "name": "ok",
+              "id": "14420730317410"
+            },
+            {
+              "name": "Pro HD",
+              "id": "0l2ixgo7k8l3"
+            },
+            {
+              "name": "Red HD",
+              "id": "i8wv3v6bytqy"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg"
+        },
         {
           "title": "مسلسل حلم أشرف الحلقة 41 - قرمزي",
           "seriesName": "مسلسل حلم أشرف",
@@ -11898,7 +12342,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Eshref_k.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.696Z"
+      "updatedAt": "2026-05-24T06:36:18.029Z"
     },
     {
       "title": "مسلسل حب و دموع",
@@ -12441,9 +12885,9 @@
     {
       "title": "مسلسل تحت الأرض",
       "seriesName": "مسلسل تحت الأرض",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-12/",
-      "slug": "مسلسل-تحت-الأرض-الحلقة-12",
-      "episodeNumber": 12,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
+      "slug": "مسلسل-تحت-الأرض-الحلقة-16",
+      "episodeNumber": 16,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -12451,6 +12895,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg",
       "discoveredAt": "2026-04-26T00:14:08.228Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل تحت الأرض الحلقة 16 - قرمزي",
+          "seriesName": "مسلسل تحت الأرض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-16",
+          "episodeNumber": 16,
+          "playerUrl": "https://www.dailymotion.com/video/k5M0snYTZFxsMmG7r9i",
+          "playerId": "k5M0snYTZFxsMmG7r9i",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "84t6ht4hrkwk"
+            },
+            {
+              "name": "estream",
+              "id": "kuohm4uu5col"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k5M0snYTZFxsMmG7r9i"
+            },
+            {
+              "name": "ok",
+              "id": "14561590250225"
+            },
+            {
+              "name": "Pro HD",
+              "id": "u83xs90xtmvw"
+            },
+            {
+              "name": "Red HD",
+              "id": "n2a24y2zuoep"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg"
+        },
+        {
+          "title": "مسلسل تحت الأرض الحلقة 15 - قرمزي",
+          "seriesName": "مسلسل تحت الأرض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-15/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-15",
+          "episodeNumber": 15,
+          "playerUrl": "https://www.dailymotion.com/video/k76NLMt53xqPHCG14A6",
+          "playerId": "k76NLMt53xqPHCG14A6",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "jn1wcf1nubkv"
+            },
+            {
+              "name": "estream",
+              "id": "z7q2z9x5urwc"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k76NLMt53xqPHCG14A6"
+            },
+            {
+              "name": "ok",
+              "id": "15507665848995"
+            },
+            {
+              "name": "Pro HD",
+              "id": "75t9uenjr2ir"
+            },
+            {
+              "name": "Red HD",
+              "id": "2rqf0vrc9qry"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg"
+        },
+        {
+          "title": "مسلسل تحت الأرض الحلقة 14 - قرمزي",
+          "seriesName": "مسلسل تحت الأرض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-14",
+          "episodeNumber": 14,
+          "playerUrl": "https://www.dailymotion.com/video/k5XrNa2zCDAnO4FRVlM",
+          "playerId": "k5XrNa2zCDAnO4FRVlM",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "gqm4xpqedtee"
+            },
+            {
+              "name": "estream",
+              "id": "k3phxznxp1oh"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k5XrNa2zCDAnO4FRVlM"
+            },
+            {
+              "name": "ok",
+              "id": "14823892191936"
+            },
+            {
+              "name": "Pro HD",
+              "id": "z1oa34w110ej"
+            },
+            {
+              "name": "Red HD",
+              "id": "z1oa34w110ej"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg"
+        },
+        {
+          "title": "مسلسل تحت الأرض الحلقة 13 - قرمزي",
+          "seriesName": "مسلسل تحت الأرض",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%aa%d8%ad%d8%aa-%d8%a7%d9%84%d8%a3%d8%b1%d8%b6-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-13/",
+          "slug": "مسلسل-تحت-الأرض-الحلقة-13",
+          "episodeNumber": 13,
+          "playerUrl": "https://www.dailymotion.com/video/k78K5ga7WsejzSFM7rW",
+          "playerId": "k78K5ga7WsejzSFM7rW",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "zgrv4akdux3d"
+            },
+            {
+              "name": "estream",
+              "id": "vsq9xin0lehq"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k78K5ga7WsejzSFM7rW"
+            },
+            {
+              "name": "ok",
+              "id": "14643480562177"
+            },
+            {
+              "name": "Pro HD",
+              "id": "ugp1fq9ttqr3"
+            },
+            {
+              "name": "Red HD",
+              "id": "i4xh3fn2209p"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg"
+        },
         {
           "title": "مسلسل تحت الأرض الحلقة 12 - قرمزي",
           "seriesName": "مسلسل تحت الأرض",
@@ -12892,14 +13484,14 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Yeralti-uzun-1.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.697Z"
+      "updatedAt": "2026-05-24T06:36:07.079Z"
     },
     {
       "title": "مسلسل أنت من أحب",
       "seriesName": "مسلسل أنت من أحب",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-10/",
-      "slug": "مسلسل-أنت-من-أحب-الحلقة-10",
-      "episodeNumber": 10,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+      "slug": "مسلسل-أنت-من-أحب-الحلقة-14",
+      "episodeNumber": 14,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -12907,6 +13499,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg",
       "discoveredAt": "2026-04-26T00:13:46.462Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل أنت من أحب الحلقة 14 - قرمزي",
+          "seriesName": "مسلسل أنت من أحب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-14",
+          "episodeNumber": 14,
+          "playerUrl": "https://www.dailymotion.com/video/k1laWLzO10qIyXG8HSS",
+          "playerId": "k1laWLzO10qIyXG8HSS",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "inbl5sxyfo6w"
+            },
+            {
+              "name": "estream",
+              "id": "cqvoy5kx1mtd"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k1laWLzO10qIyXG8HSS"
+            },
+            {
+              "name": "ok",
+              "id": "14578046143217"
+            },
+            {
+              "name": "Pro HD",
+              "id": "enyfornaoyjq"
+            },
+            {
+              "name": "Red HD",
+              "id": "7fklk9of4emg"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg"
+        },
+        {
+          "title": "مسلسل أنت من أحب الحلقة 13 - قرمزي",
+          "seriesName": "مسلسل أنت من أحب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-13/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-13",
+          "episodeNumber": 13,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "ijuixu2e5rvz"
+            },
+            {
+              "name": "estream",
+              "id": "n1dtpemzigkh"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/Sr4A/97e8psvxU"
+            },
+            {
+              "name": "ok",
+              "id": "14466143161073"
+            },
+            {
+              "name": "Pro HD",
+              "id": "v2276ouuevbs"
+            },
+            {
+              "name": "Red HD",
+              "id": "hvdnto5caw5o"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg"
+        },
+        {
+          "title": "مسلسل أنت من أحب الحلقة 12 - قرمزي",
+          "seriesName": "مسلسل أنت من أحب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-12/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-12",
+          "episodeNumber": 12,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "uifyexxourh2"
+            },
+            {
+              "name": "estream",
+              "id": "vgujar1qwqgw"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/5Rnk/DrfWNV3oq"
+            },
+            {
+              "name": "ok",
+              "id": "14350024444657"
+            },
+            {
+              "name": "Pro HD",
+              "id": "t18onczstqdo"
+            },
+            {
+              "name": "Red HD",
+              "id": "dfmpdgq6sjvk"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg"
+        },
+        {
+          "title": "مسلسل أنت من أحب الحلقة 11 - قرمزي",
+          "seriesName": "مسلسل أنت من أحب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d9%86%d8%aa-%d9%85%d9%86-%d8%a3%d8%ad%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-11/",
+          "slug": "مسلسل-أنت-من-أحب-الحلقة-11",
+          "episodeNumber": 11,
+          "playerUrl": "https://www.dailymotion.com/video/k2gIJtS26THEquFN5CW",
+          "playerId": "k2gIJtS26THEquFN5CW",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "nn4yj23gz9gv"
+            },
+            {
+              "name": "estream",
+              "id": "ic7j08i7w9pg"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k2gIJtS26THEquFN5CW"
+            },
+            {
+              "name": "ok",
+              "id": "14696860617408"
+            },
+            {
+              "name": "Pro HD",
+              "id": "6sicpuopd1h9"
+            },
+            {
+              "name": "Red HD",
+              "id": "t6x1ahxzrh0z"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg"
+        },
         {
           "title": "مسلسل أنت من أحب الحلقة 10 - قرمزي",
           "seriesName": "مسلسل أنت من أحب",
@@ -13278,7 +14018,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/Sevdigim-Sensin.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.697Z"
+      "updatedAt": "2026-05-24T06:35:58.298Z"
     },
     {
       "title": "مسلسل أنا ليمان",
@@ -15800,9 +16540,9 @@
     {
       "title": "مسلسل المدينة البعيدة",
       "seriesName": "مسلسل المدينة البعيدة",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-58/",
-      "slug": "مسلسل-المدينة-البعيدة-الحلقة-58",
-      "episodeNumber": 58,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-62/",
+      "slug": "مسلسل-المدينة-البعيدة-الحلقة-62",
+      "episodeNumber": 62,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -15810,6 +16550,150 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg",
       "discoveredAt": "2026-04-26T00:11:04.241Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل المدينة البعيدة الحلقة 62 - قرمزي",
+          "seriesName": "مسلسل المدينة البعيدة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-62/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-62",
+          "episodeNumber": 62,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "nq61f6s4oahu"
+            },
+            {
+              "name": "estream",
+              "id": "wskkf7fkp54w"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/64oy/TLdHhEQCd"
+            },
+            {
+              "name": "ok",
+              "id": "15605767998115"
+            },
+            {
+              "name": "Pro HD",
+              "id": "l33idk7h78x3"
+            },
+            {
+              "name": "Red HD",
+              "id": "58h5vi7ovw67"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg"
+        },
+        {
+          "title": "مسلسل المدينة البعيدة الحلقة 61 - قرمزي",
+          "seriesName": "مسلسل المدينة البعيدة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-61/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-61",
+          "episodeNumber": 61,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "umvew3jdfvo8"
+            },
+            {
+              "name": "estream",
+              "id": "6ombn99o5exp"
+            },
+            {
+              "name": "ok",
+              "id": "14430805756657"
+            },
+            {
+              "name": "Pro HD",
+              "id": "galcz5bq93ox"
+            },
+            {
+              "name": "Red HD",
+              "id": "z8z1aalvjtbx"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg"
+        },
+        {
+          "title": "مسلسل المدينة البعيدة الحلقة 60 - قرمزي",
+          "seriesName": "مسلسل المدينة البعيدة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-60/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-60",
+          "episodeNumber": 60,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "kuxd0tgienej"
+            },
+            {
+              "name": "estream",
+              "id": "x2okphphfynu"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/59tf/4MkQaPTef"
+            },
+            {
+              "name": "ok",
+              "id": "14756038773249"
+            },
+            {
+              "name": "Pro HD",
+              "id": "l1ebw465ixg4"
+            },
+            {
+              "name": "Red HD",
+              "id": "u3xtztd5grmf"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg"
+        },
+        {
+          "title": "مسلسل المدينة البعيدة الحلقة 59 - قرمزي",
+          "seriesName": "مسلسل المدينة البعيدة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%85%d8%af%d9%8a%d9%86%d8%a9-%d8%a7%d9%84%d8%a8%d8%b9%d9%8a%d8%af%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-59/",
+          "slug": "مسلسل-المدينة-البعيدة-الحلقة-59",
+          "episodeNumber": 59,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "w5y5jg672ttq"
+            },
+            {
+              "name": "estream",
+              "id": "9r2nxi6j8zte"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/bMXK/NUtvq8Z74"
+            },
+            {
+              "name": "ok",
+              "id": "15139626945187"
+            },
+            {
+              "name": "Pro HD",
+              "id": "blnj8k7jcgik"
+            },
+            {
+              "name": "Red HD",
+              "id": "rf7rtbixnt1t"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg"
+        },
         {
           "title": "مسلسل المدينة البعيدة الحلقة 58 - قرمزي",
           "seriesName": "مسلسل المدينة البعيدة",
@@ -17597,7 +18481,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Medine-uzun.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.698Z"
+      "updatedAt": "2026-05-24T06:35:44.700Z"
     },
     {
       "title": "مسلسل المحتالون",
@@ -20671,9 +21555,9 @@
     {
       "title": "مسلسل القبيحة",
       "seriesName": "مسلسل القبيحة",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-5/",
-      "slug": "مسلسل-القبيحة-الحلقة-5",
-      "episodeNumber": 5,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-8/",
+      "slug": "مسلسل-القبيحة-الحلقة-8",
+      "episodeNumber": 8,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -20681,6 +21565,117 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg",
       "discoveredAt": "2026-04-26T00:05:26.262Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل القبيحة الحلقة 8 - قرمزي",
+          "seriesName": "مسلسل القبيحة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-8/",
+          "slug": "مسلسل-القبيحة-الحلقة-8",
+          "episodeNumber": 8,
+          "playerUrl": "https://www.dailymotion.com/video/k1Tss0nX7LTjQEG3YPc",
+          "playerId": "k1Tss0nX7LTjQEG3YPc",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "pf8wkww87rio"
+            },
+            {
+              "name": "estream",
+              "id": "4wni3sbt166x"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k1Tss0nX7LTjQEG3YPc"
+            },
+            {
+              "name": "ok",
+              "id": "15053794446016"
+            },
+            {
+              "name": "Pro HD",
+              "id": "vz7p43pc88wf"
+            },
+            {
+              "name": "Red HD",
+              "id": "v8690x6ertfu"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg"
+        },
+        {
+          "title": "مسلسل القبيحة الحلقة 7 - قرمزي",
+          "seriesName": "مسلسل القبيحة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-7/",
+          "slug": "مسلسل-القبيحة-الحلقة-7",
+          "episodeNumber": 7,
+          "playerUrl": "https://www.dailymotion.com/video/k3dFPy2TD3ZbdWFXGLA",
+          "playerId": "k3dFPy2TD3ZbdWFXGLA",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "wqb9id53u9k8"
+            },
+            {
+              "name": "estream",
+              "id": "qbxr8k4husof"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k3dFPy2TD3ZbdWFXGLA"
+            },
+            {
+              "name": "ok",
+              "id": "15452541094563"
+            },
+            {
+              "name": "Pro HD",
+              "id": "ib0c0n4nvzts"
+            },
+            {
+              "name": "Red HD",
+              "id": "z5kgcen2oc93"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg"
+        },
+        {
+          "title": "مسلسل القبيحة الحلقة 6 - قرمزي",
+          "seriesName": "مسلسل القبيحة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d9%82%d8%a8%d9%8a%d8%ad%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-6/",
+          "slug": "مسلسل-القبيحة-الحلقة-6",
+          "episodeNumber": 6,
+          "playerUrl": "https://www.dailymotion.com/video/k5Zl1sbomvThsHFPFQ0",
+          "playerId": "k5Zl1sbomvThsHFPFQ0",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "1bj6gkvssc1f"
+            },
+            {
+              "name": "estream",
+              "id": "ambqyzqeih5h"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k5Zl1sbomvThsHFPFQ0"
+            },
+            {
+              "name": "ok",
+              "id": "15309500385955"
+            },
+            {
+              "name": "Pro HD",
+              "id": "dsc3cdllybkm"
+            },
+            {
+              "name": "Red HD",
+              "id": "5p5mwynm2hzr"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg"
+        },
         {
           "title": "مسلسل القبيحة الحلقة 5 - قرمزي",
           "seriesName": "مسلسل القبيحة",
@@ -20863,7 +21858,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Cirkin-uzun-2.jpg"
         }
       ],
-      "updatedAt": "2026-04-27T18:44:06.923Z"
+      "updatedAt": "2026-05-24T06:35:33.043Z"
     },
     {
       "title": "مسلسل الطبيب",
@@ -21102,9 +22097,9 @@
     {
       "title": "مسلسل الشجاع",
       "seriesName": "مسلسل الشجاع",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-3/",
-      "slug": "مسلسل-الشجاع-الحلقة-3",
-      "episodeNumber": 3,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-7/",
+      "slug": "مسلسل-الشجاع-الحلقة-7",
+      "episodeNumber": 7,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -21112,6 +22107,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg",
       "discoveredAt": "2026-04-26T00:05:06.054Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل الشجاع الحلقة 7 - قرمزي",
+          "seriesName": "مسلسل الشجاع",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-7/",
+          "slug": "مسلسل-الشجاع-الحلقة-7",
+          "episodeNumber": 7,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "ddadnsnn1xov"
+            },
+            {
+              "name": "estream",
+              "id": "0htcvy9i3h05"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/gV8X/yJgt7hnCc"
+            },
+            {
+              "name": "ok",
+              "id": "15073095322304"
+            },
+            {
+              "name": "Pro HD",
+              "id": "dl5hcc9fern2"
+            },
+            {
+              "name": "Red HD",
+              "id": "52yx2t9pqogq"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg"
+        },
+        {
+          "title": "مسلسل الشجاع الحلقة 6 - قرمزي",
+          "seriesName": "مسلسل الشجاع",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-6/",
+          "slug": "مسلسل-الشجاع-الحلقة-6",
+          "episodeNumber": 6,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "49840zad1c2z"
+            },
+            {
+              "name": "estream",
+              "id": "z671a0mu43rq"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/MgK1/x5JxumnTg"
+            },
+            {
+              "name": "ok",
+              "id": "14430805822193"
+            },
+            {
+              "name": "Pro HD",
+              "id": "459nuz1w17xu"
+            },
+            {
+              "name": "Red HD",
+              "id": "lv9tfmbhgs21"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg"
+        },
+        {
+          "title": "مسلسل الشجاع الحلقة 5 - قرمزي",
+          "seriesName": "مسلسل الشجاع",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-5/",
+          "slug": "مسلسل-الشجاع-الحلقة-5",
+          "episodeNumber": 5,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "qtrseoqcnsma"
+            },
+            {
+              "name": "estream",
+              "id": "i08yipmfvpxm"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/9R7b/V6Ub1hmYv"
+            },
+            {
+              "name": "ok",
+              "id": "14302162127601"
+            },
+            {
+              "name": "Pro HD",
+              "id": "jo885hqeshg3"
+            },
+            {
+              "name": "Red HD",
+              "id": "mxl0whzqs50z"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg"
+        },
+        {
+          "title": "مسلسل الشجاع الحلقة 4 - قرمزي",
+          "seriesName": "مسلسل الشجاع",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%b4%d8%ac%d8%a7%d8%b9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-4/",
+          "slug": "مسلسل-الشجاع-الحلقة-4",
+          "episodeNumber": 4,
+          "playerUrl": null,
+          "playerId": null,
+          "playerProvider": null,
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "rtrj6enosh3y"
+            },
+            {
+              "name": "estream",
+              "id": "r1mtwplfdh2t"
+            },
+            {
+              "name": "express",
+              "id": "https://cloud.mail.ru/public/y3xa/DfYZFDpdU"
+            },
+            {
+              "name": "ok",
+              "id": "14600365148864"
+            },
+            {
+              "name": "Pro HD",
+              "id": "f6xwv0ijp6ya"
+            },
+            {
+              "name": "Red HD",
+              "id": "hyldujyqhpx5"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg"
+        },
         {
           "title": "مسلسل الشجاع الحلقة 3 - قرمزي",
           "seriesName": "مسلسل الشجاع",
@@ -21224,14 +22367,14 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2026/03/Delikanli-uzun.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.698Z"
+      "updatedAt": "2026-05-24T06:35:24.958Z"
     },
     {
       "title": "مسلسل الخليفة",
       "seriesName": "مسلسل الخليفة",
-      "episodeUrl": "https://krmzy.com/episode/halef-episode-29/",
-      "slug": "halef-episode-29",
-      "episodeNumber": 29,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
+      "slug": "مسلسل-الخليفة-الحلقة-33",
+      "episodeNumber": 33,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -21239,6 +22382,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg",
       "discoveredAt": "2026-04-26T00:04:59.522Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل الخليفة الحلقة 33 - قرمزي",
+          "seriesName": "مسلسل الخليفة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
+          "slug": "مسلسل-الخليفة-الحلقة-33",
+          "episodeNumber": 33,
+          "playerUrl": "https://www.dailymotion.com/video/khV7bYv6Poq7dRG9dO8",
+          "playerId": "khV7bYv6Poq7dRG9dO8",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "2bsdrh9fsh92"
+            },
+            {
+              "name": "estream",
+              "id": "m2hh1pp8dk0u"
+            },
+            {
+              "name": "dailymotion",
+              "id": "khV7bYv6Poq7dRG9dO8"
+            },
+            {
+              "name": "ok",
+              "id": "15118739114497"
+            },
+            {
+              "name": "Pro HD",
+              "id": "3kxge1a6uz98"
+            },
+            {
+              "name": "Red HD",
+              "id": "l3bdq3em38ha"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg"
+        },
+        {
+          "title": "مسلسل الخليفة الحلقة 32 - قرمزي",
+          "seriesName": "مسلسل الخليفة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-32/",
+          "slug": "مسلسل-الخليفة-الحلقة-32",
+          "episodeNumber": 32,
+          "playerUrl": "https://www.dailymotion.com/video/k1hgBGQOh8uMNKG2xje",
+          "playerId": "k1hgBGQOh8uMNKG2xje",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "bp9m9b2tyczz"
+            },
+            {
+              "name": "estream",
+              "id": "17p1pz6okn1p"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k1hgBGQOh8uMNKG2xje"
+            },
+            {
+              "name": "ok",
+              "id": "15534152485539"
+            },
+            {
+              "name": "Pro HD",
+              "id": "fmdcitwu1h04"
+            },
+            {
+              "name": "Red HD",
+              "id": "943zo88gegzt"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg"
+        },
+        {
+          "title": "مسلسل الخليفة الحلقة 31 - قرمزي",
+          "seriesName": "مسلسل الخليفة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-31/",
+          "slug": "مسلسل-الخليفة-الحلقة-31",
+          "episodeNumber": 31,
+          "playerUrl": "https://www.dailymotion.com/video/kHdnnlKQ1PZANrFTSUO",
+          "playerId": "kHdnnlKQ1PZANrFTSUO",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "d1vtwh7uohyb"
+            },
+            {
+              "name": "estream",
+              "id": "wt72502htfst"
+            },
+            {
+              "name": "dailymotion",
+              "id": "kHdnnlKQ1PZANrFTSUO"
+            },
+            {
+              "name": "ok",
+              "id": "14858606480064"
+            },
+            {
+              "name": "Pro HD",
+              "id": "cf89o7p8mg61"
+            },
+            {
+              "name": "Red HD",
+              "id": "l8dqet0x6eua"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg"
+        },
+        {
+          "title": "مسلسل الخليفة الحلقة 30 - قرمزي",
+          "seriesName": "مسلسل الخليفة",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ae%d9%84%d9%8a%d9%81%d8%a9-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+          "slug": "مسلسل-الخليفة-الحلقة-30",
+          "episodeNumber": 30,
+          "playerUrl": "https://www.dailymotion.com/video/k4M2x94udKx0B7FNuAI",
+          "playerId": "k4M2x94udKx0B7FNuAI",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "gcpn1csjyy5a"
+            },
+            {
+              "name": "estream",
+              "id": "n1s35ectuejf"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k4M2x94udKx0B7FNuAI"
+            },
+            {
+              "name": "ok",
+              "id": "14245052615409"
+            },
+            {
+              "name": "Pro HD",
+              "id": "2buhlg312qfk"
+            },
+            {
+              "name": "Red HD",
+              "id": "z2jfbw98eqp2"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg"
+        },
         {
           "title": "مسلسل الخليفة الحلقة 29 - قرمزي",
           "seriesName": "مسلسل الخليفة",
@@ -22297,14 +23588,14 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Halef-Uzun-v2-1.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.698Z"
+      "updatedAt": "2026-05-24T06:35:16.475Z"
     },
     {
       "title": "مسلسل الحسد",
       "seriesName": "مسلسل الحسد",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
-      "slug": "مسلسل-الحسد-الحلقة-29",
-      "episodeNumber": 29,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
+      "slug": "مسلسل-الحسد-الحلقة-33",
+      "episodeNumber": 33,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -22312,6 +23603,154 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg",
       "discoveredAt": "2026-04-26T00:04:03.307Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل الحسد الحلقة 33 - قرمزي",
+          "seriesName": "مسلسل الحسد",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-33/",
+          "slug": "مسلسل-الحسد-الحلقة-33",
+          "episodeNumber": 33,
+          "playerUrl": "https://www.dailymotion.com/video/k3aiDG6WyBADebG5zNW",
+          "playerId": "k3aiDG6WyBADebG5zNW",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "v1f6qtpm4f9p"
+            },
+            {
+              "name": "estream",
+              "id": "e4ddn8mpk7uf"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k3aiDG6WyBADebG5zNW"
+            },
+            {
+              "name": "ok",
+              "id": "14546134895345"
+            },
+            {
+              "name": "Pro HD",
+              "id": "1nlczdm7jfs0"
+            },
+            {
+              "name": "Red HD",
+              "id": "5n1jer6apy9i"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg"
+        },
+        {
+          "title": "مسلسل الحسد الحلقة 32 - قرمزي",
+          "seriesName": "مسلسل الحسد",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-32/",
+          "slug": "مسلسل-الحسد-الحلقة-32",
+          "episodeNumber": 32,
+          "playerUrl": "https://arabhd.onl/embed-v1f6qtpm4f9p.html",
+          "playerId": "k518klnn2DilhNG0n2K",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "fvhikrockzxf"
+            },
+            {
+              "name": "estream",
+              "id": "asbaxnj3imad"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k518klnn2DilhNG0n2K"
+            },
+            {
+              "name": "ok",
+              "id": "15488941492899"
+            },
+            {
+              "name": "Pro HD",
+              "id": "n6uma065wr1l"
+            },
+            {
+              "name": "Red HD",
+              "id": "z4tt1s9pdc2r"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg"
+        },
+        {
+          "title": "مسلسل الحسد الحلقة 31 - قرمزي",
+          "seriesName": "مسلسل الحسد",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-31/",
+          "slug": "مسلسل-الحسد-الحلقة-31",
+          "episodeNumber": 31,
+          "playerUrl": "https://www.dailymotion.com/video/k2NQMOTRA5jMhjFR4G2",
+          "playerId": "k2NQMOTRA5jMhjFR4G2",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "jnbyrgmuuhly"
+            },
+            {
+              "name": "estream",
+              "id": "2q52s59kyejc"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k2NQMOTRA5jMhjFR4G2"
+            },
+            {
+              "name": "ok",
+              "id": "14317716835057"
+            },
+            {
+              "name": "Pro HD",
+              "id": "28yi3k77xlk5"
+            },
+            {
+              "name": "Red HD",
+              "id": "liexud36r18u"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg"
+        },
+        {
+          "title": "مسلسل الحسد الحلقة 30 - قرمزي",
+          "seriesName": "مسلسل الحسد",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a7%d9%84%d8%ad%d8%b3%d8%af-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+          "slug": "مسلسل-الحسد-الحلقة-30",
+          "episodeNumber": 30,
+          "playerUrl": "https://www.dailymotion.com/video/k1lyr4EJPS1KmfFL22u",
+          "playerId": "k1lyr4EJPS1KmfFL22u",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "ikz6671vnoi1"
+            },
+            {
+              "name": "estream",
+              "id": "gy620u3xd9ap"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k1lyr4EJPS1KmfFL22u"
+            },
+            {
+              "name": "ok",
+              "id": "14611269618177"
+            },
+            {
+              "name": "Pro HD",
+              "id": "uuskqrep59sw"
+            },
+            {
+              "name": "Red HD",
+              "id": "441apxv7neb8"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg"
+        },
         {
           "title": "مسلسل الحسد الحلقة 29 - قرمزي",
           "seriesName": "مسلسل الحسد",
@@ -23362,7 +24801,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Kiskanmak-Uzun.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.698Z"
+      "updatedAt": "2026-05-24T06:35:07.710Z"
     },
     {
       "title": "مسلسل الأراضي المباركة",
@@ -23568,9 +25007,9 @@
     {
       "title": "مسلسل أخي",
       "seriesName": "مسلسل أخي",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-13/",
-      "slug": "مسلسل-أخي-الحلقة-13",
-      "episodeNumber": 13,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
+      "slug": "مسلسل-أخي-الحلقة-16",
+      "episodeNumber": 16,
       "playerUrl": null,
       "playerId": null,
       "playerProvider": null,
@@ -23578,6 +25017,117 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/ABI-uzun.jpg",
       "discoveredAt": "2026-04-26T00:03:00.122Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل أخي الحلقة 16 - قرمزي",
+          "seriesName": "مسلسل أخي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-16/",
+          "slug": "مسلسل-أخي-الحلقة-16",
+          "episodeNumber": 16,
+          "playerUrl": "https://www.dailymotion.com/video/k54kOQjqBUq0MZG5zm0",
+          "playerId": "k54kOQjqBUq0MZG5zm0",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "rugaxzbe0gsj"
+            },
+            {
+              "name": "estream",
+              "id": "qe4cpktmt40l"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k54kOQjqBUq0MZG5zm0"
+            },
+            {
+              "name": "ok",
+              "id": "15068736850433"
+            },
+            {
+              "name": "Pro HD",
+              "id": "qzqwf9qdj501"
+            },
+            {
+              "name": "Red HD",
+              "id": "xcmmwubcgo5x"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/ABI-uzun.jpg"
+        },
+        {
+          "title": "مسلسل أخي الحلقة 15 - قرمزي",
+          "seriesName": "مسلسل أخي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-15/",
+          "slug": "مسلسل-أخي-الحلقة-15",
+          "episodeNumber": 15,
+          "playerUrl": "https://arabhd.onl/embed-rugaxzbe0gsj.html",
+          "playerId": "kaRMKTtCvZBaqbG0OFM",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "rjecc91gzcz0"
+            },
+            {
+              "name": "estream",
+              "id": "2aubqgxlxpqv"
+            },
+            {
+              "name": "dailymotion",
+              "id": "kaRMKTtCvZBaqbG0OFM"
+            },
+            {
+              "name": "ok",
+              "id": "14928218950145"
+            },
+            {
+              "name": "Pro HD",
+              "id": "zllah2s88jb0"
+            },
+            {
+              "name": "Red HD",
+              "id": "9sc5b3e1h5p4"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/ABI-uzun.jpg"
+        },
+        {
+          "title": "مسلسل أخي الحلقة 14 - قرمزي",
+          "seriesName": "مسلسل أخي",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d8%a3%d8%ae%d9%8a-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-14/",
+          "slug": "مسلسل-أخي-الحلقة-14",
+          "episodeNumber": 14,
+          "playerUrl": "https://www.dailymotion.com/video/k19LIvseQHHyF9FL0Pa",
+          "playerId": "k19LIvseQHHyF9FL0Pa",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "1nycgcfpb703"
+            },
+            {
+              "name": "estream",
+              "id": "hmubxzteels7"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k19LIvseQHHyF9FL0Pa"
+            },
+            {
+              "name": "ok",
+              "id": "14639480572608"
+            },
+            {
+              "name": "Pro HD",
+              "id": "j5om6zhieclo"
+            },
+            {
+              "name": "Red HD",
+              "id": "j9n65jgn6hey"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/ABI-uzun.jpg"
+        },
         {
           "title": "مسلسل أخي الحلقة 13 - قرمزي",
           "seriesName": "مسلسل أخي",
@@ -24056,7 +25606,7 @@
           "imageUrl": "https://krmzy.com/wp-content/uploads/2025/12/ABI-uzun.jpg"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.699Z"
+      "updatedAt": "2026-05-24T06:34:50.890Z"
     },
     {
       "title": "عيناك كالبحر الأسود",
@@ -24109,9 +25659,9 @@
     },
     {
       "title": "مسلسل ورود و ذنوب",
-      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-26/",
-      "slug": "مسلسل-ورود-و-ذنوب-الحلقة-26",
-      "episodeNumber": 26,
+      "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+      "slug": "مسلسل-ورود-و-ذنوب-الحلقة-30",
+      "episodeNumber": 30,
       "playerUrl": "https://www.dailymotion.com/video/k6VUukbG3HDgNXFIBcs",
       "playerId": "k6VUukbG3HDgNXFIBcs",
       "playerProvider": "dailymotion",
@@ -24144,6 +25694,150 @@
       "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Guller-ve-Gunahlar-uzun.jpg",
       "discoveredAt": "2026-04-25T23:11:18.223Z",
       "seriesEpisodes": [
+        {
+          "title": "مسلسل ورود و ذنوب الحلقة 30 - قرمزي",
+          "seriesName": "مسلسل ورود و ذنوب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-30/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-30",
+          "episodeNumber": 30,
+          "playerUrl": "https://www.dailymotion.com/video/k1k3AlRWVvX8TlGaws2",
+          "playerId": "k1k3AlRWVvX8TlGaws2",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "bp2atth4lnlm"
+            },
+            {
+              "name": "estream",
+              "id": "kbl7baj5915p"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k1k3AlRWVvX8TlGaws2"
+            },
+            {
+              "name": "ok",
+              "id": "14610874436337"
+            },
+            {
+              "name": "Red HD",
+              "id": "1gfs5i0uv55r"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Guller-ve-Gunahlar-uzun.jpg"
+        },
+        {
+          "title": "مسلسل ورود و ذنوب الحلقة 29 - قرمزي",
+          "seriesName": "مسلسل ورود و ذنوب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-29/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-29",
+          "episodeNumber": 29,
+          "playerUrl": "https://www.dailymotion.com/video/k2ec7AXEXbSppCG3vqg",
+          "playerId": "k2ec7AXEXbSppCG3vqg",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "1rra489j0c7s"
+            },
+            {
+              "name": "estream",
+              "id": "u7cokxnepjav"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k2ec7AXEXbSppCG3vqg"
+            },
+            {
+              "name": "ok",
+              "id": "15034402081472"
+            },
+            {
+              "name": "Pro HD",
+              "id": "piga7auf0c63"
+            },
+            {
+              "name": "Red HD",
+              "id": "kiaicxjs8n4a"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Guller-ve-Gunahlar-uzun.jpg"
+        },
+        {
+          "title": "مسلسل ورود و ذنوب الحلقة 28 - قرمزي",
+          "seriesName": "مسلسل ورود و ذنوب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-28/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-28",
+          "episodeNumber": 28,
+          "playerUrl": "https://www.dailymotion.com/video/k3JxN9VACsZRE6FVSFa",
+          "playerId": "k3JxN9VACsZRE6FVSFa",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "6jmktk5c3ezc"
+            },
+            {
+              "name": "estream",
+              "id": "gdzljutza2xw"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k3JxN9VACsZRE6FVSFa"
+            },
+            {
+              "name": "ok",
+              "id": "14631743916642"
+            },
+            {
+              "name": "Pro HD",
+              "id": "lrpswhref1ps"
+            },
+            {
+              "name": "Red HD",
+              "id": "9kyunnl93mbe"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Guller-ve-Gunahlar-uzun.jpg"
+        },
+        {
+          "title": "مسلسل ورود و ذنوب الحلقة 27 - قرمزي",
+          "seriesName": "مسلسل ورود و ذنوب",
+          "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-27/",
+          "slug": "مسلسل-ورود-و-ذنوب-الحلقة-27",
+          "episodeNumber": 27,
+          "playerUrl": "https://www.dailymotion.com/video/k2hn69xyh2GrzhFOKGs",
+          "playerId": "k2hn69xyh2GrzhFOKGs",
+          "playerProvider": "dailymotion",
+          "playerServers": [
+            {
+              "name": "Arab HD",
+              "id": "14n6y1jbyw2m"
+            },
+            {
+              "name": "estream",
+              "id": "tgkjph0wevw7"
+            },
+            {
+              "name": "dailymotion",
+              "id": "k2hn69xyh2GrzhFOKGs"
+            },
+            {
+              "name": "ok",
+              "id": "14477676382818"
+            },
+            {
+              "name": "Pro HD",
+              "id": "l7ia1iksrpoy"
+            },
+            {
+              "name": "Red HD",
+              "id": "5u0wxwmfcfjd"
+            }
+          ],
+          "imageUrl": "https://krmzy.com/wp-content/uploads/2025/09/Guller-ve-Gunahlar-uzun.jpg"
+        },
         {
           "title": "مسلسل ورود و ذنوب الحلقة 25 - قرمزي",
           "episodeUrl": "https://krmzy.com/episode/%d9%85%d8%b3%d9%84%d8%b3%d9%84-%d9%88%d8%b1%d9%88%d8%af-%d9%88-%d8%b0%d9%86%d9%88%d8%a8-%d8%a7%d9%84%d8%ad%d9%84%d9%82%d8%a9-26/",
@@ -25103,7 +26797,7 @@
           "seriesName": "مسلسل ورود و ذنوب"
         }
       ],
-      "updatedAt": "2026-04-26T00:36:13.699Z",
+      "updatedAt": "2026-05-24T06:36:43.770Z",
       "seriesName": "مسلسل ورود و ذنوب"
     }
   ]
